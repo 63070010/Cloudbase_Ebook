@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar is-fixed-top" style="background-color: blue">
+    <nav class="navbar is-fixed-top" style="background: ">
       <div class="navbar-menu mt-1 mb-1">
         <div class="navbar-start ml-3">
           <div v-if="!user" class="navbar-item">
