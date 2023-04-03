@@ -6,67 +6,111 @@
       <section class="section hero is-fullheight">
         <div class="container">
           <div class="columns is-centered">
-            <div class="column is-half">
-              <div
-                class="card column"
-                style="
-                  background: linear-gradient(221deg, #edc7b7, #eee2dc 73%);
-                  width: 700px;
-                  margin-top: 120px;
-                "
-              >
-                <div class="field">
+            <div class="column is-three-quarters">
+              <div class="card column" style="width: 700px; margin-top: 120px">
+                <div class="field has-text-centered">
+                  <img style="height:150px;" alt="img"  src="../img/book1.png" />
                   <p
-                    class="label is-size-4"
-                    style="color: #123c69; text-align: center"
+                    class="label is-size-3"
+                    style="
+                      text-align: center;
+                      border-bottom: 3px solid;
+                      width: 300px;
+                      margin: 0 auto;
+                    "
                   >
-                    <span
-                      class="material-icons"
-                      style="color: #123c69; text-align: center"
-                    >
-                      &#xe174;
-                    </span>
-                    <br />
-                    เข้าสู่ระบบ
+                    ล็อกอินเข้าสู่ระบบ
+                  </p>
+                  <p
+                    class="label is-size-6"
+                    style="color: #86b0f0; text-align: center"
+                  >
+                    เข้าสู่ระบบผ่าน Social Network
                   </p>
                 </div>
 
-                <div class="field">
-                  <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
-                  <div class="control has-icons-left has-icons-right">
-                    <input
-                      class="input is-medium is-rounded"
-                      type="text"
-                      style="background-color: #eee2dc"
-                      v-model="username"
-                    />
-                    <span class="icon is-small is-left">
-                      <i class="fas fa-user"></i>
-                    </span>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
-                  <input
-                    class="input is-medium is-rounded"
-                    type="text"
-                    v-model="password"
-                    style="background-color: #eee2dc"
-                  />
-                </div>
-
                 <div class="field column">
-                  <div class="control">
+                  <div class="control has-text-centered">
                     <button
-                      @click="submit"
-                      class="button"
-                      style="color: #eee2dc; background-color: #ac3b61"
+                      class="button is-rounded is-medium"
+                      style="color: #eee2dc; background-color: #f16363"
+                      
                     >
-                      เข้าสู่ระบบ
+                      เข้าสู่ระบบด้วย google account
                     </button>
                   </div>
+                  <br/>
+                  
+                  <p
+                    class="label is-size-6"
+                    style="color: #86b0f0; text-align: center"
+                  >
+                    หรือเข้าสู่ระบบผ่าน E-Book
+                  </p>
                 </div>
+
+          <div class="field">
+            <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input is-medium is-rounded"
+                type="text"
+                placeholder="กรอกชื่อผู้ใช้"
+                style="background-color: #eee2dc"
+                v-model="state.username"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+              <span
+                v-for="error in v$.username.$errors"
+                :key="error.$uid"
+                class="has-text-danger"
+              >
+                {{ error.$message }}
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input is-medium is-rounded"
+                type="password"
+                placeholder="กรอกรหัสผ่าน"
+                v-model="state.password"
+                style="background-color: #eee2dc"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-key"></i>
+              </span>
+              <span
+                v-for="error in v$.password.$errors"
+                :key="error.$uid"
+                class="has-text-danger"
+              >
+                {{ error.$message }}
+              </span>
+            </div>
+          </div>
+
+          <div class="field has-text-right">
+            <router-link to="/register">สมัครสมาชิก</router-link>
+          </div>
+          <router-view></router-view>
+
+          <div class="field column">
+            <div class="control has-text-centered">
+              <button
+                class="button is-rounded is-medium"
+                style="color: #eee2dc; background-color: #ac3b61"
+                @click="submit"
+              >
+                เข้าสู่ระบบ
+              </button>
+            </div>
+          </div>
               </div>
             </div>
           </div>
@@ -77,20 +121,45 @@
 </template>
 <script>
 import NavBar from "@/components/NavBar";
+import useValidate from "@vuelidate/core";
+import {
+  required,
+  minLength,
+} from "@vuelidate/validators";
+import { reactive, computed } from "vue";
 export default {
   name: "Register-Ebook",
   components: {
     NavBar,
   },
-  data() {
-    return {
+setup() {
+    const state = reactive({
       username: "",
       password: "",
-      error: "",
-      picked: "Customer",
+    });
+    const rules = computed(() => {
+      return {
+        username: { required, minLength: minLength(4) },
+        password: { required, minLength: minLength(6) },
+      };
+    });
+
+    const v$ = useValidate(rules, state);
+
+    return {
+      state,
+      v$,
     };
+  },
+  methods: {
+    submit() {
+      this.v$.$validate();
+      if (this.v$.$error) {
+        alert("Form failed validation");
+      } else {
+        alert("Form successfully submitted.");
+      }
+    },
   },
 };
 </script>
-<style lang="">
-</style>
