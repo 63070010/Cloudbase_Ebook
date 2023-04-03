@@ -50,7 +50,7 @@
             <div class="control has-icons-left has-icons-right">
               <input
                 class="input is-medium is-rounded"
-                type="text"
+                type="password"
                 placeholder="กรอกรหัสผ่าน"
                 v-model="state.password"
                 style="background-color: #eee2dc"
@@ -73,7 +73,7 @@
             <div class="control has-icons-left has-icons-right">
               <input
                 class="input is-medium is-rounded"
-                type="text"
+                type="password"
                 placeholder="กรอกรหัสผ่านอีกครั้ง"
                 v-model="state.confirm_password"
                 style="background-color: #eee2dc"
@@ -122,6 +122,7 @@
                   :disabled="disabled"
                   class="input is-medium is-rounded"
                   type="text"
+                  maxlength="10"
                   placeholder="กรอกเบอร์โทรศัพท์"
                   v-model="state.mobile"
                   style="background-color: #eee2dc"
