@@ -45,7 +45,7 @@
               <div class="card">
                 <router-link :to="`/DetailsBook/${value.id}`">
                   <div class="card-image">
-                    <figure class="image is-1by1">
+                    <figure class="image is-3by4">
                       <img
                         :src="value.image"
                         alt="Placeholder image"
@@ -130,22 +130,18 @@
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar";
 import MyCarosel from "@/components/MyCarosel";
+import axios from "axios";
+
 export default defineComponent({
   name: "HomeView",
   components: {
     NavBar,
     MyCarosel,
   },
+
   data() {
     return {
-      books: [
-        {
-          book_id: 1,
-          title: "your talent is mine",
-          image:
-            "https://www.osemocphoto.com/collectManga/6534/6534_cover.jpg?0",
-        },
-      ],
+      books: [],
       search: "",
       cart: [],
       cart_item: [],
@@ -157,6 +153,24 @@ export default defineComponent({
       orderlist: [],
       checkadmin: [],
     };
+  },
+
+  created() {
+    this.fetchData();
+  },
+
+  methods: {
+    async fetchData() {
+      try {
+        const response = await axios.get(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+        );
+        this.books = JSON.parse(response.data.body);
+      } catch (error) {
+        console.error(error);
+        // handle the error
+      }
+    },
   },
 });
 </script>
