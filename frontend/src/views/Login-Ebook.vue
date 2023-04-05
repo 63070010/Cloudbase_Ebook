@@ -9,7 +9,7 @@
             <div class="column is-three-quarters">
               <div class="card column" style="width: 700px; margin-top: 120px">
                 <div class="field has-text-centered">
-                  <img style="height:150px;" alt="img"  src="../img/book1.png" />
+                  <img style="height: 150px" alt="img" src="../img/book1.png" />
                   <p
                     class="label is-size-3"
                     style="
@@ -34,13 +34,12 @@
                     <button
                       class="button is-rounded is-medium"
                       style="color: #eee2dc; background-color: #f16363"
-                      
                     >
                       เข้าสู่ระบบด้วย google account
                     </button>
                   </div>
-                  <br/>
-                  
+                  <br />
+
                   <p
                     class="label is-size-6"
                     style="color: #86b0f0; text-align: center"
@@ -49,68 +48,68 @@
                   </p>
                 </div>
 
-          <div class="field">
-            <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="text"
-                placeholder="กรอกชื่อผู้ใช้"
-                style="background-color: #eee2dc"
-                v-model="state.username"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-              </span>
-              <span
-                v-for="error in v$.username.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
+                <div class="field">
+                  <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
+                  <div class="control has-icons-left has-icons-right">
+                    <input
+                      class="input is-medium is-rounded"
+                      type="text"
+                      placeholder="กรอกชื่อผู้ใช้"
+                      style="background-color: #eee2dc"
+                      v-model="state.username"
+                    />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-user"></i>
+                    </span>
+                    <span
+                      v-for="error in v$.username.$errors"
+                      :key="error.$uid"
+                      class="has-text-danger"
+                    >
+                      {{ error.$message }}
+                    </span>
+                  </div>
+                </div>
 
-          <div class="field">
-            <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="password"
-                placeholder="กรอกรหัสผ่าน"
-                v-model="state.password"
-                style="background-color: #eee2dc"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-key"></i>
-              </span>
-              <span
-                v-for="error in v$.password.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
+                <div class="field">
+                  <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
+                  <div class="control has-icons-left has-icons-right">
+                    <input
+                      class="input is-medium is-rounded"
+                      type="password"
+                      placeholder="กรอกรหัสผ่าน"
+                      v-model="state.password"
+                      style="background-color: #eee2dc"
+                    />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-key"></i>
+                    </span>
+                    <span
+                      v-for="error in v$.password.$errors"
+                      :key="error.$uid"
+                      class="has-text-danger"
+                    >
+                      {{ error.$message }}
+                    </span>
+                  </div>
+                </div>
 
-          <div class="field has-text-right">
-            <router-link to="/register">สมัครสมาชิก</router-link>
-          </div>
-          <router-view></router-view>
+                <div class="field has-text-right">
+                  <router-link to="/register">สมัครสมาชิก</router-link>
+                </div>
+                <router-view></router-view>
 
-          <div class="field column">
-            <div class="control has-text-centered">
-              <button
-                class="button is-rounded is-medium"
-                style="color: #eee2dc; background-color: #ac3b61"
-                @click="submit"
-              >
-                เข้าสู่ระบบ
-              </button>
-            </div>
-          </div>
+                <div class="field column">
+                  <div class="control has-text-centered">
+                    <button
+                      class="button is-rounded is-medium"
+                      style="color: #eee2dc; background-color: #ac3b61"
+                      @click="submit"
+                    >
+                      เข้าสู่ระบบ
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -122,17 +121,14 @@
 <script>
 import NavBar from "@/components/NavBar";
 import useValidate from "@vuelidate/core";
-import {
-  required,
-  minLength,
-} from "@vuelidate/validators";
+import { required, minLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 export default {
   name: "Register-Ebook",
   components: {
     NavBar,
   },
-setup() {
+  setup() {
     const state = reactive({
       username: "",
       password: "",
