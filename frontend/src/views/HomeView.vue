@@ -57,10 +57,7 @@
                   <div class="card-content" style="height: 180px">
                     <div class="media">
                       <div class="media-content" style="color: #edc7b7">
-                        <p
-                          class="is-size-6 has-text-centered subtitle"
-                          style="color: #edc7b7"
-                        >
+                        <p class="is-size-6 has-text-centered subtitle">
                           {{ value.title }}
                         </p>
                         <p class="is-size-7" style="color: #bab2b5">
