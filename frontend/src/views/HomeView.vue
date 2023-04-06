@@ -127,7 +127,7 @@
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar";
 import MyCarosel from "@/components/MyCarosel";
-import axios from "axios";
+// import axios from "axios";
 
 export default defineComponent({
   name: "HomeView",
@@ -152,23 +152,22 @@ export default defineComponent({
     };
   },
 
-  created() {
-    this.fetchData();
-  },
+  // created() {
+  //   this.fetchData();
+  // },
 
   methods: {
-    async fetchData() {
-      try {
-        const response = await axios.get(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-        );
-        this.books = JSON.parse(response.data.body);
-        console.log(response.data.body);
-      } catch (error) {
-        console.error(error);
-        // handle the error
-      }
-    },
+    // async fetchData() {
+    //   try {
+    //     const response = await axios.get(
+    //       "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+    //     );
+    //     this.books = JSON.parse(response.data.body);
+    //   } catch (error) {
+    //     console.error(error);
+    //     // handle the error
+    //   }
+    // },
   },
 });
 </script>
