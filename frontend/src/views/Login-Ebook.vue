@@ -35,7 +35,7 @@
                       class="button is-rounded is-medium"
                       style="color: #eee2dc; background-color: #f16363"
                     >
-                      เข้าสู่ระบบด้วย google account
+                      เข้าสู่ระบบด้วย google accounts
                     </button>
                   </div>
                   <br />
