@@ -1,16 +1,2 @@
-# Project-webpro
-ebook
-ที่ ต้อง เพิ่มมี
-
-npm install
-
-npm install vue3-carousel
-
-npm install @creativebulma/bulma-divider
-
-npm install @vuelidate/core
-
-npm install @vuelidate/validators
-
-Customize configuration
-See Configuration Reference.
+งานฟ้อน
+https://docs.google.com/document/d/1auCvgF8tDPjzwtSZ8jLpkP1f4P3Khmj-DJMk5ipCTVM/edit
