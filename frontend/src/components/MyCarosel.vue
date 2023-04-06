@@ -6,7 +6,7 @@
           <router-link :to="`/DetailPromotion/${slide.promotion_id}`">
             <img
               :src="slide.promotionimage"
-              style="width: 850px; height: 470px"
+              style="width: 500px; height: 250px"
             />
           </router-link>
         </div>
