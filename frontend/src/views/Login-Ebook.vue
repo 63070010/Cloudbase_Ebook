@@ -17,13 +17,14 @@
                       border-bottom: 3px solid;
                       width: 300px;
                       margin: 0 auto;
+                      color: #8FC1E3;
                     "
                   >
                     ล็อกอินเข้าสู่ระบบ
                   </p>
                   <p
                     class="label is-size-6"
-                    style="color: #86b0f0; text-align: center"
+                    style="color: #5085A5; text-align: center"
                   >
                     เข้าสู่ระบบผ่าน Social Network
                   </p>
@@ -33,7 +34,7 @@
                   <div class="control has-text-centered">
                     <button
                       class="button is-rounded is-medium"
-                      style="color: #eee2dc; background-color: #f16363"
+                      style="color: #F7F9FB; background-color: #f16363"
                     >
                       เข้าสู่ระบบด้วย google account
                     </button>
@@ -42,20 +43,20 @@
 
                   <p
                     class="label is-size-6"
-                    style="color: #86b0f0; text-align: center"
+                    style="color: #5085A5; text-align: center"
                   >
                     หรือเข้าสู่ระบบผ่าน E-Book
                   </p>
                 </div>
 
                 <div class="field">
-                  <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
+                  <label class="label" style="color: #8FC1E3">ชื่อผู้ใช้</label>
                   <div class="control has-icons-left has-icons-right">
                     <input
                       class="input is-medium is-rounded"
                       type="text"
                       placeholder="กรอกชื่อผู้ใช้"
-                      style="background-color: #eee2dc"
+                      style="background-color: #F7F9FB"
                       v-model="state.username"
                     />
                     <span class="icon is-small is-left">
@@ -72,14 +73,14 @@
                 </div>
 
                 <div class="field">
-                  <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
+                  <label class="label" style="color: #8FC1E3">รหัสผ่าน</label>
                   <div class="control has-icons-left has-icons-right">
                     <input
                       class="input is-medium is-rounded"
                       type="password"
                       placeholder="กรอกรหัสผ่าน"
                       v-model="state.password"
-                      style="background-color: #eee2dc"
+                      style="background-color: #F7F9FB"
                     />
                     <span class="icon is-small is-left">
                       <i class="fas fa-key"></i>
@@ -103,7 +104,7 @@
                   <div class="control has-text-centered">
                     <button
                       class="button is-rounded is-medium"
-                      style="color: #eee2dc; background-color: #ac3b61"
+                      style="color: #F7F9FB; background-color: #31708E"
                       @click="submit"
                     >
                       เข้าสู่ระบบ

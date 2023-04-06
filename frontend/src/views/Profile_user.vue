@@ -1,385 +1,176 @@
 <template >
   <div>
     <NavBar />
-    <EditProfile />
+    <br />
+    <div class="container is-fullheight">
+      <h2 class="mb-4 is-size-1 has-text-centered has-text-weight-bold">
+        จัดการบัญชี
+      </h2>
 
-    <section>
-      <div class="container hero is-fullheight">
-        <div class="section">
-          <div class="columns is-mobile is-multiline">
-            <!-- ข้อมูล user-->
-            <div class="column is-2">
-              <figure class="image is-1by1">
-                <img
-                  class="is-rounded"
-                  :src="'http://localhost:3000/' + user.imageProfile"
-                  alt="Image"
-                  style="object-fit: cover"
-                  v-if="user.imageProfile != null"
-                />
-              </figure>
-            </div>
-            <div class="column is-4-tablet is-10-mobile name">
-              <p>
-                <span class="title is-bold">{{ user.username }}</span>
-              </p>
-              <br />
-              <div class="tagline">
-                <p>Email: {{ user.email }}</p>
-
-                <p>
-                  ชื่อจริง: {{ user.first_name }}
-                  <span class="ml-4">นามสกุล: {{ user.last_name }} </span>
-                </p>
-
-                <p v-if="user.penname != null">
-                  นามปากกา: {{ user.penname }}
-                  <span class="ml-1" v-if="user.Phonenumber != null">
-                    เบอร์โทรสับ: {{ user.Phonenumber }}
-                  </span>
-                  <span class="ml-1" v-else>เบอร์โทรศัพท์: ยังไม่มีข้อมูล</span>
-                </p>
-                <p v-else>
-                  นามปากกา: ยังไม่มีข้อมูล
-                  <span class="ml-1" v-if="user.Phonenumber != null">
-                    เบอร์โทรสับ: {{ user.Phonenumber }}
-                  </span>
-                  <span class="ml-1" v-else>เบอร์โทรสับ: ยังไม่มีข้อมูล</span>
-                </p>
-                <p v-if="user.bank_name != null">
-                  ชื่อธนาคาร: {{ user.bank_name }}
-                </p>
-                <p v-else>ชื่อธนาคาร: ยังไม่มีข้อมูล</p>
-                <p v-if="user.bank_number != null">
-                  เลขที่บัญชี: {{ user.bank_number }}
-                </p>
-                <p v-else>เลขที่บัญชี: ยังไม่มีข้อมูล</p>
-              </div>
-            </div>
-
-            <div class="column is-3-tablet is-4-mobile has-text-centered ml-6">
-              <p class="stat-val">{{ Book_list.length }}</p>
-              <p class="stat-key">หนังสือในชั้นหนังสือ</p>
-            </div>
-            <div
-              class="column is-2-tablet is-4-mobile has-text-centered ml-3"
-              style="border-left: 2px dotted rgba(0, 0, 0, 0.2)"
-            >
-              <p class="stat-val">{{ mysell_book.length }}</p>
-              <p class="stat-key">หนังสือที่ลงขาย</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- ข้อมูล user-->
-
-        <div class="tabs is-fullwidth is-medium">
-          <ul>
-            <li
-              class="link"
-              v-bind:class="{ 'is-active': isActive == 'MYbook' }"
-            >
-              <a v-on:click="isActive = 'MYbook'">
-                <span class="icon"> <i class="fa fa-list"></i> </span
-                >ชั้นหนังสือ</a
-              >
-            </li>
-            <li v-bind:class="{ 'is-active': isActive == 'MYbooksell' }">
-              <a v-on:click="isActive = 'MYbooksell'"
-                ><span class="icon"> <i class="fa fa-address-book"></i> </span
-                >หนังสือที่ลงขาย/เขียนหนังสือ</a
-              >
-            </li>
-          </ul>
-        </div>
-
-        <div class="tab-contents">
-          <!--หนังสือที่มี-->
-          <div
-            class="content mt-6 mb-6"
-            v-bind:class="{ 'is-active': isActive == 'MYbook' }"
-          >
-            <div class="container is-max-widescreen">
-              <div class="columns is-multiline" v-if="Book_list.length > 0">
-                <div
-                  v-for="card in Book_list"
-                  v-bind:key="card.id"
-                  class="column is-3"
-                >
-                  <div class="card large">
-                    <router-link :to="`/DetailsBook/${card.Bookid}`">
-                      <div class="card-image image is-4by5">
-                        <img
-                          class="is-rounded"
-                          :src="'http://localhost:3000/' + card.image"
-                          style="object-fit: cover"
-                          v-if="card.image != null"
-                        />
-                      </div>
-
-                      <div class="card-content" style="height: 170px">
-                        <div class="media">
-                          <div class="media-content">
-                            <p class="title is-5 no-padding">
-                              {{ card.title }}
-                            </p>
-                            by
-                            <span class="title is-6" style="color: #bab2b5">
-                              {{ card.penname }}</span
-                            >
-                            <br />
-                            type:
-                            <span
-                              class="is-size-7 text-right"
-                              style="color: #bab2b5"
-                              v-for="(value, index) in card.type"
-                              :key="index"
-                            >
-                              {{ value }}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </router-link>
-                    <footer class="card-footer">
-                      <router-link :to="`/ReadBook/${card.id}/1`"
-                        ><a class="card-footer-item">อ่าน</a></router-link
-                      >
-                    </footer>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--หนังสือที่มี-->
-
-        <div class="tab-contents">
-          <!--หนังสือที่ขาย-->
-          <div
-            class="content mb-6"
-            v-bind:class="{ 'is-active': isActive == 'MYbooksell' }"
-          >
-            <br />
-            <div class="columns is-multiline">
-              <div
-                v-for="card in mysell_book"
-                v-bind:key="card.id"
-                class="column is-3"
-              >
-                <div class="card large">
-                  <router-link :to="`/DetailsBook/${card.id}`">
-                    <div class="card-image image is-4by5">
+      <div class="columns">
+        <div class="column is-12">
+          <section class="card is-small">
+            <div class="card-content">
+              <div class="container">
+                <div class="columns">
+                  <div class="column is-2">
+                    <figure class="image is-128x128">
                       <img
-                        :src="'http://localhost:3000/' + card.image"
+                        class="is-rounded"
+                        src="../img/book1.png"
                         alt="Image"
                         style="object-fit: cover"
                       />
-                    </div>
-                  </router-link>
-                  <div class="card-content" style="height: 250px">
-                    <div class="media">
-                      <div class="media-content">
-                        <p class="title is-5 no-padding">
-                          {{ card.title }}
-                        </p>
-                        ชื่อนามปากของคุณ:
-                        <span class="title is-6" style="color: #bab2b5">
-                          {{ card.penname }}</span
-                        >
-                        <br />
-                        ปรเภทหนังสือที่เลือกไว้:
-                        <span
-                          class="is-size-6 text-right"
-                          style="color: #bab2b5"
-                          v-for="(value, index) in card.type"
-                          :key="index"
-                        >
-                          {{ value }}
-                        </span>
-
-                        <!-- คือ มันจะต้องมี 5 stage เพื่อเช็ค แบบ เขียนเสรจแล้วต่อไปก้ลงทะเบียน ลงทะเบียนเสรจแล้วก้ ไป รอ พอ อนุมัติ แล้วก้ลงขาย และถ้าหาก ไม่อนุมัติก้กลับมาเป็นอันแรก"-->
-
-                        <br />ราคาที่เลือก:
-                        <span style="color: #bab2b5">{{ card.price }}</span>
-                        <br />
-                        สถานะหนังสือ:
-                        <span
-                          style="color: #bab2b5"
-                          v-if="card.status == 'unready'"
-                          >ยังเขียนไม่เสร็จ</span
-                        >
-                        <span
-                          style="color: #bab2b5"
-                          v-if="card.status == 'ready'"
-                          >เขียนเสร็จแล้ว</span
-                        >
-                        <span
-                          style="color: #bab2b5"
-                          v-if="card.status == 'wait'"
-                          >รออนุมัติ</span
-                        >
-                        <span
-                          style="color: #bab2b5"
-                          v-if="card.status == 'succeed'"
-                          >อนุมัติสำเร็จแล้ว</span
-                        >
-                        <span
-                          style="color: #bab2b5"
-                          v-if="card.status == 'not_succeed'"
-                          >ไม่อนุมัติ</span
-                        >
-                      </div>
-                    </div>
+                    </figure>
                   </div>
-
-                  <footer
-                    class="card-footer"
-                    v-if="
-                      card.status == 'unready' || card.status == 'not_succeed'
-                    "
-                  >
-                    <router-link :to="`/WriteBook/${card.id}/1`"
-                      ><a class="card-footer-item"
-                        >เขียนหนังสือต่อ
-                      </a></router-link
-                    >
-                    <a class="card-footer-item" @click="setReady(card.id)"
-                      >บันทึกหนังสือ
-                    </a>
-                  </footer>
-                  <footer class="card-footer" v-if="card.status == 'ready'">
-                    <a class="card-footer-item" @click="setWait(card.id)"
-                      >ลงทะเบียนขาย</a
-                    >
-                    <a class="card-footer-item" @click="setReady(card.id)"
-                      >ลบหนังสือที่เขียน</a
-                    >
-                  </footer>
-                  <footer class="card-footer" v-if="card.status == 'wait'">
-                    <a class="card-footer-item">ยกเลิกการลงทะเบียน</a>
-                  </footer>
-                  <footer class="card-footer" v-if="card.status == 'succeed'">
-                    <a class="card-footer-item" @click="setWaitDelete(card.id)"
-                      >ลบหนังสือที่เขียน</a
-                    >
-                  </footer>
+                  <div class="column">
+                    <br />
+                    <br />
+                    <h1 class="title">{{ user.username }}</h1>
+                  </div>
+                  <div>
+                    <br>
+                    <br>
+                    <EditProfile/>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <!--ตรงเพิ่มหนังสือ-->
-            <div class="box has-text-centered">
-              <a class="button" @click="Add_Book = true">
-                เขียนหนังสือ เล่มใหม่
-                <span class="material-icons">
-                  <i class="fas fa-pencil-alt ml-3"></i> </span
-              ></a>
-            </div>
-            <!--ตรงเพิ่มหนังสือ-->
-          </div>
-        </div>
-      </div>
-
-      <div class="modal" :class="{ 'is-active': Add_Book }">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-          <button
-            class="modal-close is-large"
-            aria-label="close"
-            @click="Add_Book = false"
-          ></button>
-
-          <section class="modal-card-body">
-            <div class="field">
-              <span
-                class="label is-size-4"
-                style="color: #123c69; text-align: center"
-              >
-                รายละเอียดหนังสือ
-              </span>
-            </div>
-
-            <div class="field">
-              <label class="label" style="color: #ac3b61">ชื่อหนังสือ</label>
-              <div class="control">
-                <input
-                  class="input is-medium is-rounded"
-                  type="text"
-                  style="background-color: #eee2dc"
-                  v-model="Book_name"
-                />
-              </div>
-            </div>
-            <div class="field-body">
-              <div class="field">
-                <label class="label" style="color: #ac3b61"
-                  >ประเภทหนังสือ</label
-                >
-                <div class="select is-fullwidth is-medium is-rounded">
-                  <select v-model="bookType" style="background-color: #eee2dc">
-                    <option value="Romance">Romance</option>
-                    <option value="Action">Action</option>
-                    <option value="Drama">Drama</option>
-                  </select>
-                </div>
-              </div>
-              <div class="field" style="margin-top: 35px">
-                <button class="button is-success" @click="addType">
-                  เพิ่มประเภท
-                </button>
-              </div>
-              <div class="field">
-                <label class="label" style="color: #ac3b61">ราคาหนังสือ</label>
-                <input
-                  class="input is-fullwidth is-medium is-rounded"
-                  type="number"
-                  v-model="price"
-                />
-              </div>
-            </div>
-            <br />
-            <div class="field">
-              <label class="label" style="color: #ac3b61"
-                >เพิ่มรูปภาพปกหนังสือ</label
-              >
-              <div class="file">
-                <label class="file-label">
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span>
-                      <input
-                        type="file"
-                        accept="image/png, image/jpeg, image/webp"
-                        @change="selectImages"
-                      />
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div class="field">
-              <label class="label" style="color: #ac3b61">เรื่องย่อ</label>
-              <div class="control">
-                <textarea
-                  class="textarea is-medium is-rounded"
-                  style="background-color: #eee2dc"
-                  v-model="detail_book"
-                ></textarea>
               </div>
             </div>
           </section>
-          <footer class="modal-card-foot">
-            <button class="button is-success" @click="submitBook">
-              บันทึก
-            </button>
-            <button class="button" @click="Add_Book = false">ยกเลิก</button>
-          </footer>
+
+          <section class="hero">
+            <div class="card has-background-white-ter">
+              <div class="card-content">
+                <div class="columns">
+                  <div class="column is-1"></div>
+                  <div class="column is-2">
+                    <p class="title is-4">Username</p>
+                  </div>
+                  <div class="column">
+                    <p class="subtitle is-4">{{ user.username }}</p>
+                  </div>
+
+                  <div class="column is-2">
+                    <p class="title is-4">Gender</p>
+                  </div>
+                  <div class="column is-3">
+                    <p class="subtitle is-4">{{ user.gender }}</p>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-1"></div>
+                  <div class="column is-2">
+                    <p class="title is-4">Email</p>
+                  </div>
+                  <div class="column">
+                    <p class="subtitle is-4">{{ user.email }}</p>
+                  </div>
+
+                  <div class="column is-2">
+                    <p class="title is-4">Phone</p>
+                  </div>
+                  <div class="column is-3">
+                    <p class="subtitle is-4">{{ user.phonenumber }}</p>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-1"></div>
+                  <div class="column is-2">
+                    <p class="title is-4">Password</p>
+                  </div>
+                  <div class="column">
+                    <p
+                      class="subtitle is-4"
+                      style="-webkit-text-security: disc"
+                    >
+                      {{ user.password }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <br />
+          <section class="info-tiles">
+            <div class="tile is-ancestor has-text-centered">
+              <div class="tile is-parent">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">รายการที่ชอบ</p>
+                    <p class="subtitle has-text-left">
+                      รายการหนังสือที่คุณสนใจที่จะอ่าน หรือ สนใจหนังสือเล่มนั้นๆ
+                    </p>
+                  </article>
+                </router-link>
+              </div>
+              <div class="tile is-parent">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">ชั้นหนังสือของฉัน</p>
+                    <p class="subtitle has-text-left">
+                      รายการหนังสือทั้งหมดของคุณที่คุณได้สั่งซื้อมา
+                      จะถูกเก็บไว้รวบรวมที่ชั้นหนังสือ
+                    </p>
+                  </article></router-link
+                >
+              </div>
+              <div class="tile is-parent">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">แต้มคะแนน</p>
+                    <p class="subtitle has-text-left">
+                      ได้แต้มคะแนนมาจากการสั่งซื้อหนังสือที่คุณสนใจ
+                      สามารถนำแต้มเพื่อไปแลกของได้
+                    </p>
+                  </article></router-link
+                >
+              </div>
+            </div>
+          </section>
+          <br />
+          <br />
+          <section class="info-tiles">
+            <div class="tile is-ancestor has-text-centered">
+              <div class="tile is-parent">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">หนังสือที่ลงขาย</p>
+                    <p class="subtitle has-text-left">
+                      รายการหนังสือทั้งหมดที่คุณได้ลงขายภายในเว็บไซต์
+                    </p>
+                  </article>
+                </router-link>
+              </div>
+
+              <div class="tile is-parent is-4">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">อัปโหลดหนังสือ</p>
+                    <p class="subtitle has-text-left">
+                      คุณสามารถอัปโหลดหนังสือของคุณได้
+                      และจะแสดงหนังสือทั้งหมดที่คุณได้อัปโหลดในเว็บไซต์
+                    </p>
+                  </article></router-link
+                >
+              </div>
+              <div class="tile is-parent is-4">
+                <router-link to="/register">
+                  <article class="tile is-child box color_use">
+                    <p class="title" style="color: #8FC1E3">
+                      รีวิวหนังสือของฉัน
+                    </p>
+                    <p class="subtitle has-text-left">
+                      รายการรีวิว และ เรทติ้งของหนังสือที่คุณเคยให้คะแนนไว้
+                    </p>
+                  </article></router-link
+                >
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 <script>
@@ -393,7 +184,13 @@ export default {
   },
   data() {
     return {
-      user: [],
+      user: {
+        username: "TestName",
+        email: "Test@hotmail.com",
+        phonenumber: "0812345678",
+        gender: "ชาย",
+        password: "123456789",
+      },
       images: [],
       types: [],
       isActive: "MYbook",
@@ -423,5 +220,10 @@ export default {
 }
 .tab-contents .content.is-active {
   display: block;
+}
+.color_use:hover {
+  border: 5px solid #8FC1E3;
+  transition: transform 1000ms ease-out;
+  transform: scale(1.1);
 }
 </style>

@@ -1,137 +1,44 @@
 <template>
   <div>
-    <section class="section hero is-fullheight">
-      <div
-        class="tile is-vertical is-4"
-        style="margin-left: auto; margin-right: auto"
-      >
-        <div class="card column mt-6">
-          <div class="field">
-            <p
-              class="label is-size-4"
-              style="
-                color: #123c69;
-                text-align: center;
-                border-bottom: 3px solid;
-                width: 300px;
-                margin: 0 auto;
-              "
-            >
-              <br />
-              สมัครสมาชิก E-Book
-            </p>
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="text"
-                placeholder="กรอกชื่อผู้ใช้"
-                style="background-color: #eee2dc"
-                v-model="state.username"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-              </span>
-              <span
-                v-for="error in v$.username.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="password"
-                placeholder="กรอกรหัสผ่าน"
-                v-model="state.password"
-                style="background-color: #eee2dc"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-key"></i>
-              </span>
-              <span
-                v-for="error in v$.password.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">ยืนยัน รหัสผ่าน</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="password"
-                placeholder="กรอกรหัสผ่านอีกครั้ง"
-                v-model="state.confirm_password"
-                style="background-color: #eee2dc"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-key"></i>
-              </span>
-              <span
-                v-for="error in v$.confirm_password.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">อีเมล</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="email"
-                placeholder="กรอกอีเมล"
-                v-model="state.email"
-                style="background-color: #eee2dc"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-              </span>
-              <span
-                v-for="error in v$.email.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
-            </div>
-          </div>
-
-          <div class="field-body">
+    <NavBar />
+    <div>
+      <section class="section hero is-fullheight">
+        <div
+          class="tile is-vertical is-4"
+          style="margin-left: auto; margin-right: auto"
+        >
+          <div class="card column mt-6">
             <div class="field">
-              <label class="label" style="color: #ac3b61">เบอร์โทรศัพท์</label>
+              <p
+                class="label is-size-4"
+                style="
+                  color: #5085a5;
+                  text-align: center;
+                  border-bottom: 3px solid;
+                  width: 300px;
+                  margin: 0 auto;
+                "
+              >
+                <br />
+                สมัครสมาชิก E-Book
+              </p>
+            </div>
+
+            <div class="field">
+              <label class="label" style="color: #8fc1e3">ชื่อผู้ใช้</label>
               <div class="control has-icons-left has-icons-right">
                 <input
-                  :disabled="disabled"
                   class="input is-medium is-rounded"
                   type="text"
-                  maxlength="10"
-                  placeholder="กรอกเบอร์โทรศัพท์"
-                  v-model="state.mobile"
-                  style="background-color: #eee2dc"
+                  placeholder="กรอกชื่อผู้ใช้"
+                  style="background-color: #f7f9fb"
+                  v-model="state.username"
                 />
                 <span class="icon is-small is-left">
-                  <i class="fas fa-phone"></i>
+                  <i class="fas fa-user"></i>
                 </span>
                 <span
-                  v-for="error in v$.mobile.$errors"
+                  v-for="error in v$.username.$errors"
                   :key="error.$uid"
                   class="has-text-danger"
                 >
@@ -141,42 +48,143 @@
             </div>
 
             <div class="field">
-              <label class="label" style="color: #ac3b61">เพศ</label>
+              <label class="label" style="color: #8fc1e3">รหัสผ่าน</label>
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input is-medium is-rounded"
+                  type="password"
+                  placeholder="กรอกรหัสผ่าน"
+                  v-model="state.password"
+                  style="background-color: #f7f9fb"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span
+                  v-for="error in v$.password.$errors"
+                  :key="error.$uid"
+                  class="has-text-danger"
+                >
+                  {{ error.$message }}
+                </span>
+              </div>
+            </div>
 
-              <div class="select is-fullwidth is-medium is-rounded">
-                <select v-model="state.sex" style="background-color: #eee2dc">
-                  <option value="Male">ชาย</option>
-                  <option value="Famale">หญิง</option>
-                  <option value="not_specified">ไม่ระบุ</option>
-                </select>
+            <div class="field">
+              <label class="label" style="color: #8fc1e3"
+                >ยืนยัน รหัสผ่าน</label
+              >
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input is-medium is-rounded"
+                  type="password"
+                  placeholder="กรอกรหัสผ่านอีกครั้ง"
+                  v-model="state.confirm_password"
+                  style="background-color: #f7f9fb"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span
+                  v-for="error in v$.confirm_password.$errors"
+                  :key="error.$uid"
+                  class="has-text-danger"
+                >
+                  {{ error.$message }}
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" style="color: #8fc1e3">อีเมล</label>
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input is-medium is-rounded"
+                  type="email"
+                  placeholder="กรอกอีเมล"
+                  v-model="state.email"
+                  style="background-color: #f7f9fb"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <span
+                  v-for="error in v$.email.$errors"
+                  :key="error.$uid"
+                  class="has-text-danger"
+                >
+                  {{ error.$message }}
+                </span>
+              </div>
+            </div>
+
+            <div class="field-body">
+              <div class="field">
+                <label class="label" style="color: #8fc1e3"
+                  >เบอร์โทรศัพท์</label
+                >
+                <div class="control has-icons-left has-icons-right">
+                  <input
+                    :disabled="disabled"
+                    class="input is-medium is-rounded"
+                    type="text"
+                    maxlength="10"
+                    placeholder="กรอกเบอร์โทรศัพท์"
+                    v-model="state.mobile"
+                    style="background-color: #f7f9fb"
+                  />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                  <span
+                    v-for="error in v$.mobile.$errors"
+                    :key="error.$uid"
+                    class="has-text-danger"
+                  >
+                    {{ error.$message }}
+                  </span>
+                </div>
               </div>
 
-              <span
-                v-for="error in v$.sex.$errors"
-                :key="error.$uid"
-                class="has-text-danger"
-              >
-                {{ error.$message }}
-              </span>
+              <div class="field">
+                <label class="label" style="color: #8fc1e3">เพศ</label>
+
+                <div class="select is-fullwidth is-medium is-rounded">
+                  <select v-model="state.sex" style="background-color: #f7f9fb">
+                    <option value="Male">ชาย</option>
+                    <option value="Famale">หญิง</option>
+                    <option value="not_specified">ไม่ระบุ</option>
+                  </select>
+                </div>
+
+                <span
+                  v-for="error in v$.sex.$errors"
+                  :key="error.$uid"
+                  class="has-text-danger"
+                >
+                  {{ error.$message }}
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="field column">
-            <div class="control has-text-centered">
-              <button
-                class="button is-rounded is-medium"
-                style="color: #eee2dc; background-color: #ac3b61"
-                @click="submit"
-              >
-                สมัครสมาชิก
-              </button>
+            <div class="field column">
+              <div class="control has-text-centered">
+                <button
+                  class="button is-rounded is-medium"
+                  style="color: #f7f9fb; background-color: #31708e"
+                  @click="submit"
+                >
+                  สมัครสมาชิก
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 <script>
+import NavBar from "@/components/NavBar";
 import useValidate from "@vuelidate/core";
 import {
   required,
@@ -187,6 +195,9 @@ import {
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 export default {
+  components: {
+    NavBar,
+  },
   setup() {
     const state = reactive({
       username: "",

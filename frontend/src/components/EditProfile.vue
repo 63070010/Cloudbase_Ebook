@@ -3,10 +3,10 @@
   <div>
     <nav
       @click="Edit_profile = true"
-      class="button is-rounded navbar is-fixed-bottom navbar-end mb-4 mr-4"
-      style="width: 120px; height: 55px; background-color: #edc7b7"
+      class="button is-rounded is-medium is-fullwidth "
+      style="width: 350px; height: 55px; background-color: #31708E"
     >
-      <span class="mt-2">แก้ไขโปรไฟล์</span>
+      <span class="mt-2" style="color: #F7F9FB">แก้ไขโปรไฟล์</span>
     </nav>
     <div class="modal" :class="{ 'is-active': Edit_profile }">
       <div class="modal-background"></div>
