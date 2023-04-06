@@ -127,7 +127,7 @@
           </div>
 
           <div class="field">
-            <label class="label" style="color: #123c69">เบอร์โทรสับ</label>
+            <label class="label" style="color: #123c69">เบอร์โทรศัพท์</label>
             <input
               :disabled="disabled"
               class="input is-medium is-rounded"
