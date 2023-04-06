@@ -30,7 +30,7 @@
             <label class="label" style="color: #ac3b61">รูปโปรไฟล์</label>
             <div class="file">
               <label class="file-label">
-                <input class="file-input" type="file" name="comment_image" />
+                <input class="file-input" type="file" name="comment_image" @change="handleImageUpload"/>
                 <span class="file-cta">
                   <span class="file-icon">
                     <i class="fas fa-upload"></i>
@@ -222,5 +222,17 @@ export default {
       Edit_profile: false,
     };
   },
+  methods: {
+    handleFileChange(event) {
+      const selectedFile = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.addEventListener('load', function() {
+        console.log(reader.result);
+      });
+
+      reader.readAsDataURL(selectedFile);
+    }
+  }
 };
 </script>
