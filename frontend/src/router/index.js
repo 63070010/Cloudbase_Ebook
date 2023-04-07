@@ -9,6 +9,7 @@ import DetailPromotion from '../views/DetailPromotion.vue'
 import AdminPage from '../views/AdminPage.vue'
 import CheckoutPage from '../views/CheckoutPage.vue'
 import ReadBook from '../views/ReadBook.vue'
+import SearchBook from '../views/SearchBook.vue'
 
 const routes = [
   {
@@ -52,6 +53,13 @@ const routes = [
     name: 'DetailPromotion',
 
     component: DetailPromotion
+  }
+  ,
+  {
+    path: '/SearchBook',
+    name: 'SearchBook',
+
+    component: SearchBook
   }
   ,
   {
