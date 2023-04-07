@@ -66,6 +66,13 @@
                         aria-hidden="true"
                       ></i>
                     </button>
+
+                    <span
+                      v-else-if="bookincart.includes(String(value.book_id))"
+                      class="mt-4 mr-2"
+                      style="color: #5085a5"
+                      >หนังสืออยู่ในตะกร้า</span
+                    >
                     <span v-else class="mt-4 mr-2" style="color: #5085a5"
                       >มีหนังสือเล่มนี้แล้ว</span
                     >
