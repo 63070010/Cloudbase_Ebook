@@ -62,11 +62,11 @@
                     >
                       <i
                         class="fa fa-cart-plus is-size-4"
-                        style="color: #edc7b7"
+                        style="color: #5085a5"
                         aria-hidden="true"
                       ></i>
                     </button>
-                    <span v-else class="mt-4 mr-2" style="color: #edc7b7"
+                    <span v-else class="mt-4 mr-2" style="color: #5085a5"
                       >มีหนังสือเล่มนี้แล้ว</span
                     >
                   </div>
@@ -134,11 +134,11 @@
                     >
                       <i
                         class="fa fa-cart-plus is-size-4"
-                        style="color: #edc7b7"
+                        style="color: #5085a5"
                         aria-hidden="true"
                       ></i>
                     </button>
-                    <span v-else class="mt-4 mr-2" style="color: #edc7b7"
+                    <span v-else class="mt-4 mr-2" style="color: #5085a5"
                       >มีหนังสือเล่มนี้แล้ว</span
                     >
                   </div>
@@ -169,11 +169,12 @@ export default defineComponent({
     return {
       nameevent: [
         { thainame: "หนังสือมาใหม่", engname: "Latest new books" },
-        { thainame: "หนังสือขายดี", engname: "bestseller" },
+        { thainame: "หนังสือขายดี", engname: "Bestseller" },
+        { thainame: "หนังสือรายเดือน", engname: "Books for this month" },
       ],
-
       books: [],
       booksevent: [],
+      bookmonthly: [],
       search: "",
       cart: [],
       cart_item: [],
@@ -198,7 +199,6 @@ export default defineComponent({
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
         );
         const data = response.data;
-        const eventdata = response.data;
 
         // เรียงลำดับตามวันที่
         const sortedByDate = data.sort(function (a, b) {
@@ -212,10 +212,18 @@ export default defineComponent({
           return b.sales - a.sales;
         });
 
-        // ส่งค่ากลับเป็น array 2 ตัว
-        this.books = [sortedByDate, sortedBySales];
+        const sortedBymonthly = sortedByDate.filter(
+          (value) => value.monthly === true
+        );
 
-        this.booksevent = eventdata.reduce((result, current) => {
+        this.books = [
+          sortedByDate,
+          sortedBySales,
+          sortedBymonthly.length > 0 ? sortedBymonthly : [],
+        ];
+        console.log(this.books);
+
+        this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {
             // เพิ่มเงื่อนไขเช็คว่า eventname ไม่ใช่สตริงว่าง
 
