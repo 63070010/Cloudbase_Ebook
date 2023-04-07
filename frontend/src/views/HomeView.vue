@@ -129,15 +129,15 @@
                       </div>
                     </div>
                   </router-link>
-                  <!-- <div class="level ml-2" >
+                  <div class="level ml-2">
                     ฿ {{ value.price }}
                     <button
-                      v-if="
-                        this.totalBook.find((x) => x.book_id == value.id) ===
-                        undefined
-                      "
                       class="button is-ghost level-right"
                       @click="cardpush(value)"
+                      v-if="
+                        !bookshelf.includes(String(value.book_id)) &&
+                        !bookincart.includes(String(value.book_id))
+                      "
                     >
                       <i
                         class="fa fa-cart-plus is-size-4"
@@ -145,10 +145,17 @@
                         aria-hidden="true"
                       ></i>
                     </button>
+
+                    <span
+                      v-else-if="bookincart.includes(String(value.book_id))"
+                      class="mt-4 mr-2"
+                      style="color: #5085a5"
+                      >หนังสืออยู่ในตะกร้า</span
+                    >
                     <span v-else class="mt-4 mr-2" style="color: #5085a5"
                       >มีหนังสือเล่มนี้แล้ว</span
                     >
-                  </div> -->
+                  </div>
                 </div>
               </div>
             </div>

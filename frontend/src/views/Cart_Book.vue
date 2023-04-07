@@ -13,16 +13,16 @@
             Books in the cart
           </div>
         </div>
-        <div v-if="Cart_item.length > 0">
+        <div v-if="cartitemlast.length > 0">
           <div
             class="box"
-            v-for="(cart, index) in Cart_item"
-            v-bind:key="cart.id"
+            v-for="(value, index) in cartitemlast"
+            v-bind:key="index"
           >
             <article class="media">
               <div class="media-left">
                 <img
-                  :src="'http://localhost:3000/' + cart.image"
+                  :src="value.image"
                   alt="Image"
                   style="object-fit: cover"
                   class="image is-128x128"
@@ -31,14 +31,14 @@
               <div class="media-content" style="margin-left: 900px">
                 <div class="content">
                   <p>
-                    <strong>ชื่อหนังสือ: {{ cart.title }}</strong>
+                    <strong>ชื่อหนังสือ: {{ value.title }}</strong>
                     <br />
-                    <small>ราคา: {{ cart.price }}</small>
+                    <small>ราคา: {{ value.price }}</small>
                   </p>
                 </div>
                 <div class="level-right">
                   <a class="level-item">
-                    <span class="icon is-small" @click="dropbook(cart, index)">
+                    <span class="icon is-small" @click="dropbook()">
                       <i class="fa fa-trash" style="color: #ac3b61"></i>
                     </span>
                   </a>
@@ -63,13 +63,9 @@
           </div>
           <div class="column is-10 has-text-centered is-offset-1">
             <h2 class="subtitle">
-              จำนวนหนังสือซื้อที่ซื้อ : {{ Cart_item.length }} เล่ม
+              จำนวนหนังสือซื้อที่ซื้อ : {{ cartitemlast.length }} เล่ม
             </h2>
-            <router-link
-              :to="`/CheckoutPage/${Cart_item[0].cart_id}`"
-              style="color: #123c69"
-              v-if="Cart_item.length > 0"
-            >
+            <router-link style="color: #123c69" v-if="cartitemlast.length > 0">
               <button class="button">
                 ไปหน้าชำระเงิน&emsp;<i
                   class="fa fa-arrow-circle-right"
@@ -78,7 +74,7 @@
               </button>
             </router-link>
             <div>
-              <button class="button" disabled v-if="Cart_item.length == 0">
+              <button class="button" disabled v-if="cartitemlast.length == 0">
                 ไปหน้าชำระเงิน&emsp;<i
                   class="fa fa-arrow-circle-right"
                   aria-hidden="true"
@@ -93,18 +89,47 @@
 </template>
 <script>
 import NavBar from "@/components/NavBar";
+import axios from "axios";
+
 export default {
   name: "Cart_Book",
   components: {
     NavBar,
   },
+  created() {
+    this.getcartitem();
+  },
   data() {
     return {
-      Cart_item: {
-        0: {},
-      },
+      cart: [],
+      book: [],
+      cartitemlast: [],
+      cartitem: [],
       totalprice: 0,
+      id: 1,
     };
+  },
+  methods: {
+    async getcartitem() {
+      try {
+        const response = await axios.get(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+        );
+        this.book = response.data;
+
+        const cartResponse = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+        );
+        this.cart = cartResponse.data;
+        this.cartitem = this.cart[0].cart_item.NS;
+
+        this.cartitemlast = this.book.filter((item) => {
+          return this.cartitem.includes(String(item.book_id));
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
 };
 </script>
