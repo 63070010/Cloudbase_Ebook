@@ -54,8 +54,14 @@ async function Books(event) {
             TableName: 'book'
         };
         const data = await dynamo.send(new ScanCommand(params));
-        const items = data.Items.map((item) => unmarshall(item));
-        return {
+        const items = data.Items.map((item) => {
+            const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+            return {
+                eventname,
+                image, penname, monthly, book_id, price, sales, title, Date,
+                type: item.type ? { SS: item.type.SS } : { SS: [] }
+            };
+        }); return {
             statusCode: 200,
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -154,7 +160,8 @@ async function Carts(event) {
                     id: parseInt(item.id.N),
                     price: parseInt(item.price.N),
                     user_id: item.user_id.S,
-                    book: item.book ? { SS: item.book.SS } : { SS: [] }
+                    bookshelf: item.bookshelf ? { NS: item.bookshelf.NS } : { NS: [] },
+                    cart_item: item.cart_item ? { NS: item.cart_item.NS } : { NS: [] }
                 }
             });
 
@@ -182,12 +189,13 @@ async function Carts(event) {
     }
     else if (event.httpMethod == "POST") {
         try {
-            const { id, book, price, user_id } = JSON.parse(event.body);
+            const { id, bookshelf, price, user_id, cart_item } = JSON.parse(event.body);
             const params = {
                 TableName: 'cart',
                 Item: {
                     id: { "N": id },
-                    book: { "SS": book },
+                    bookshelf: { "NS": bookshelf },
+                    cart_item: { "NS": cart_item },
                     price: { "N": String(price) }, // แปลงค่า price เป็น string
                     user_id: { "S": user_id }
                 }
@@ -215,15 +223,16 @@ async function Carts(event) {
 
     else if (event.httpMethod == "PUT") {
         try {
-            const { id, book, price, user_id } = JSON.parse(event.body);
+            const { id, bookshelf, price, user_id, cart_item } = JSON.parse(event.body);
             const params = {
                 TableName: 'cart',
                 Key: {
                     id: { "N": id }
                 },
-                UpdateExpression: "set book = :book, price = :price, user_id = :user_id",
+                UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item, price = :price, user_id = :user_id",
                 ExpressionAttributeValues: {
-                    ":book": { "SS": book },
+                    ":bookshelf": { "NS": bookshelf },
+                    ":cart_item": { "NS": cart_item },
                     ":price": { "N": String(price) },
                     ":user_id": { "S": user_id }
                 },

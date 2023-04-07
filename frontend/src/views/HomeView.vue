@@ -50,15 +50,15 @@
                       </div>
                     </div>
                   </router-link>
-                  <div class="level ml-2" v-show="this.checkadmin.length == 0">
+                  <div class="level ml-2">
                     ฿ {{ value.price }}
                     <button
-                      v-if="
-                        this.totalBook.find((x) => x.book_id == value.id) ===
-                        undefined
-                      "
                       class="button is-ghost level-right"
                       @click="cardpush(value)"
+                      v-if="
+                        !bookshelf.includes(String(value.book_id)) &&
+                        !bookincart.includes(String(value.book_id))
+                      "
                     >
                       <i
                         class="fa fa-cart-plus is-size-4"
@@ -122,7 +122,7 @@
                       </div>
                     </div>
                   </router-link>
-                  <!-- <div class="level ml-2" v-show="this.checkadmin.length == 0">
+                  <!-- <div class="level ml-2" >
                     ฿ {{ value.price }}
                     <button
                       v-if="
@@ -174,17 +174,11 @@ export default defineComponent({
       ],
       books: [],
       booksevent: [],
-      bookmonthly: [],
-      search: "",
       cart: [],
-      cart_item: [],
-      pay: {},
-      mybook: [],
-      totalBook: [],
-      numbookincart: 0,
-      order: [],
-      orderlist: [],
-      checkadmin: [],
+      id: 1,
+      totalprice: 0,
+      bookincart: [],
+      bookshelf: [],
     };
   },
 
@@ -245,13 +239,14 @@ export default defineComponent({
     },
     async getcart() {
       try {
-        const id = 1;
         axios
           .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${id}`
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
           )
           .then((response) => {
             this.cart = response.data;
+            this.bookshelf = this.cart[0].bookshelf.NS;
+            this.bookincart = this.cart[0].cart_item.NS;
           })
           .catch((error) => {
             console.error(error);
@@ -261,7 +256,27 @@ export default defineComponent({
       }
     },
     async cardpush(event) {
-      console.log(event);
+      this.totalprice += event.price;
+      this.bookincart.push(String(event.book_id));
+      console.log(this.bookincart);
+      console.log(this.bookshelf);
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+          {
+            id: String(this.id),
+            bookshelf: this.bookshelf,
+            cart_item: this.bookincart,
+            user_id: String(this.id),
+            price: this.totalprice,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 });
