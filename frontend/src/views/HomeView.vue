@@ -122,7 +122,7 @@
                       </div>
                     </div>
                   </router-link>
-                  <div class="level ml-2" v-show="this.checkadmin.length == 0">
+                  <!-- <div class="level ml-2" v-show="this.checkadmin.length == 0">
                     ฿ {{ value.price }}
                     <button
                       v-if="
@@ -141,7 +141,7 @@
                     <span v-else class="mt-4 mr-2" style="color: #5085a5"
                       >มีหนังสือเล่มนี้แล้ว</span
                     >
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -190,6 +190,7 @@ export default defineComponent({
 
   created() {
     this.fetchData();
+    this.getcart();
   },
 
   methods: {
@@ -221,7 +222,6 @@ export default defineComponent({
           sortedBySales,
           sortedBymonthly.length > 0 ? sortedBymonthly : [],
         ];
-        console.log(this.books);
 
         this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {
@@ -239,6 +239,23 @@ export default defineComponent({
           }
           return result;
         }, []);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getcart() {
+      try {
+        const id = 1;
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${id}`
+          )
+          .then((response) => {
+            this.cart = response.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } catch (error) {
         console.log(error);
       }
