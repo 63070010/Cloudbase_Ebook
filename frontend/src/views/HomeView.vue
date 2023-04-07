@@ -2,7 +2,7 @@
   <div>
     <NavBar />
     <MyCarosel />
-    <div class="columns hero is-fullheight">
+    <div class="hero is-fullheight">
       <div
         class="container mb-4"
         v-for="(valueallbooks, indexallbooks) in books"
@@ -259,6 +259,9 @@ export default defineComponent({
       } catch (error) {
         console.log(error);
       }
+    },
+    async cardpush(event) {
+      console.log(event);
     },
   },
 });
