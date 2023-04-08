@@ -3,10 +3,10 @@
   <div>
     <nav
       @click="Edit_profile = true"
-      class="button is-rounded is-medium is-fullwidth "
-      style="width: 350px; height: 55px; background-color: #31708E"
+      class="button is-rounded is-medium is-fullwidth"
+      style="width: 350px; height: 55px; background-color: #31708e"
     >
-      <span class="mt-2" style="color: #F7F9FB">แก้ไขโปรไฟล์</span>
+      <span class="mt-2" style="color: #f7f9fb">แก้ไขโปรไฟล์</span>
     </nav>
     <div class="modal" :class="{ 'is-active': Edit_profile }">
       <div class="modal-background"></div>
@@ -21,13 +21,13 @@
           <div class="field">
             <span
               class="label is-size-4"
-              style="color: #123c69; text-align: center"
+              style="color: #8fc1e3; text-align: center"
             >
               รายละเอียดโปรไฟล์
             </span>
           </div>
           <div class="field">
-            <label class="label" style="color: #ac3b61">รูปโปรไฟล์</label>
+            <label class="label" style="color: #8fc1e3">รูปโปรไฟล์</label>
             <div class="file">
               <label class="file-label">
                 <input
@@ -46,12 +46,12 @@
             </div>
           </div>
           <div class="field">
-            <label class="label" style="color: #ac3b61">ชื่อผู้ใช้</label>
+            <label class="label" style="color: #8fc1e3">ชื่อผู้ใช้</label>
             <div class="control has-icons-left has-icons-right">
               <input
                 class="input is-medium is-rounded"
                 type="text"
-                style="background-color: #eee2dc"
+                style="background-color: #f7f9fb"
                 v-model="user_name"
               />
               <span class="icon is-small is-left">
@@ -60,39 +60,14 @@
             </div>
           </div>
 
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                <label class="label" style="color: #ac3b61">ชื่อจริง </label>
-                <input
-                  class="input is-medium is-rounded"
-                  type="text"
-                  v-model="First_Name"
-                  style="background-color: #eee2dc"
-                />
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <label class="label" style="color: #ac3b61">นามสกุล </label>
-                <input
-                  class="input is-medium is-rounded"
-                  type="text"
-                  v-model="Last_Name"
-                  style="background-color: #eee2dc"
-                />
-              </div>
-            </div>
-          </div>
-
           <div class="field">
-            <label class="label" style="color: #ac3b61">อีเมล</label>
+            <label class="label" style="color: #8fc1e3">อีเมล</label>
             <div class="control has-icons-left has-icons-right">
               <input
                 class="input is-medium is-rounded"
                 type="text"
                 v-model="Email"
-                style="background-color: #eee2dc"
+                style="background-color: #f7f9fb"
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
@@ -102,22 +77,21 @@
 
           <div class="field-body">
             <div class="field">
-              <div class="control">
-                <label class="label" style="color: #ac3b61">วันเกิด</label>
-                <input
-                  class="input is-medium is-rounded"
-                  type="date"
-                  v-model="Birthday"
-                  style="background-color: #eee2dc"
-                />
-              </div>
+              <label class="label" style="color: #8fc1e3">เบอร์โทรศัพท์</label>
+              <input
+                :disabled="disabled"
+                class="input is-medium is-rounded"
+                type="text"
+                v-model="PhoneNumber"
+                style="background-color: #f7f9fb"
+              />
             </div>
 
             <div class="field">
-              <label class="label" style="color: #ac3b61">เพศ</label>
+              <label class="label" style="color: #8fc1e3">เพศ</label>
 
               <div class="select is-fullwidth is-medium is-rounded">
-                <select v-model="Sex" style="background-color: #eee2dc">
+                <select v-model="Sex" style="background-color: #f7f9fb">
                   <option value="Male">ชาย</option>
                   <option value="Famale">หญิง</option>
                   <option value="not_specified">ไม่ระบุ</option>
@@ -126,94 +100,38 @@
             </div>
           </div>
 
-          <div class="field">
-            <label class="label" style="color: #123c69">เบอร์โทรศัพท์</label>
-            <input
-              :disabled="disabled"
-              class="input is-medium is-rounded"
-              type="text"
-              v-model="PhoneNumber"
-              style="background-color: #eee2dc"
-            />
-          </div>
-
           <div class="field-body">
             <div class="field">
-              <label class="label" style="color: #123c69">เลขที่บัญชี</label>
+              <label class="label" style="color: #8fc1e3">ช่องทางการรับเงิน</label>
               <input
                 :disabled="disabled"
                 class="input is-medium is-rounded"
                 type="text"
                 v-model="BankName"
-                style="background-color: #eee2dc"
+                style="background-color: #f7f9fb"
               />
-            </div>
-
-            <div class="field">
-              <label class="label" style="color: #123c69">ชื่อธนาคาร</label>
-              <input
-                :disabled="disabled"
-                class="input is-medium is-rounded"
-                type="text"
-                v-model="BankNumber"
-                style="background-color: #eee2dc"
-              />
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">รหัสผ่าน</label>
-            <input
-              class="input is-medium is-rounded"
-              type="text"
-              v-model="Password"
-              style="background-color: #eee2dc"
-            />
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #ac3b61">ยืนยัน รหัสผ่าน</label>
-            <input
-              class="input is-medium is-rounded"
-              type="text"
-              v-model="Retype_Password"
-              style="background-color: #eee2dc"
-            />
-          </div>
-
-          <div class="field">
-            <label class="label" style="color: #123c69"
-              >ประเภทที่จะ สมัครสมาชิก</label
-            >
-
-            <div class="control">
-              <label class="radio">
-                <input
-                  type="radio"
-                  v-model="picked"
-                  value="Customer"
-                  @click="
-                    (disabled = true),
-                      ((BankName = ''), (BankNumber = ''), (PhoneNumber = ''))
-                  "
-                />
-                ลูกค้า
-              </label>
-              <label class="radio">
-                <input
-                  type="radio"
-                  v-model="picked"
-                  value="Author"
-                  @click="disabled = false"
-                />
-                นักเขียน
-              </label>
             </div>
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">บักทึก</button>
-          <button class="button" @click="Edit_profile = false">ยกเลิก</button>
+          <div class="control has-text-centered"  style="width: 400px; height: 55px;">
+            <button
+              class="button is-rounded is-medium"
+              style="color: #f7f9fb; background-color: #31708e"
+              @click="submit"
+            >
+              บันทึกข้อมูล
+            </button>
+          </div>
+          <div class="control has-text-centered">
+            <button
+              class="button is-rounded is-medium"
+              style="color: #f7f9fb; background-color: #f16363"
+              @click="Edit_profile = false"
+            >
+              ยกเลิก
+            </button>
+          </div>
         </footer>
       </div>
     </div>

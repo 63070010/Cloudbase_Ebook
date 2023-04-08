@@ -74,11 +74,23 @@
             <div class="column is-2">
               <p class="title is-4">Password</p>
             </div>
-            <div class="column">
+            <div class="column is-3">
               <p class="subtitle is-4" style="-webkit-text-security: disc">
                 {{ user.password }}
               </p>
             </div>
+            <nav
+              @click="Change_password = true"
+              class="button is-rounded is-medium is-align-self-center"
+              style="
+                width: 150px;
+                height: 45px;
+                margin-left: -200px;
+                background-color: #31708e;
+              "
+            >
+              <span class="" style="color: #f7f9fb">เปลี่ยนรหัสผ่าน</span>
+            </nav>
           </div>
         </div>
       </section>
@@ -158,6 +170,82 @@
           </div>
         </div>
       </section>
+
+      <div class="modal" :class="{ 'is-active': Change_password }">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <button
+            class="modal-close is-large"
+            aria-label="close"
+            @click="Change_password = false"
+          ></button>
+
+          <section class="modal-card-body">
+            <div class="field">
+              <span
+                class="label is-size-4"
+                style="color: #8fc1e3; text-align: center"
+              >
+                รายละเอียดโปรไฟล์
+              </span>
+            </div>
+            <div class="field">
+              <label class="label" style="color: #8fc1e3">รหัสผ่าน</label>
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input is-medium is-rounded"
+                  type="password"
+                  v-model="Password"
+                  style="background-color: #f7f9fb"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" style="color: #8fc1e3"
+                >ยืนยัน รหัสผ่าน</label
+              >
+              <div class="control has-icons-left has-icons-right">
+                <input
+                  class="input is-medium is-rounded"
+                  type="password"
+                  v-model="Retype_Password"
+                  style="background-color: #f7f9fb"
+                />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+              </div>
+            </div>
+          </section>
+          <footer class="modal-card-foot">
+            <div
+              class="control has-text-centered"
+              style="width: 400px; height: 55px"
+            >
+              <button
+                class="button is-rounded is-medium"
+                style="color: #f7f9fb; background-color: #31708e"
+                @click="submit"
+              >
+                บันทึกข้อมูล
+              </button>
+            </div>
+            <div class="control has-text-centered">
+              <button
+                class="button is-rounded is-medium"
+                style="color: #f7f9fb; background-color: #f16363"
+                @click="Change_password = false"
+              >
+                ยกเลิก
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -179,6 +267,7 @@ export default {
         gender: "ชาย",
         password: "123456789",
       },
+      Change_password: false,
       images: [],
       types: [],
       isActive: "MYbook",

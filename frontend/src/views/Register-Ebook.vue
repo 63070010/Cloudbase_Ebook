@@ -118,54 +118,6 @@
               </div>
             </div>
 
-            <div class="field-body">
-              <div class="field">
-                <label class="label" style="color: #8fc1e3"
-                  >เบอร์โทรศัพท์</label
-                >
-                <div class="control has-icons-left has-icons-right">
-                  <input
-                    :disabled="disabled"
-                    class="input is-medium is-rounded"
-                    type="text"
-                    maxlength="10"
-                    placeholder="กรอกเบอร์โทรศัพท์"
-                    v-model="state.mobile"
-                    style="background-color: #f7f9fb"
-                  />
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-phone"></i>
-                  </span>
-                  <span
-                    v-for="error in v$.mobile.$errors"
-                    :key="error.$uid"
-                    class="has-text-danger"
-                  >
-                    {{ error.$message }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="field">
-                <label class="label" style="color: #8fc1e3">เพศ</label>
-
-                <div class="select is-fullwidth is-medium is-rounded">
-                  <select v-model="state.sex" style="background-color: #f7f9fb">
-                    <option value="Male">ชาย</option>
-                    <option value="Famale">หญิง</option>
-                    <option value="not_specified">ไม่ระบุ</option>
-                  </select>
-                </div>
-
-                <span
-                  v-for="error in v$.sex.$errors"
-                  :key="error.$uid"
-                  class="has-text-danger"
-                >
-                  {{ error.$message }}
-                </span>
-              </div>
-            </div>
             <div class="field column">
               <div class="control has-text-centered">
                 <button
@@ -190,7 +142,6 @@ import {
   required,
   email,
   minLength,
-  maxLength,
   sameAs,
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
@@ -204,8 +155,6 @@ export default {
       password: "",
       confirm_password: "",
       email: "",
-      mobile: "",
-      sex: "",
     });
     const rules = computed(() => {
       return {
@@ -213,12 +162,6 @@ export default {
         password: { required, minLength: minLength(6) },
         confirm_password: { required, sameAs: sameAs(state.password) },
         email: { required, email },
-        mobile: {
-          required,
-          minLength: minLength(10),
-          maxLength: maxLength(10),
-        },
-        sex: { required },
       };
     });
 
