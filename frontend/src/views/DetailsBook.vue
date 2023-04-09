@@ -11,10 +11,7 @@
             <!-- ######## ส่วน Image ########-->
             <div class="column is-6">
               <figure class="image">
-                <img
-                  id="image_detail_book"
-                  src="https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8"
-                />
+                <img id="image_detail_book" :src="book[0].image" />
               </figure>
             </div>
 
@@ -62,7 +59,9 @@
                       aria-hidden="true"
                     ></i>
                   </button>
-                  <p id="text_bag_active" class="help">อยากได้</p>
+                  <p id="text_bag_active" class="help">
+                    เพิ่มในรายการที่ชอบแล้ว
+                  </p>
                 </div>
                 <div id="icon_area" v-else>
                   <button
@@ -70,12 +69,9 @@
                     class="button is-rounded"
                     @click="iconBag()"
                   >
-                    <i
-                      class="fa fa-shopping-bag fas fa-lg"
-                      aria-hidden="true"
-                    ></i>
+                    <i class="fa fas fa-heart fas fa-lg" aria-hidden="true"></i>
                   </button>
-                  <p id="text_bag" class="help">อยากได้</p>
+                  <p id="text_bag" class="help">ชอบเรื่องนี้</p>
                 </div>
 
                 <!-- ส่วน icon ติดตาม -->
@@ -111,9 +107,6 @@
               <div id="btn_buy" class="field has-addons mt-5">
                 <div class="button is-large is-primary is-rounded mr-3">
                   ซื้อ {{ book[0].price }} บาท
-                </div>
-                <div class="button is-large is-primary is-inverted is-rounded">
-                  ทดลองอ่าน
                 </div>
               </div>
 
@@ -278,14 +271,14 @@ export default defineComponent({
     };
   },
   created() {
-    this.fetchData();
+    this.fetchData(this.$route.params.id);
   },
   methods: {
-    async fetchData() {
+    async fetchData(id) {
       try {
         axios
           .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${this.book_id}`
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${id}`
           )
           .then((response) => {
             this.book = response.data;
