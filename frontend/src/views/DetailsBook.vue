@@ -8,18 +8,20 @@
             {{ book[0].title }}
           </h1>
           <div class="columns">
-
             <!-- ######## ส่วน Image ########-->
             <div class="column is-6">
               <figure class="image">
-                <img id="image_detail_book"
-                  src="https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8" />
+                <img
+                  id="image_detail_book"
+                  src="https://play-lh.googleusercontent.com/7Ac5TgaL15Ra4bvFVHJKCdJp4qvnL4djZj5bKc6RN-MZjzrvkeHbJytek0NPTSdZcp8"
+                />
               </figure>
             </div>
 
             <!-- ######## ส่วน Detail ########-->
             <div class="column is-6">
-              <p class="is-size-4">เขียนโดย :
+              <p class="is-size-4">
+                เขียนโดย :
                 <span id="text_color">{{ book[0].penname }}</span>
               </p>
               <p class="is-size-4">
@@ -28,46 +30,78 @@
               </p>
               <p class="is-size-4">คำโปรย :</p>
               <p class="is-size-5 mt-2 mb-4">
-                <span id="text_color">
-                  &emsp;&emsp;{{ book[0].desc }}
-                </span>
+                <span id="text_color"> &emsp;&emsp;{{ book[0].desc }} </span>
               </p>
 
-              <div class="field has-addons" v-for="(value, index) in book[0].type" :key="index">
+              <div
+                class="field has-addons"
+                v-for="(value, index) in book[0].type"
+                :key="index"
+              >
                 <p class="is-size-4 mb-3 mr-3">ประเภท :</p>
-                <button v-for="(valueIn, indexIn) in value" :key="indexIn"
-                  class="button is-info is-light is-small mr-1 mb-2">
+                <button
+                  v-for="(valueIn, indexIn) in value"
+                  :key="indexIn"
+                  class="button is-info is-light is-small mr-1 mb-2"
+                >
                   {{ valueIn }}
                 </button>
               </div>
 
               <!-- ######## ส่วน icon ########-->
               <div class="field has-addons line">
-
                 <!-- ส่วน icon อยากได้ -->
                 <div id="icon_area" v-if="checkBag">
-                  <button id="icon_bag_active" class="button is-rounded" @click="iconBagIsActive()">
-                    <i class="fa fa-shopping-bag fas fa-lg" aria-hidden="true"></i>
+                  <button
+                    id="icon_bag_active"
+                    class="button is-rounded"
+                    @click="iconBagIsActive()"
+                  >
+                    <i
+                      class="fa fa-shopping-bag fas fa-lg"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <p id="text_bag_active" class="help">อยากได้</p>
                 </div>
                 <div id="icon_area" v-else>
-                  <button id="icon_bag" class="button is-rounded" @click="iconBag()">
-                    <i class="fa fa-shopping-bag fas fa-lg" aria-hidden="true"></i>
+                  <button
+                    id="icon_bag"
+                    class="button is-rounded"
+                    @click="iconBag()"
+                  >
+                    <i
+                      class="fa fa-shopping-bag fas fa-lg"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <p id="text_bag" class="help">อยากได้</p>
                 </div>
 
                 <!-- ส่วน icon ติดตาม -->
                 <div id="icon_area" v-if="checkfollow">
-                  <button id="icon_plus_active" class="button is-rounded" @click="iconFollIsActive()">
-                    <i class="fa fa-plus-circle fas fa-lg" aria-hidden="true"></i>
+                  <button
+                    id="icon_plus_active"
+                    class="button is-rounded"
+                    @click="iconFollIsActive()"
+                  >
+                    <i
+                      class="fa fa-plus-circle fas fa-lg"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <p id="text_plus_active" class="help">ติดตาม</p>
                 </div>
                 <div id="icon_area" v-else>
-                  <button id="icon_plus" class="button is-rounded" @click="iconFoll()">
-                    <i class="fa fa-plus-circle fas fa-lg" aria-hidden="true"></i>
+                  <button
+                    id="icon_plus"
+                    class="button is-rounded"
+                    @click="iconFoll()"
+                  >
+                    <i
+                      class="fa fa-plus-circle fas fa-lg"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <p id="text_plus" class="help">ติดตาม</p>
                 </div>
@@ -82,8 +116,6 @@
                   ทดลองอ่าน
                 </div>
               </div>
-
-
 
               <br />
               <!-- <div v-show="
@@ -108,7 +140,9 @@
           </div>
         </div>
         <div class="divider is-info is-size-6" style="color: #123c69">
-          <router-link to="/" style="color: #123c69">กลับไปเลือกซื้อหนังสือเพิ่ม</router-link>
+          <router-link to="/" style="color: #123c69"
+            >กลับไปเลือกซื้อหนังสือเพิ่ม</router-link
+          >
         </div>
       </div>
 
@@ -120,35 +154,53 @@
               เขียนรีวิว
             </p>
           </header>
-          <div id="content_review" class="card-content has-background-link-light">
-            <textarea class="textarea" placeholder="พิมพ์ความคิดเห็น..." v-model="reviewText"></textarea>
-            <div id="btn_review" class="button is-info is-rounded mt-5 is-size-5">ส่งรีวิว</div>
+          <div
+            id="content_review"
+            class="card-content has-background-link-light"
+          >
+            <textarea
+              class="textarea"
+              placeholder="พิมพ์ความคิดเห็น..."
+              v-model="reviewText"
+            ></textarea>
+            <div
+              id="btn_review"
+              class="button is-info is-rounded mt-5 is-size-5"
+            >
+              ส่งรีวิว
+            </div>
           </div>
         </div>
       </div>
 
       <!--######## ส่วน show review all #######-->
       <div class="container is-max-desktop px-5 mb-5">
-        <p class="is-size-3">
-          รีวิวทั้งหมด
-        </p>
+        <p class="is-size-3">รีวิวทั้งหมด</p>
         <!-- แสดง รีวิว -->
         <div class="box mt-4">
           <article class="media">
             <div class="media-left">
               <figure class="image is-64x64">
-                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                <img
+                  class="is-rounded"
+                  src="https://bulma.io/images/placeholders/128x128.png"
+                  alt="Image"
+                />
               </figure>
             </div>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>John Smith</strong><br>
-                  <small id="date_review" class="help mb-3">วันที่ 9/4/66 : 19.45 น.</small>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla
-                  egestas. Nullam condimentum luctus turpis.
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse incidunt ipsum iusto assumenda ad
-                  molestiae aliquam, doloremque inventore minus natus nesciunt! Neque porro cum eligendi ullam aliquam,
+                  <strong>John Smith</strong><br />
+                  <small id="date_review" class="help mb-3"
+                    >วันที่ 9/4/66 : 19.45 น.</small
+                  >
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Aenean efficitur sit amet massa fringilla egestas. Nullam
+                  condimentum luctus turpis. Lorem, ipsum dolor sit amet
+                  consectetur adipisicing elit. Esse incidunt ipsum iusto
+                  assumenda ad molestiae aliquam, doloremque inventore minus
+                  natus nesciunt! Neque porro cum eligendi ullam aliquam,
                   veritatis culpa ab?
                 </p>
               </div>
@@ -159,18 +211,26 @@
           <article class="media">
             <div class="media-left">
               <figure class="image is-64x64">
-                <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                <img
+                  class="is-rounded"
+                  src="https://bulma.io/images/placeholders/128x128.png"
+                  alt="Image"
+                />
               </figure>
             </div>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>John Smith</strong><br>
-                  <small id="date_review" class="help mb-3">วันที่ 9/4/66 : 19.45 น.</small>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla
-                  egestas. Nullam condimentum luctus turpis.
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse incidunt ipsum iusto assumenda ad
-                  molestiae aliquam, doloremque inventore minus natus nesciunt! Neque porro cum eligendi ullam aliquam,
+                  <strong>John Smith</strong><br />
+                  <small id="date_review" class="help mb-3"
+                    >วันที่ 9/4/66 : 19.45 น.</small
+                  >
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Aenean efficitur sit amet massa fringilla egestas. Nullam
+                  condimentum luctus turpis. Lorem, ipsum dolor sit amet
+                  consectetur adipisicing elit. Esse incidunt ipsum iusto
+                  assumenda ad molestiae aliquam, doloremque inventore minus
+                  natus nesciunt! Neque porro cum eligendi ullam aliquam,
                   veritatis culpa ab?
                 </p>
               </div>
@@ -189,12 +249,13 @@
           </button>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 <script>
 import { defineComponent } from "vue";
+import axios from "axios";
+
 import NavBar from "@/components/NavBar";
 export default defineComponent({
   name: "DetailsBook",
@@ -203,20 +264,7 @@ export default defineComponent({
   },
   data() {
     return {
-      book: {
-        0: {
-          title: "มุมมองนักอ่าน",
-          penname: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-          desc: "ตัวเลขนี้ คือ ปริศนาของการเค้าท์ดาวน์สู่ ซาซากิ นาโอตะ นักศึกษี่พึ่งเข้ามหาวิทยาลัยในโตเกียว ในเดือนเมษายนได้พบกับสาวน้อยที่ราวกับมาจากความฝัน มิเนฮาระ มิอุ ในสวนสาธารณะที่ดอกซากุระกำลังผลิบาน",
-          follow: false,
-          want_have: false,
-        },
-      },
+      book: [],
       cart: [],
       cart_item: [],
       pay: {},
@@ -226,9 +274,29 @@ export default defineComponent({
       checkBag: false,
       checkfollow: false,
       reviewText: "",
+      book_id: 1,
     };
   },
+  created() {
+    this.fetchData();
+  },
   methods: {
+    async fetchData() {
+      try {
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${this.book_id}`
+          )
+          .then((response) => {
+            this.book = response.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     iconBagIsActive() {
       this.checkBag = false;
       this.book[0].want_have = false;
@@ -245,7 +313,7 @@ export default defineComponent({
       this.checkfollow = false;
       this.book[0].follow = false;
     },
-  }
+  },
 });
 </script>
 <style>
@@ -273,7 +341,7 @@ export default defineComponent({
   color: #418ba0ed;
 }
 
-#btn_buy{
+#btn_buy {
   display: flex;
   justify-content: center;
 }
@@ -346,5 +414,4 @@ export default defineComponent({
   display: flex;
   justify-content: center;
 }
-
 </style>

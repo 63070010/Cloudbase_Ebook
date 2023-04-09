@@ -6,23 +6,34 @@
       <!--######### tab ค้นหา #########-->
       <div class="tabs is-boxed">
         <ul>
-          <li :class="[number == 1 ? 'is-active' : '']" @click="changeTab('ทั้งหมด', 1)">
+          <li
+            :class="[number == 1 ? 'is-active' : '']"
+            @click="changeTab('ทั้งหมด', 1)"
+          >
             <a>
               <span>ทั้งหมด</span>
-
             </a>
           </li>
-          <li :class="[number == 2 ? 'is-active' : '']" @click="changeTab('ประเภท', 2)">
+          <li
+            :class="[number == 2 ? 'is-active' : '']"
+            @click="changeTab('ประเภท', 2)"
+          >
             <a>
               <span>ประเภท</span>
             </a>
           </li>
-          <li :class="[number == 3 ? 'is-active' : '']" @click="changeTab('ชื่อหนังสือ', 3)">
+          <li
+            :class="[number == 3 ? 'is-active' : '']"
+            @click="changeTab('ชื่อหนังสือ', 3)"
+          >
             <a>
               <span>ชื่อหนังสือ</span>
             </a>
           </li>
-          <li :class="[number == 4 ? 'is-active' : '']" @click="changeTab('นักเขียน', 4)">
+          <li
+            :class="[number == 4 ? 'is-active' : '']"
+            @click="changeTab('นักเขียน', 4)"
+          >
             <a>
               <span>นักเขียน</span>
             </a>
@@ -34,7 +45,12 @@
       <div class="search">
         <div class="field search_field has-addons">
           <p class="control search_input">
-            <input v-model="search" class="input is-rounded" type="text" :placeholder="typeTab" />
+            <input
+              v-model="search"
+              class="input is-rounded"
+              type="text"
+              :placeholder="typeTab"
+            />
           </p>
           <p class="control" @click="getProducts()">
             <button class="button is-link is-rounded">
@@ -55,11 +71,14 @@
           <button class="button is-primary is-outlined">
             <i class="fa fa-arrow-right" aria-hidden="true"></i>
           </button>
-
         </div>
         <section class="card is-small is-narrow p-5">
           <div class="columns">
-            <div class="column is-one-fifth" v-for="(value, index) in books" :key="index">
+            <div
+              class="column is-one-fifth"
+              v-for="(value, index) in paginatedBooks"
+              :key="index"
+            >
               <div class="card">
                 <router-link :to="`/DetailsBook/${value.book_id}`">
                   <div class="card-image">
@@ -86,7 +105,11 @@
                 <div class="level ml-2">
                   ฿ {{ value.price }}
                   <button class="button is-ghost level-right">
-                    <i class="fa fa-cart-plus is-size-4" style="color: #edc7b7" aria-hidden="true"></i>
+                    <i
+                      class="fa fa-cart-plus is-size-4"
+                      style="color: #edc7b7"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                   <!-- <span style="color: #edc7b7">มีแล้ว</span> -->
                 </div>
@@ -96,17 +119,33 @@
 
           <!--######### BTN NEXT && BACK #########-->
           <div class="field next_or_back has-addons">
-            <button class="button is-primary is-outlined" disabled>
+            <button
+              v-if="this.currentPage == 1"
+              disabled
+              class="button is-primary is-outlined"
+            >
               <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            <h2 class="textPage mt-2 mx-2">หน้าที่ 1</h2>
-            <button class="button is-primary is-outlined">
+            <button
+              v-else
+              class="button is-primary is-outlined"
+              v-on:click="backPage"
+            >
+              <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <h2 class="textPage mt-2 mx-2">หน้าที่ {{ this.currentPage }}</h2>
+            <button
+              v-if="this.lastpage > this.currentPage"
+              v-on:click="nextPage"
+              class="button is-primary is-outlined"
+            >
               <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </button>
-
+            <button v-else disabled class="button is-primary is-outlined">
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
           </div>
         </section>
-
       </div>
 
       <!-- <div class="container" v-for="(valueallbooks, indexallbooks) in books" :key="indexallbooks">
@@ -118,136 +157,68 @@
 
 <script>
 import NavBar from "@/components/NavBar";
-
+import axios from "axios";
 
 export default {
   name: "SearchBook",
   components: {
     NavBar,
   },
+  created() {
+    this.fetchData();
+  },
   data() {
     return {
       search: "",
       number: 1,
       typeTab: "ค้นหา ทั้งหมด",
-      books: [
-        {
-          book_id: 1,
-          title: "มุมมองนักอ่าน",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 2,
-          title: "มุมมองนักอ่าน2",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 3,
-          title: "มุมมองนักอ่าน3",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 4,
-          title: "มุมมองนักอ่าน4",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 5,
-          title: "มุมมองนักอ่าน5",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 6,
-          title: "มุมมองนักอ่าน6",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 7,
-          title: "มุมมองนักอ่าน7",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 8,
-          title: "มุมมองนักอ่าน8",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 9,
-          title: "มุมมองนักอ่าน9",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-        {
-          book_id: 10,
-          title: "มุมมองนักอ่าน10",
-          authorName: "ฉันเอง",
-          type: {
-            SS: ["fantasy", "horror", "action", "comedy"],
-          },
-          image: "https://bulma.io/images/placeholders/128x128.png",
-          price: 10,
-        },
-      ],
+      books: [],
+      currentPage: 1,
+      lastpage: 1,
     };
   },
-  methods: {
-    getProducts() {
-
+  computed: {
+    paginatedBooks() {
+      const startIndex = (this.currentPage - 1) * 3;
+      const endIndex = startIndex + 3;
+      return this.books.slice(startIndex, endIndex);
     },
+  },
+  methods: {
+    async fetchData() {
+      try {
+        axios
+          .get(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+          )
+          .then((response) => {
+            this.books = response.data;
+            this.lastpage = Math.floor(response.data.length / 3);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    nextPage() {
+      this.currentPage++;
+    },
+    backPage() {
+      this.currentPage--;
+    },
+    getProducts() {},
     changeTab(text, num) {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
-    }
+    },
   },
 };
 </script>
 <style>
 body {
-  background: #F7F9FB;
+  background: #f7f9fb;
   font-family: "Itim", cursive;
   width: 100vw;
   min-height: 100vh;
@@ -278,7 +249,6 @@ body {
   margin: auto;
   width: 15%;
   text-align: center;
-
 }
 
 /* .textPage {
