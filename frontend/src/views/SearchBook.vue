@@ -49,17 +49,11 @@
         <!--######### BTN NEXT && BACK #########-->
         <div class="field next_or_back has-addons">
           <button class="button is-primary is-outlined" disabled>
-            <i
-              class="fa fa-arrow-left"
-              aria-hidden="true"
-            ></i>
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
           </button>
           <h2 class="textPage mt-2 mx-2">หน้าที่ 1</h2>
           <button class="button is-primary is-outlined">
-            <i
-              class="fa fa-arrow-right"
-              aria-hidden="true"
-            ></i>
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
           </button>
 
         </div>
@@ -68,26 +62,26 @@
             <div class="column is-one-fifth" v-for="(value, index) in books" :key="index">
               <div class="card">
                 <router-link :to="`/DetailsBook/${value.book_id}`">
-                <div class="card-image">
-                  <figure class="image is-square">
-                    <img :src="value.image" />
-                  </figure>
-                </div>
-                <div class="card-content">
-                  <div class="media">
-                    <div class="media-content" style="color: #edc7b7">
-                      <p class="is-size-6 has-text-centered subtitle">
-                        {{ value.title }}
-                      </p>
-                      <p class="is-size-7" style="color: #bab2b5">
-                        By {{ value.authorName }}
-                      </p>
-                      <p class="is-size-7" style="color: #bab2b5">
-                        Date {{ value.Date }}
-                      </p>
+                  <div class="card-image">
+                    <figure class="image is-square">
+                      <img :src="value.image" />
+                    </figure>
+                  </div>
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-content" style="color: #edc7b7">
+                        <p class="is-size-6 has-text-centered subtitle">
+                          {{ value.title }}
+                        </p>
+                        <p class="is-size-7" style="color: #bab2b5">
+                          By {{ value.authorName }}
+                        </p>
+                        <p class="is-size-7" style="color: #bab2b5">
+                          Date {{ value.Date }}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </router-link>
                 <div class="level ml-2">
                   ฿ {{ value.price }}
@@ -102,21 +96,15 @@
 
           <!--######### BTN NEXT && BACK #########-->
           <div class="field next_or_back has-addons">
-              <button class="button is-primary is-outlined" disabled>
-                <i
-                  class="fa fa-arrow-left"
-                  aria-hidden="true"
-                ></i>
-              </button>
-              <h2 class="textPage mt-2 mx-2">หน้าที่ 1</h2>
-              <button class="button is-primary is-outlined">
-                <i
-                  class="fa fa-arrow-right"
-                  aria-hidden="true"
-                ></i>
-              </button>
+            <button class="button is-primary is-outlined" disabled>
+              <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <h2 class="textPage mt-2 mx-2">หน้าที่ 1</h2>
+            <button class="button is-primary is-outlined">
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
 
-            </div>
+          </div>
         </section>
 
       </div>
@@ -284,6 +272,7 @@ body {
 .search_input {
   width: 100%;
 }
+
 .next_or_back {
   display: block;
   margin: auto;
@@ -291,6 +280,7 @@ body {
   text-align: center;
 
 }
+
 /* .textPage {
   margin: 5px;
 } */
@@ -303,9 +293,11 @@ body {
   padding-right: 10px;
   padding-bottom: 20px;
 }
+
 .column {
   margin-top: 20px;
 }
+
 .card-content {
   height: 100px;
 }
