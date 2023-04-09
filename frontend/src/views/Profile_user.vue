@@ -122,7 +122,7 @@
           <div class="tile is-parent">
             <router-link to="/register">
               <article class="tile is-child box color_use">
-                <p class="title" style="color: #8fc1e3">แต้มคะแนน</p>
+                <p class="title" style="color: #8fc1e3">Item แต้มคะแนน</p>
                 <p class="subtitle has-text-left">
                   ได้แต้มคะแนนมาจากการสั่งซื้อหนังสือที่คุณสนใจ
                   สามารถนำแต้มเพื่อไปแลกของได้

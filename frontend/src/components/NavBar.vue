@@ -1,38 +1,91 @@
 <template>
   <div>
-    <nav class="navbar is-fixed-top" style="background-color: #5085A5">
+    <nav class="navbar is-fixed-top" style="background-color: #5085a5">
       <div class="navbar-menu mt-1 mb-1">
         <div class="navbar-start ml-3">
           <div v-if="!user" class="navbar-item">
             <a>
-              <router-link to="/register" style="color: #F7F9FB"
+              <router-link to="/register" style="color: #f7f9fb"
                 >ลงทะเบียน</router-link
               >
-              <a class="ml-2 mr-1" style="color: #F7F9FB">/</a>
-              <router-link to="/login" style="color: #F7F9FB">
+              <a class="ml-2 mr-1" style="color: #f7f9fb">/</a>
+              <router-link to="/login" style="color: #f7f9fb">
                 เข้าสู่ระบบ</router-link
               >
             </a>
           </div>
+
           <div v-else class="navbar-item">
-            <a>
-              <router-link
-                :to="`/Profile_user/${user.id}`"
-                style="color: #F7F9FB"
-                >โปรไฟล์</router-link
-              >
-              <a class="ml-2 mr-1" style="color: #F7F9FB">/</a>
-              <a @click="Logout" style="color: #F7F9FB"> ออกจากระบบ</a>
-            </a>
+            <div class="dropdown" :class="{ 'is-active': Open_dropdown }">
+              <div class="dropdown-trigger">
+                <button
+                  class="button"
+                  @click="Open_dropdown = !Open_dropdown"
+                  aria-haspopup="true"
+                  aria-controls="dropdown-menu"
+                >
+                  <span class="icon has-text-info">
+                    <i class="fas fa-user-circle icon is-large"></i>
+                  </span>
+                  <p>Test</p>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <a class="dropdown-item" style="color: #8fc1e3"
+                    ><img
+                      src="../img/coins.png"
+                      style="
+                        line-height: 1.5;
+                        display: inline-block;
+                        vertical-align: middle;
+                      "
+                    />
+                    0 Points
+                  </a>
+                  <a class="dropdown-item">
+                    <router-link
+                      :to="`/Profile_user/${user.id}`"
+                      style="color: #8fc1e3"
+                      >Item แต้มคะแนน</router-link
+                    >
+                  </a>
+                  <a class="dropdown-item">
+                    <router-link
+                      :to="`/Profile_user/${user.id}`"
+                      style="color: #8fc1e3"
+                      >จัดการบัญชี</router-link
+                    >
+                  </a>
+                  <a class="dropdown-item">
+                    <router-link
+                      :to="`/Profile_user/${user.id}`"
+                      style="color: #8fc1e3"
+                      >ชั้นหนังสือของฉัน</router-link
+                    >
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    @click="Logout"
+                    style="color: #f16363"
+                  >
+                    ออกจากระบบ
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="navbar-canter">
           <div class="navbar-item mt-2" style="margin-right: 100px">
             <span class="icon is-size-5 mr-2"
-              ><i class="fas fa fa-home" style="color: #F7F9FB"></i>
+              ><i class="fas fa fa-home" style="color: #f7f9fb"></i>
             </span>
-            <router-link to="/" style="color: #F7F9FB">E5-book</router-link>
+            <router-link to="/" style="color: #f7f9fb">E5-book</router-link>
           </div>
         </div>
 
@@ -58,8 +111,9 @@
 export default {
   data() {
     return {
-      user: null,
+      user: 1,
       name: "NavBar",
+      Open_dropdown: false,
     };
   },
 };
