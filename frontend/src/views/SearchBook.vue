@@ -62,16 +62,6 @@
 
       <!--######### ส่วนแสดงผล #########-->
       <div class="container">
-        <!--######### BTN NEXT && BACK #########-->
-        <div class="field next_or_back has-addons">
-          <button class="button is-primary is-outlined" disabled>
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-          </button>
-          <h2 class="textPage mt-2 mx-2">หน้าที่ 1</h2>
-          <button class="button is-primary is-outlined">
-            <i class="fa fa-arrow-right" aria-hidden="true"></i>
-          </button>
-        </div>
         <section class="card is-small is-narrow p-5">
           <div class="columns">
             <div
@@ -147,7 +137,7 @@
           </div>
         </section>
       </div>
-
+      <br />
       <!-- <div class="container" v-for="(valueallbooks, indexallbooks) in books" :key="indexallbooks">
         <div>{{ valueallbooks.book_id }}</div>
       </div> -->
