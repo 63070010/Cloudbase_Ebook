@@ -17,17 +17,22 @@
 
           <div v-else class="navbar-item">
             <div class="dropdown" :class="{ 'is-active': Open_dropdown }">
-              <div class="dropdown-trigger">
+              <div class="dropdown-trigger" style="overflow: hidden">
                 <button
                   class="button"
                   @click="Open_dropdown = !Open_dropdown"
                   aria-haspopup="true"
                   aria-controls="dropdown-menu"
                 >
-                  <span class="icon has-text-info">
-                    <i class="fas fa-user-circle icon is-large"></i>
-                  </span>
-                  <p>Test</p>
+                  <br />
+
+                  <img
+                    src="../img/1.jpg"
+                    alt="Image"
+                    style="border-radius: 50%; width: 45px; max-height: 200%"
+                  />
+
+                  <span class="ml-3">Test</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
