@@ -17,7 +17,7 @@
 
           <div v-else class="navbar-item">
             <div class="dropdown" :class="{ 'is-active': Open_dropdown }">
-              <div class="dropdown-trigger">
+              <div class="dropdown-trigger" style="overflow: hidden">
                 <button
                   class="button"
                   @click="Open_dropdown = !Open_dropdown"
@@ -26,7 +26,11 @@
                 >
                   <br />
 
-                  <img class="is-rounded" src="../img/1.jpg" alt="Image" />
+                  <img
+                    src="../img/1.jpg"
+                    alt="Image"
+                    style="border-radius: 50%; width: 45px; max-height: 200%"
+                  />
 
                   <span class="ml-3">Test</span>
                   <span class="icon is-small">
@@ -120,12 +124,4 @@ export default {
 };
 </script>
 <style >
-.is-rounded {
-  border-radius: 50%;
-  width: 45px;
-  max-height: 200%;
-}
-.dropdown-trigger {
-  overflow: hidden;
-}
 </style>
