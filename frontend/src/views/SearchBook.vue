@@ -83,7 +83,7 @@
                           {{ value.title }}
                         </p>
                         <p class="is-size-7" style="color: #bab2b5">
-                          By {{ value.authorName }}
+                          By {{ value.penname }}
                         </p>
                         <p class="is-size-7" style="color: #bab2b5">
                           Date {{ value.Date }}
@@ -92,16 +92,32 @@
                     </div>
                   </div>
                 </router-link>
-                <div class="level ml-2">
+                <div class="level ml-2 mt-6">
                   ฿ {{ value.price }}
-                  <button class="button is-ghost level-right">
+                  <button
+                    class="button is-ghost level-right"
+                    @click="cardpush(value)"
+                    v-if="
+                      !bookshelf.includes(String(value.book_id)) &&
+                      !bookincart.includes(String(value.book_id))
+                    "
+                  >
                     <i
                       class="fa fa-cart-plus is-size-4"
-                      style="color: #edc7b7"
+                      style="color: #5085a5"
                       aria-hidden="true"
                     ></i>
                   </button>
-                  <!-- <span style="color: #edc7b7">มีแล้ว</span> -->
+
+                  <span
+                    v-else-if="bookincart.includes(String(value.book_id))"
+                    class="mt-4 mr-2"
+                    style="color: #5085a5"
+                    >หนังสืออยู่ในตะกร้า</span
+                  >
+                  <span v-else class="mt-4 mr-2" style="color: #5085a5"
+                    >มีหนังสือเล่มนี้แล้ว</span
+                  >
                 </div>
               </div>
             </div>
@@ -156,6 +172,7 @@ export default {
   },
   created() {
     this.fetchData();
+    this.getcart();
   },
   data() {
     return {
@@ -165,6 +182,11 @@ export default {
       books: [],
       currentPage: 1,
       lastpage: 1,
+      cart: [],
+      totalprice: 0,
+      bookincart: [],
+      bookshelf: [],
+      id: 1,
     };
   },
   computed: {
@@ -202,6 +224,49 @@ export default {
     changeTab(text, num) {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
+    },
+    async getcart() {
+      try {
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+          )
+          .then((response) => {
+            this.cart = response.data;
+            this.bookshelf = this.cart[0].bookshelf.NS;
+            this.bookincart = this.cart[0].cart_item.NS;
+            this.totalprice = this.cart[0].price;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async cardpush(event) {
+      this.totalprice += event.price;
+      this.bookincart.push(String(event.book_id));
+
+      console.log(this.bookshelf);
+      console.log(this.bookincart);
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+          {
+            id: String(this.id),
+            bookshelf: this.bookshelf,
+            cart_item: this.bookincart,
+            user_id: String(this.id),
+            price: this.totalprice,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 };
