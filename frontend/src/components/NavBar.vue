@@ -27,7 +27,7 @@
                   <br />
 
                   <img
-                    src="../img/1.jpg"
+                    src="https://firebasestorage.googleapis.com/v0/b/image-a4852.appspot.com/o/93278eaa12fd253a4fe3cc08a0b219bc.jpg?alt=media&token=c6a41519-b914-4753-967c-4ef506d54565"
                     alt="Image"
                     style="border-radius: 50%; width: 45px; max-height: 200%"
                   />
