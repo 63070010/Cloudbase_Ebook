@@ -86,23 +86,36 @@
         </div>
 
         <div class="navbar-canter">
-          <div class="navbar-item mt-2">
-            <span class="icon is-size-5 mr-2"
-              ><i class="fas fa fa-home" style="color: #f7f9fb"></i>
+          <div class="navbar-item mt-2 ml-6">
+            <span class="icon is-size-5 navbar-icon">
+              <i class="fas fa fa-home" style="color: #f7f9fb; margin-right: 0.3em;"></i>
             </span>
-            <router-link to="/" style="color: #f7f9fb">E5-book</router-link>
+            <router-link to="/">
+            <span style="color: #f7f9fb; align-items:center; ">E-Book</span>
+            </router-link>
           </div>
+          <div class="navbar-center"></div>
+          <div class="navbar-item"></div>
         </div>
+
 
         <div class="navbar-end">
           <p class="navbar-item">
             <router-link to="/Cart_Book" style="color: #687864"
-              ><button class="button">
-                <span style="color: #687864">ไปหน้ารถเข็น</span>
+              ><button class="button mr-3">
+                <span style="color: #687864">ตะกร้า</span>
                 <span class="icon is-size-5 ml-2"
                   ><i class="fas fa-shopping-cart" style="color: #687864"> </i
                 ></span>
               </button>
+            </router-link>
+            <router-link to="/SearchBook" style="color: #687864">
+            <button class="button">
+              <span style="color: #687864">ค้นหาหนังสือ</span>
+              <span class="icon is-size-5 ml-2"
+                ><i class="fas fa-search" style="color: #687864"> </i
+              ></span>
+            </button>
             </router-link>
           </p>
         </div>

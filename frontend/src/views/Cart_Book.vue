@@ -4,12 +4,12 @@
     <div class="hero-body hero is-fullheight">
       <div class="container has-text-centered">
         <div class="column">
-          <p class="is-size-3" style="color: #ac3b61">
-            <i class="fa fa-book" aria-hidden="true"> </i>
+          <p class="is-size-3" style="color: #31708e">
+            <i class="fa fa-book" aria-hidden="true" style="color: #687864"> </i>
             &nbsp;รายชื่อหนังสือใน ตะกร้า
           </p>
           <br />
-          <div class="divider is-info" style="color: #123c69">
+          <div class="divider is-info" style="color: #8fc1e3">
             Books in the cart
           </div>
         </div>
@@ -30,16 +30,16 @@
               </div>
               <div class="media-content" style="margin-left: 900px">
                 <div class="content">
-                  <p>
-                    <strong>ชื่อหนังสือ: {{ value.title }}</strong>
+                    <h3 style="color: #8fc1e3">ชื่อหนังสือ: {{ value.title }}</h3>
                     <br />
-                    <small>ราคา: {{ value.price }}</small>
-                  </p>
+                    <h4 style="color: #8fc1e3">ราคา: {{ value.price }}</h4>
+                    <br />
+                    <h5 style="color: #8fc1e3">แต้มสะสม: {{ value.Points }}</h5>
                 </div>
                 <div class="level-right">
                   <a class="level-item">
                     <span class="icon is-small" @click="dropbook(value)">
-                      <i class="fa fa-trash" style="color: #ac3b61"></i>
+                      <i class="fa fa-trash" style="color: #687864"></i>
                     </span>
                   </a>
                 </div>
@@ -48,8 +48,8 @@
           </div>
         </div>
 
-        <div class="divider is-info is-size-6" style="color: #123c69">
-          <router-link to="/" style="color: #123c69"
+        <div class="divider is-info is-size-6" style="color: #8fc1e3">
+          <router-link to="/" style="color: #8fc1e3"
             >กลับไปเลือกซื้อหนังสือเพิ่ม</router-link
           >
         </div>
@@ -57,15 +57,15 @@
       <div class="container hero-body">
         <div class="columns is-multiline box">
           <div class="column is-12">
-            <h1 class="title has-text-centered section-title is-size-4">
+            <h1 class="title has-text-centered section-title is-size-4" style="color:#31708e">
               ยอดชำระเงิน : {{ totalprice }} บาท
             </h1>
           </div>
           <div class="column is-10 has-text-centered is-offset-1">
-            <h2 class="subtitle">
+            <h2 class="subtitle" style="color:#31708e">
               จำนวนหนังสือในตะกร้า : {{ cartitemlast.length }} เล่ม
             </h2>
-            <router-link style="color: #123c69" v-if="cartitemlast.length > 0">
+            <router-link style="color: #8fc1e3" v-if="cartitemlast.length > 0">
               <button class="button">
                 ไปหน้าชำระเงิน&emsp;<i
                   class="fa fa-arrow-circle-right"
@@ -125,7 +125,7 @@ export default {
         this.cartitem = this.cart[0].cart_item.NS;
         this.bookshelf = this.cart[0].bookshelf.NS;
         this.totalprice = this.cart[0].price;
-
+        
         this.cartitemlast = this.book.filter((item) => {
           return this.cartitem.includes(String(item.book_id));
         });
