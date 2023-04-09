@@ -24,10 +24,11 @@
                   aria-haspopup="true"
                   aria-controls="dropdown-menu"
                 >
-                  <span class="icon has-text-info">
-                    <i class="fas fa-user-circle icon is-large"></i>
-                  </span>
-                  <p>Test</p>
+                  <br />
+
+                  <img class="is-rounded" src="../img/1.jpg" alt="Image" />
+
+                  <span class="ml-3">Test</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
@@ -119,4 +120,12 @@ export default {
 };
 </script>
 <style >
+.is-rounded {
+  border-radius: 50%;
+  width: 45px;
+  max-height: 200%;
+}
+.dropdown-trigger {
+  overflow: hidden;
+}
 </style>
