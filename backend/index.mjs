@@ -21,6 +21,15 @@ export const handler = async (event) => {
             case '/cart': {
                 return await Carts(event);
             }
+            case '/detailbook': {
+                return await Detailbook(event);
+            }
+            case '/event': {
+                return await events(event);
+            }
+            case '/item': {
+                return await Item(event);
+            }
             case 'OPTIONS': { // เพิ่ม options เพื่อทำการ preflight สำหรับ CORS
                 return {
                     statusCode: 200,
@@ -49,46 +58,164 @@ export const handler = async (event) => {
 };
 
 async function Books(event) {
-    try {
-        const params = {
-            TableName: 'book'
-        };
-        const data = await dynamo.send(new ScanCommand(params));
-        const items = data.Items.map((item) => {
-            const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
-            return {
-                eventname,
-                image, penname, monthly, book_id, price, sales, title, Date,
-                type: item.type ? { SS: item.type.SS } : { SS: [] }
+    if (event.httpMethod == "GET") {
+        try {
+            const params = {
+                TableName: 'book'
             };
-        }); return {
-            statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(items)
-        };
-    } catch (err) {
+            const data = await dynamo.send(new ScanCommand(params));
+            const items = data.Items.map((item) => {
+                const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                return {
+                    eventname,
+                    image, penname, monthly, book_id, price, sales, title, Date,
+                    type: item.type ? { SS: item.type.SS } : { SS: [] }
+                };
+            }); return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+    else {
         return {
             statusCode: 500,
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ error: 'Unable to get books' })
+            body: JSON.stringify({ error: err.message })
         };
     }
+
 };
+
+
+
+async function Detailbook(event) {
+    if (event.httpMethod == "GET") {
+        try {
+            const book_id = event.queryStringParameters.book_id;
+            const params = {
+                TableName: 'book',
+                KeyConditionExpression: 'book_id = :book_id',
+                ExpressionAttributeValues: {
+                    ':book_id': { 'N': book_id }
+                }
+            };
+            const data = await dynamo.send(new QueryCommand(params));
+            const items = data.Items.map((item) => {
+                const { eventname, Date, image, penname, monthly, book_id, price, title, desc, sales } = unmarshall(item);
+                return {
+                    eventname,
+                    image, penname, monthly, book_id, price, sales, title, Date, desc,
+                    type: item.type ? { SS: item.type.SS } : { SS: [] },
+                    review: item.review ? { SS: item.review.SS } : { SS: [] }
+                };
+            }); return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+    else if (event.httpMethod == "PUT") {
+        try {
+            const { book_id, review, eventname } = JSON.parse(event.body);
+            const params = {
+                TableName: 'book',
+                Key: {
+                    book_id: { "N": String(book_id) }
+                },
+                UpdateExpression: "set review = :review, eventname = :eventname",
+                ExpressionAttributeValues: {
+                    ":review": { "SS": review },
+                    ":eventname": { "S": eventname }
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dynamo.send(new UpdateItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item updated in DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+}
+
 
 async function Users(event) {
     if (event.httpMethod == "GET") {
         try {
+            const id = event.queryStringParameters.id;
             const params = {
-                TableName: 'user'
+                TableName: 'user',
+                KeyConditionExpression: 'id = :id',
+                ExpressionAttributeValues: {
+                    ':id': { 'S': id }
+                }
             };
-            const data = await dynamo.send(new ScanCommand(params));
-            const items = data.Items.map((item) => unmarshall(item));
+            const data = await dynamo.send(new QueryCommand(params));
+            const items = data.Items.map((item) => {
+                const { id, email,
+                    gender,
+                    password,
+                    phone,
+                    point,
+                    username, receiving_money, profile } = unmarshall(item);
+                return {
+                    id,
+                    email,
+                    gender,
+                    password,
+                    phone,
+                    point,
+                    username,
+                    receiving_money,
+                    profile,
+                    rev_book: item.rev_book ? { NS: item.rev_book.NS } : { NS: [] },
+                    item_count: item.item_count ? { NS: item.item_count.NS } : { NS: [] },
+                    fav_Book: item.fav_Book ? { NS: item.fav_Book.NS } : { NS: [] }
+                };
+            });
             return {
                 statusCode: 200,
                 headers: {
@@ -104,19 +231,33 @@ async function Users(event) {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ error: 'Unable to get users' })
+                body: JSON.stringify({ error: err.message })
             };
         }
     }
     else if (event.httpMethod == "POST") {
         try {
-            const { id, firstname, lastname } = JSON.parse(event.body);
+            const { id, email,
+                gender,
+                password,
+                phone,
+                point,
+                username, receiving_money, profile, rev_book, item_count, fav_Book } = JSON.parse(event.body);
             const params = {
                 TableName: 'user',
                 Item: {
                     id: { "S": id },
-                    firstname: { "S": firstname },
-                    lastname: { "S": lastname }
+                    email: { "S": email },
+                    gender: { "S": gender },
+                    password: { "S": password },
+                    phone: { "N": phone },
+                    point: { "N": point },
+                    username: { "S": username },
+                    receiving_money: { "S": receiving_money },
+                    profile: { "S": profile },
+                    rev_book: { "NS": rev_book },
+                    item_count: { "NS": item_count },
+                    fav_Book: { "NS": fav_Book }
                 }
             };
             await dynamo.send(new PutItemCommand(params));
@@ -139,7 +280,50 @@ async function Users(event) {
             };
 
         }
+
+
     }
+    else if (event.httpMethod == "PUT") {
+        try {
+            const { id, email, gender, password, phone, username, receiving_money, profile } = JSON.parse(event.body);
+            const params = {
+                TableName: 'user',
+                Key: {
+                    id: { "S": id }
+                },
+                UpdateExpression: "set email = :email, gender = :gender, password = :password, phone = :phone, username = :username, receiving_money = :receiving_money, profile = :profile",
+                ExpressionAttributeValues: {
+                    "email": { "S": email },
+                    "gender": { "S": gender },
+                    "password": { "S": password },
+                    "phone": { "N": phone },
+                    "username": { "S": username },
+                    "receiving_money": { "S": receiving_money },
+                    "profile": { "S": profile },
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dynamo.send(new UpdateItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item updated in DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+
 };
 
 async function Carts(event) {
@@ -257,6 +441,96 @@ async function Carts(event) {
                 body: JSON.stringify({ error: err.message })
             };
         }
+    }
+
+};
+
+
+async function events(event) {
+    if (event.httpMethod == "GET") {
+        try {
+            const params = {
+                TableName: 'event'
+            };
+            const data = await dynamo.send(new ScanCommand(params));
+            const items = data.Items.map((item) => unmarshall(item));
+
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+    else {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+
+};
+
+
+async function Item(event) {
+    if (event.httpMethod == "GET") {
+        try {
+            const params = {
+                TableName: 'item'
+            };
+            const data = await dynamo.send(new ScanCommand(params));
+            const items = data.Items.map((item) => {
+                const { item_id, desc, image, title, point, type, status } = unmarshall(item);
+                return {
+                    item_id,
+                    image, desc, title, point, type, status,
+                    book_id: item.book_id ? { NS: item.book_id.NS } : { NS: [] },
+
+                };
+            }); return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+    else {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
     }
 
 };

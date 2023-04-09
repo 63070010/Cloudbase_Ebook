@@ -38,7 +38,7 @@
                 </div>
                 <div class="level-right">
                   <a class="level-item">
-                    <span class="icon is-small" @click="dropbook()">
+                    <span class="icon is-small" @click="dropbook(value)">
                       <i class="fa fa-trash" style="color: #ac3b61"></i>
                     </span>
                   </a>
@@ -63,7 +63,7 @@
           </div>
           <div class="column is-10 has-text-centered is-offset-1">
             <h2 class="subtitle">
-              จำนวนหนังสือซื้อที่ซื้อ : {{ cartitemlast.length }} เล่ม
+              จำนวนหนังสือในตะกร้า : {{ cartitemlast.length }} เล่ม
             </h2>
             <router-link style="color: #123c69" v-if="cartitemlast.length > 0">
               <button class="button">
@@ -106,6 +106,7 @@ export default {
       cartitemlast: [],
       cartitem: [],
       totalprice: 0,
+      bookshelf: [],
       id: 1,
     };
   },
@@ -122,13 +123,48 @@ export default {
         );
         this.cart = cartResponse.data;
         this.cartitem = this.cart[0].cart_item.NS;
+        this.bookshelf = this.cart[0].bookshelf.NS;
+        this.totalprice = this.cart[0].price;
 
         this.cartitemlast = this.book.filter((item) => {
           return this.cartitem.includes(String(item.book_id));
         });
+        console.log(this.cartitemlast);
       } catch (error) {
         console.error(error);
       }
+    },
+    async dropbook(event) {
+      this.totalprice -= event.price;
+      this.cartitem = this.cartitem.filter(
+        (item) => item !== String(event.book_id)
+      );
+
+      this.cartitemlast = this.cartitemlast.filter(
+        (obj) => obj.book_id !== event.book_id
+      );
+      console.log(this.cartitemlast);
+      if (this.cartitem.length == 0) {
+        this.cartitem = ["0"];
+      }
+
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+          {
+            id: String(this.id),
+            bookshelf: this.bookshelf,
+            cart_item: this.cartitem,
+            user_id: String(this.id),
+            price: this.totalprice,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 };

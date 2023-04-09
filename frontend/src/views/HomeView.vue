@@ -261,6 +261,7 @@ export default defineComponent({
             this.cart = response.data;
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
+            this.totalprice = this.cart[0].price;
           })
           .catch((error) => {
             console.error(error);
@@ -272,8 +273,9 @@ export default defineComponent({
     async cardpush(event) {
       this.totalprice += event.price;
       this.bookincart.push(String(event.book_id));
-      console.log(this.bookincart);
+
       console.log(this.bookshelf);
+      console.log(this.bookincart);
       axios
         .put(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
