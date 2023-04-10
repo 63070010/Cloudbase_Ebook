@@ -1,10 +1,43 @@
 <template>
   <div>
     <NavBar />
-
-    <figure class="image" v-if="pro && pro[0]">
-      <img :src="pro[0].image" />
-    </figure>
+    <br />
+    <br />
+    <br />
+    <div class="card">
+      <div class="card-image">
+        <figure class="image" v-if="pro && pro[0]">
+          <img
+            :src="pro[0].image"
+            class="color_use"
+            style="
+              width: 850px;
+              height: auto;
+              margin-left: auto;
+              margin-right: auto;
+              border:8px solid #5085a5;
+            "
+          />
+        </figure>
+      </div>
+      <div class="card-content" style="text-align: center">
+        <div
+          class="content"
+          style="font-size: 36px; font-weight: bold; color: #5085a5"
+        >
+          {{ pro[0].title }}
+        </div>
+      </div>
+      <div class="card-content" style="text-align: center">
+        <div
+          class="content"
+          style="font-size: 24px; font-weight: bold; color: #8fc1e3"
+        >
+          {{ pro[0].desc }}
+          <br />
+        </div>
+      </div>
+    </div>
 
     <br />
     <div class="hero is-fullheight" v-if="bookinevent.length > 0">
@@ -194,3 +227,10 @@ export default {
   },
 };
 </script>
+<style>
+.color_use:hover {
+  border: 5px solid #8fc1e3;
+  transition: transform 1000ms ease-out;
+  transform: scale(1.1);
+}
+</style>
