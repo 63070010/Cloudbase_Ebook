@@ -8,8 +8,11 @@ import Cart_Book from '../views/Cart_Book.vue'
 import DetailPromotion from '../views/DetailPromotion.vue'
 import AdminPage from '../views/AdminPage.vue'
 import CheckoutPage from '../views/CheckoutPage.vue'
-import ReadBook from '../views/ReadBook.vue'
 import SearchBook from '../views/SearchBook.vue'
+import FavoriteBook from '../views/Favorite_Book.vue'
+import Bookshelf from '../views/Bookshelf.vue'
+import MyCommendinBook from '../views/MyCommendInBook.vue'
+import ItemsPoint from '../views/ItemsPoint.vue'
 
 const routes = [
   {
@@ -75,17 +78,29 @@ const routes = [
     component: CheckoutPage
   },
   {
-    path: '/ReadBook',
-    name: 'ReadBook',
+    path: '/FavoriteBook',
+    name: 'FavoriteBook',
 
-    component: ReadBook
+    component: FavoriteBook
   },
   {
-    path: '/ReadBook/:bookId/:pageId',
-    name: 'ReadBook',
+    path: '/Bookshelf',
+    name: 'BookshelfComponent',
 
-    component: ReadBook
+    component: Bookshelf
   },
+  {
+    path: '/MyCommendinBook',
+    name: 'MyCommendinBook',
+
+    component: MyCommendinBook
+  },
+  {
+    path: '/ItemsPoint',
+    name: 'ItemsPoint',
+
+    component: ItemsPoint
+  }
 
 
 ]

@@ -26,20 +26,20 @@
                 >
                   <br />
 
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/image-a4852.appspot.com/o/93278eaa12fd253a4fe3cc08a0b219bc.jpg?alt=media&token=c6a41519-b914-4753-967c-4ef506d54565"
+                  <img v-if="showuser && showuser[0]"
+                    :src="showuser[0].profile"
                     alt="Image"
                     style="border-radius: 50%; width: 45px; max-height: 200%"
                   />
 
-                  <span class="ml-3">Test</span>
+                  <span class="ml-3" v-if="showuser && showuser[0]">{{ showuser[0].username }}</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
                 </button>
               </div>
               <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content">
+                <div class="dropdown-content" v-if="showuser && showuser[0]">
                   <a class="dropdown-item" style="color: #8fc1e3"
                     ><img
                       src="../img/coins.png"
@@ -49,7 +49,10 @@
                         vertical-align: middle;
                       "
                     />
-                    0 Points
+
+                    <span>
+                      {{ showuser[0].point }}
+                    </span>
                   </a>
                   <a class="dropdown-item">
                     <router-link
@@ -88,16 +91,18 @@
         <div class="navbar-canter">
           <div class="navbar-item mt-2 ml-6">
             <span class="icon is-size-5 navbar-icon">
-              <i class="fas fa fa-home" style="color: #f7f9fb; margin-right: 0.3em;"></i>
+              <i
+                class="fas fa fa-home"
+                style="color: #f7f9fb; margin-right: 0.3em"
+              ></i>
             </span>
             <router-link to="/">
-            <span style="color: #f7f9fb; align-items:center; ">E-Book</span>
+              <span style="color: #f7f9fb; align-items: center">E-Book</span>
             </router-link>
           </div>
           <div class="navbar-center"></div>
           <div class="navbar-item"></div>
         </div>
-
 
         <div class="navbar-end">
           <p class="navbar-item">
@@ -110,12 +115,12 @@
               </button>
             </router-link>
             <router-link to="/SearchBook" style="color: #687864">
-            <button class="button">
-              <span style="color: #687864">ค้นหาหนังสือ</span>
-              <span class="icon is-size-5 ml-2"
-                ><i class="fas fa-search" style="color: #687864"> </i
-              ></span>
-            </button>
+              <button class="button">
+                <span style="color: #687864">ค้นหาหนังสือ</span>
+                <span class="icon is-size-5 ml-2"
+                  ><i class="fas fa-search" style="color: #687864"> </i
+                ></span>
+              </button>
             </router-link>
           </p>
         </div>
@@ -126,13 +131,32 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
       user: 1,
       name: "NavBar",
       Open_dropdown: false,
+      id: 1,
+      showuser: [],
     };
+  },
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response2 = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+        );
+        this.showuser = response2.data;
+        console.log(this.showuser)
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
