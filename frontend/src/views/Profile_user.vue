@@ -120,7 +120,7 @@
             >
           </div>
           <div class="tile is-parent">
-            <router-link to="/register">
+            <router-link to="/ItemsPoint">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">Item แต้มคะแนน</p>
                 <p class="subtitle has-text-left">

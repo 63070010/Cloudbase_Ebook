@@ -12,6 +12,7 @@ import SearchBook from '../views/SearchBook.vue'
 import FavoriteBook from '../views/Favorite_Book.vue'
 import Bookshelf from '../views/Bookshelf.vue'
 import MyCommendinBook from '../views/MyCommendInBook.vue'
+import ItemsPoint from '../views/ItemsPoint.vue'
 
 const routes = [
   {
@@ -94,6 +95,12 @@ const routes = [
 
     component: MyCommendinBook
   },
+  {
+    path: '/ItemsPoint',
+    name: 'ItemsPoint',
+
+    component: ItemsPoint
+  }
 
 
 ]
