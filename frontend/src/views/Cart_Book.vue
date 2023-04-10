@@ -5,7 +5,8 @@
       <div class="container has-text-centered">
         <div class="column">
           <p class="is-size-3" style="color: #31708e">
-            <i class="fa fa-book" aria-hidden="true" style="color: #687864"> </i>
+            <i class="fa fa-book" aria-hidden="true" style="color: #687864">
+            </i>
             &nbsp;รายชื่อหนังสือใน ตะกร้า
           </p>
           <br />
@@ -30,11 +31,15 @@
               </div>
               <div class="media-content" style="margin-left: 900px">
                 <div class="content">
-                    <h3 style="color: #8fc1e3">ชื่อหนังสือ: {{ value.title }}</h3>
-                    <br />
-                    <h4 style="color: #8fc1e3">ราคา: {{ value.price }}</h4>
-                    <br />
-                    <h5 style="color: #8fc1e3">แต้มสะสม: {{ value.Points }}</h5>
+                  <span style="color: #8fc1e3"
+                    >ชื่อหนังสือ: {{ value.title }}</span
+                  >
+                  <br />
+                  <span style="color: #8fc1e3">ราคา: {{ value.price }}</span>
+                  <br />
+                  <span style="color: #8fc1e3"
+                    >แต้มสะสม: {{ value.Points }}</span
+                  >
                 </div>
                 <div class="level-right">
                   <a class="level-item">
@@ -57,12 +62,15 @@
       <div class="container hero-body">
         <div class="columns is-multiline box">
           <div class="column is-12">
-            <h1 class="title has-text-centered section-title is-size-4" style="color:#31708e">
+            <h1
+              class="title has-text-centered section-title is-size-4"
+              style="color: #31708e"
+            >
               ยอดชำระเงิน : {{ totalprice }} บาท
             </h1>
           </div>
           <div class="column is-10 has-text-centered is-offset-1">
-            <h2 class="subtitle" style="color:#31708e">
+            <h2 class="subtitle" style="color: #31708e">
               จำนวนหนังสือในตะกร้า : {{ cartitemlast.length }} เล่ม
             </h2>
             <router-link style="color: #8fc1e3" v-if="cartitemlast.length > 0">
@@ -125,7 +133,7 @@ export default {
         this.cartitem = this.cart[0].cart_item.NS;
         this.bookshelf = this.cart[0].bookshelf.NS;
         this.totalprice = this.cart[0].price;
-        
+
         this.cartitemlast = this.book.filter((item) => {
           return this.cartitem.includes(String(item.book_id));
         });

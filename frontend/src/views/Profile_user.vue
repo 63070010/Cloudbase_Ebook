@@ -268,10 +268,9 @@ export default {
         gender: "ชาย",
         password: "123456789",
       },
-      id:1,
+      id: 1,
       Change_password: false,
       showprofileuser: [],
-
     };
   },
   created() {
@@ -286,7 +285,7 @@ export default {
           )
           .then((response) => {
             this.showprofileuser = response.data;
-            console.log(this.showprofileuser)
+            console.log(this.showprofileuser);
           })
           .catch((error) => {
             console.error(error);
