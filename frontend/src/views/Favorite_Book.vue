@@ -224,7 +224,13 @@ export default {
     getProducts() {
       console.log(this.type);
       console.log(this.search);
-      if (this.type == "ชื่อหนังสือ") {
+      const getfavbook = this.user[0].fav_Book.NS;
+      if (this.search == ''){
+        this.favoritebook = this.book.filter((item) => {
+          return getfavbook.includes(String(item.book_id));
+        });
+      }
+      else if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(
