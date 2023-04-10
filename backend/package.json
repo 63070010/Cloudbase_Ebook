@@ -8,8 +8,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1351.0"
+    "aws-sdk": "^2.1351.0",
+    "jsonwebtoken": "^9.0.0"
   },
-  "devDependencies": {},
   "description": ""
 }

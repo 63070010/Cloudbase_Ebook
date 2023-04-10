@@ -8,10 +8,10 @@
         <ul>
           <li
             :class="[number == 1 ? 'is-active' : '']"
-            @click="changeTab('ทั้งหมด', 1)"
+            @click="changeTab('ชื่อหนังสือ', 1)"
           >
             <a>
-              <span>ทั้งหมด</span>
+              <span>ชื่อหนังสือ</span>
             </a>
           </li>
           <li
@@ -23,16 +23,8 @@
             </a>
           </li>
           <li
-            :class="[number == 3 ? 'is-active' : '']"
-            @click="changeTab('ชื่อหนังสือ', 3)"
-          >
-            <a>
-              <span>ชื่อหนังสือ</span>
-            </a>
-          </li>
-          <li
             :class="[number == 4 ? 'is-active' : '']"
-            @click="changeTab('นักเขียน', 4)"
+            @click="changeTab('นักเขียน', 3)"
           >
             <a>
               <span>นักเขียน</span>
@@ -191,8 +183,8 @@ export default {
   },
   computed: {
     paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * 3;
-      const endIndex = startIndex + 3;
+      const startIndex = (this.currentPage - 1) * 5;
+      const endIndex = startIndex + 5;
       return this.books.slice(startIndex, endIndex);
     },
   },
@@ -205,7 +197,7 @@ export default {
           )
           .then((response) => {
             this.books = response.data;
-            this.lastpage = Math.floor(response.data.length / 3);
+            this.lastpage = response.data.length / 5;
           })
           .catch((error) => {
             console.error(error);

@@ -6,12 +6,16 @@ import {
     QueryCommand
 } from "@aws-sdk/client-dynamodb";
 import { unmarshall } from '@aws-sdk/util-dynamodb';
+import jwt from 'jsonwebtoken';
 
 const dynamo = new DynamoDBClient({});
 
 export const handler = async (event) => {
     try {
         switch (event.path) {
+            case '/login': {
+                return await Login(event);
+            }
             case '/book': {
                 return await Books(event);
             }
@@ -30,6 +34,9 @@ export const handler = async (event) => {
             case '/item': {
                 return await Item(event);
             }
+            case '/search': {
+                return await Search(event);
+            };
             case 'OPTIONS': { // เพิ่ม options เพื่อทำการ preflight สำหรับ CORS
                 return {
                     statusCode: 200,
@@ -57,11 +64,74 @@ export const handler = async (event) => {
     }
 };
 
+
+async function Login(event) {
+    const { password, username } = JSON.parse(event.body);
+    const TABLE_NAME = 'test'; // ชื่อตารางที่เก็บข้อมูลผู้ใช้งาน
+    const JWT_SECRET = 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY4MTEwNzcyMiwiaWF0IjoxNjgxMTA3NzIyfQ.4qRym_hhXciVkH8FV10fHupG3T3lyQi8oCFPX9UihcY';
+    try {
+        // ค้นหาผู้ใช้งานจาก DynamoDB
+        const params = {
+            TableName: TABLE_NAME,
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: {
+                ':username': { S: username },
+            },
+        };
+        const data = await dynamo.send(new ScanCommand(params));
+        const users = data.Items.map((item) => unmarshall(item));
+
+        // ตรวจสอบชื่อผู้ใช้และรหัสผ่าน
+        const user = users.find((u) => u.password === password);
+        if (user) {
+            // สร้าง token ให้กับผู้ใช้งาน
+            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+
+            // ส่งข้อมูล token กลับไปยังผู้ใช้งาน
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(token),
+            };
+        } else {
+            // ถ้าชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+
+                },
+                body: JSON.stringify({ message: 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง' }),
+            };
+        }
+    } catch (error) {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                error: {
+                    message: error.message,
+                    username: username.message,
+                    password: password.message
+                }
+            })
+        }
+    }
+
+}
+
 async function Books(event) {
     if (event.httpMethod == "GET") {
         try {
             const params = {
-                TableName: 'book'
+                TableName: 'book',
             };
             const data = await dynamo.send(new ScanCommand(params));
             const items = data.Items.map((item) => {
@@ -520,6 +590,183 @@ async function Item(event) {
                 },
                 body: JSON.stringify({ error: err.message })
             };
+        }
+    }
+    else {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+
+};
+
+
+async function Search(event) {
+    if (event.httpMethod == "GET") {
+        if (event.queryStringParameters.title) {
+            try {
+                const title = event.queryStringParameters.title;
+
+                const params = {
+                    TableName: "book",
+                    FilterExpression: "begins_with(title, :title)",
+                    ExpressionAttributeValues: {
+                        ":title": { S: title }
+                    }
+                };
+
+                const data = await dynamo.send(new ScanCommand(params));
+                const items = data.Items.map((item) => {
+                    const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    return {
+                        eventname,
+                        image, penname, monthly, book_id, price, sales, title, Date,
+                        type: item.type ? { SS: item.type.SS } : { SS: [] }
+                    };
+                });
+                return {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(items)
+                };
+            } catch (err) {
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: err.message })
+                };
+            }
+        }
+
+        else if (event.queryStringParameters.penname) {
+            try {
+                const penname = event.queryStringParameters.penname;
+
+                const params = {
+                    TableName: "book",
+                    FilterExpression: "begins_with(penname, :penname)",
+                    ExpressionAttributeValues: {
+                        ":penname": { S: penname }
+                    }
+                };
+
+                const data = await dynamo.send(new ScanCommand(params));
+                const items = data.Items.map((item) => {
+                    const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    return {
+                        eventname,
+                        image, penname, monthly, book_id, price, sales, title, Date,
+                        type: item.type ? { SS: item.type.SS } : { SS: [] }
+                    };
+                });
+                return {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(items)
+                };
+            } catch (err) {
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: err.message })
+                };
+            }
+        }
+        else if (event.queryStringParameters.type) {
+            try {
+                const type = event.queryStringParameters.type;
+
+                const params = {
+                    TableName: "book",
+                    FilterExpression: "contains(#t, :type)",
+                    ExpressionAttributeNames: {
+                        "#t": "type"
+                    },
+                    ExpressionAttributeValues: {
+                        ":type": { "S": type }
+                    }
+                };
+
+                const data = await dynamo.send(new ScanCommand(params));
+                const items = data.Items.map((item) => {
+                    const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    return {
+                        eventname,
+                        image, penname, monthly, book_id, price, sales, title, Date,
+                        type: item.type ? { SS: item.type.SS } : { SS: [] }
+                    };
+                });
+                return {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(items)
+                };
+            } catch (err) {
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: err.message })
+                };
+            }
+        }
+        else if (event.queryStringParameters.monthly) {
+            try {
+                const params = {
+                    TableName: 'book',
+                    FilterExpression: 'monthly = :monthly',
+                    ExpressionAttributeValues: {
+                        ':monthly': { BOOL: true }
+                    }
+                };
+                const data = await dynamo.send(new ScanCommand(params));
+                const items = data.Items.map((item) => {
+                    const { eventname, Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    return {
+                        eventname,
+                        image, penname, monthly, book_id, price, sales, title, Date,
+                        type: item.type ? { SS: item.type.SS } : { SS: [] }
+                    };
+                }); return {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(items)
+                };
+            } catch (err) {
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: err.message })
+                };
+            }
         }
     }
     else {
