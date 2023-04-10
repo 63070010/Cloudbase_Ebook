@@ -11,6 +11,7 @@ import CheckoutPage from '../views/CheckoutPage.vue'
 import SearchBook from '../views/SearchBook.vue'
 import FavoriteBook from '../views/Favorite_Book.vue'
 import Bookshelf from '../views/Bookshelf.vue'
+import MyCommendinBook from '../views/MyCommendInBook.vue'
 
 const routes = [
   {
@@ -86,6 +87,12 @@ const routes = [
     name: 'BookshelfComponent',
 
     component: Bookshelf
+  },
+  {
+    path: '/MyCommendinBook',
+    name: 'MyCommendinBook',
+
+    component: MyCommendinBook
   },
 
 
