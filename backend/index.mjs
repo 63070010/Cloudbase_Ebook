@@ -138,10 +138,10 @@ async function Books(event) {
             };
             const data = await dynamo.send(new ScanCommand(params));
             const items = data.Items.map((item) => {
-                const { Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                const { Date, image, penname, monthly, book_id, price, sales, title, point } = unmarshall(item);
                 return {
 
-                    image, penname, monthly, book_id, price, sales, title, Date,
+                    image, penname, monthly, book_id, price, sales, title, Date, point,
                     type: item.type ? { SS: item.type.SS } : { SS: [] }
                 };
             }); return {
@@ -191,10 +191,10 @@ async function Detailbook(event) {
             };
             const data = await dynamo.send(new QueryCommand(params));
             const items = data.Items.map((item) => {
-                const { Date, image, penname, monthly, book_id, price, title, desc, sales } = unmarshall(item);
+                const { Date, image, penname, monthly, book_id, price, title, desc, sales, point } = unmarshall(item);
                 return {
 
-                    image, penname, monthly, book_id, price, sales, title, Date, desc,
+                    image, penname, monthly, book_id, price, sales, title, Date, desc, point,
                     type: item.type ? { SS: item.type.SS } : { SS: [] },
                     review: item.review ? { SS: item.review.SS } : { SS: [] }
                 };
@@ -755,10 +755,10 @@ async function Search(event) {
                 };
                 const data = await dynamo.send(new ScanCommand(params));
                 const items = data.Items.map((item) => {
-                    const { Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    const { Date, image, penname, monthly, book_id, price, sales, title, point } = unmarshall(item);
                     return {
 
-                        image, penname, monthly, book_id, price, sales, title, Date,
+                        image, penname, monthly, book_id, price, sales, title, Date, point,
                         type: item.type ? { SS: item.type.SS } : { SS: [] }
                     };
                 }); return {

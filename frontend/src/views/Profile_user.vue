@@ -274,14 +274,14 @@ export default {
     };
   },
   created() {
-    this.getprofileuser();
+    this.getprofileuser(this.$route.params.id);
   },
   methods: {
-    async getprofileuser() {
+    async getprofileuser(id) {
       try {
         axios
           .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${id}`
           )
           .then((response) => {
             this.showprofileuser = response.data;

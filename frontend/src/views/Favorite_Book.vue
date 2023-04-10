@@ -58,7 +58,7 @@
           <div class="columns">
             <div
               class="column is-one-fifth"
-              v-for="(value, index) in favoritebook"
+              v-for="(value, index) in paginatedBooks"
               :key="index"
             >
               <div class="card">
@@ -181,13 +181,14 @@ export default {
       id: 1,
       user: [],
       favoritebook: [],
+      type: "ชื่อหนังสือ",
     };
   },
   computed: {
     paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * 3;
-      const endIndex = startIndex + 3;
-      return this.books.slice(startIndex, endIndex);
+      const startIndex = (this.currentPage - 1) * 5;
+      const endIndex = startIndex + 5;
+      return this.favoritebook.slice(startIndex, endIndex);
     },
   },
   methods: {
@@ -207,6 +208,7 @@ export default {
         this.favoritebook = this.book.filter((item) => {
           return getfavbook.includes(String(item.book_id));
         });
+        this.lastpage = this.favoritebook.length / 5;
         console.log(this.favoritebook);
       } catch (error) {
         console.log(error);
@@ -219,8 +221,61 @@ export default {
     backPage() {
       this.currentPage--;
     },
-    getProducts() {},
+    getProducts() {
+      console.log(this.type);
+      console.log(this.search);
+      if (this.type == "ชื่อหนังสือ") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?title=${this.search}`
+            )
+            .then((response) => {
+              this.favoritebook = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "ประเภท") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?type=${this.search}`
+            )
+            .then((response) => {
+              this.favoritebook = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "นักเขียน") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?penname=${this.search}`
+            )
+            .then((response) => {
+              this.favoritebook = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
     changeTab(text, num) {
+      this.type = text;
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },

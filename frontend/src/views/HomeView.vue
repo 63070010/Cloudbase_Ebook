@@ -142,15 +142,7 @@ export default defineComponent({
           return b.sales - a.sales;
         });
 
-        const sortedBymonthly = sortedByDate.filter(
-          (value) => value.monthly === true
-        );
-
-        this.books = [
-          sortedByDate,
-          sortedBySales,
-          sortedBymonthly.length > 0 ? sortedBymonthly : [],
-        ];
+        this.books = [sortedByDate, sortedBySales];
 
         this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {

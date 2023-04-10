@@ -179,6 +179,7 @@ export default {
       bookincart: [],
       bookshelf: [],
       id: 1,
+      type: "ชื่อหนังสือ",
     };
   },
   computed: {
@@ -212,8 +213,61 @@ export default {
     backPage() {
       this.currentPage--;
     },
-    getProducts() {},
+    getProducts() {
+      console.log(this.type);
+      console.log(this.search);
+      if (this.type == "ชื่อหนังสือ") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?title=${this.search}`
+            )
+            .then((response) => {
+              this.books = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "ประเภท") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?type=${this.search}`
+            )
+            .then((response) => {
+              this.books = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "นักเขียน") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?penname=${this.search}`
+            )
+            .then((response) => {
+              this.books = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
     changeTab(text, num) {
+      this.type = text;
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },
