@@ -159,7 +159,7 @@
             >
           </div>
           <div class="tile is-parent is-4">
-            <router-link to="/register">
+            <router-link to="/MyCommendinBook">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">รีวิวหนังสือของฉัน</p>
                 <p class="subtitle has-text-left">
