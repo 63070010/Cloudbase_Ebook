@@ -3,7 +3,7 @@
     <Carousel :items-to-show="3" :autoplay="3500" :wrap-around="true">
       <Slide v-for="(slide, index) in promotion" :key="index">
         <div class="carousel__item">
-          <router-link :to="`/DetailPromotion/${slide.id}`">
+          <router-link :to="`/DetailPromotion/${slide.event_id}`">
             <img
               :src="slide.image"
               style="width: 95%; height: 280px; border-radius: 5%"

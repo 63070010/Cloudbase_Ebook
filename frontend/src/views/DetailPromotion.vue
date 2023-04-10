@@ -5,7 +5,7 @@
       <div class="column is-half">
         <div class="column has-text-centered">
           <figure class="image">
-            <img :src="promotion[0].promotionimage" />
+            <img :src="promotion[0].image" />
           </figure>
           <br />
 
@@ -14,7 +14,6 @@
           <p class="subtitle is-6">
             {{ promotion[0].desc }} <br />
             <br />
-            โค้ดโปรโมชั่น: {{ promotion[0].code }}
           </p>
 
           <p class="level-centere">
@@ -34,6 +33,7 @@
 </template>
 <script>
 import NavBar from "@/components/NavBar";
+import axios from "axios";
 export default {
   name: "DetailPromotion",
   components: {
@@ -41,10 +41,29 @@ export default {
   },
   data() {
     return {
-      promotion: {
-        0: {},
-      },
+      promotion: [],
     };
+  },
+  created() {
+    this.fetchData(this.$route.params.id);
+  },
+  methods: {
+    async fetchData(id) {
+      try {
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/event?event_id=${id}`
+          )
+          .then((response) => {
+            this.promotion = response.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
