@@ -15,7 +15,7 @@
 
               <img
                 class="is-rounded"
-                src="../img/book1.png"
+                :src="showprofileuser[0].profile"
                 alt="Image"
                 style="object-fit: cover"
               />
@@ -24,7 +24,7 @@
           <div class="column">
             <br />
 
-            <h1 class="title">{{ user.username }}</h1>
+            <h1 class="title">{{ showprofileuser[0].username }}</h1>
           </div>
           <div class="mr-4">
             <br />
@@ -43,14 +43,14 @@
               <p class="title is-4">Username</p>
             </div>
             <div class="column">
-              <p class="subtitle is-4">{{ user.username }}</p>
+              <p class="subtitle is-4">{{ showprofileuser[0].username }}</p>
             </div>
 
             <div class="column is-2">
               <p class="title is-4">Gender</p>
             </div>
             <div class="column is-3">
-              <p class="subtitle is-4">{{ user.gender }}</p>
+              <p class="subtitle is-4">{{ showprofileuser[0].gender }}</p>
             </div>
           </div>
           <div class="columns">
@@ -59,14 +59,14 @@
               <p class="title is-4">Email</p>
             </div>
             <div class="column">
-              <p class="subtitle is-4">{{ user.email }}</p>
+              <p class="subtitle is-4">{{ showprofileuser[0].email }}</p>
             </div>
 
             <div class="column is-2">
               <p class="title is-4">Phone</p>
             </div>
             <div class="column is-3">
-              <p class="subtitle is-4">{{ user.phonenumber }}</p>
+              <p class="subtitle is-4">{{ showprofileuser[0].phone }}</p>
             </div>
           </div>
           <div class="columns">
@@ -76,7 +76,7 @@
             </div>
             <div class="column is-3">
               <p class="subtitle is-4" style="-webkit-text-security: disc">
-                {{ user.password }}
+                {{ showprofileuser[0].password }}
               </p>
             </div>
             <nav
@@ -99,7 +99,7 @@
       <section class="info-tiles">
         <div class="tile is-ancestor has-text-centered">
           <div class="tile is-parent">
-            <router-link to="/register">
+            <router-link to="/FavoriteBook">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">รายการที่ชอบ</p>
                 <p class="subtitle has-text-left">
@@ -109,7 +109,7 @@
             </router-link>
           </div>
           <div class="tile is-parent">
-            <router-link to="/register">
+            <router-link to="/Bookshelf">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">ชั้นหนังสือของฉัน</p>
                 <p class="subtitle has-text-left">
@@ -250,6 +250,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import NavBar from "@/components/NavBar";
 import EditProfile from "@/components/EditProfile";
 export default {
@@ -267,18 +268,33 @@ export default {
         gender: "ชาย",
         password: "123456789",
       },
+      id:1,
       Change_password: false,
-      images: [],
-      types: [],
-      isActive: "MYbook",
-      Book_list: [],
-      mysell_book: [],
-      num_book: 0,
-      Add_Book: false,
-      Book_name: "",
-      price: "",
-      bookType: "",
+      showprofileuser: [],
+
     };
+  },
+  created() {
+    this.getprofileuser();
+  },
+  methods: {
+    async getprofileuser() {
+      try {
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+          )
+          .then((response) => {
+            this.showprofileuser = response.data;
+            console.log(this.showprofileuser)
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
