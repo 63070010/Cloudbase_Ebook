@@ -54,10 +54,7 @@
                     class="button is-rounded"
                     @click="iconBagIsActive()"
                   >
-                    <i
-                      class="fa fa-shopping-bag fas fa-lg"
-                      aria-hidden="true"
-                    ></i>
+                    <i class="fa fas fa-heart fas fa-lg" aria-hidden="true"></i>
                   </button>
                   <p id="text_bag_active" class="help">
                     เพิ่มในรายการที่ชอบแล้ว
@@ -72,34 +69,6 @@
                     <i class="fa fas fa-heart fas fa-lg" aria-hidden="true"></i>
                   </button>
                   <p id="text_bag" class="help">ชอบเรื่องนี้</p>
-                </div>
-
-                <!-- ส่วน icon ติดตาม -->
-                <div id="icon_area" v-if="checkfollow">
-                  <button
-                    id="icon_plus_active"
-                    class="button is-rounded"
-                    @click="iconFollIsActive()"
-                  >
-                    <i
-                      class="fa fa-plus-circle fas fa-lg"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                  <p id="text_plus_active" class="help">ติดตาม</p>
-                </div>
-                <div id="icon_area" v-else>
-                  <button
-                    id="icon_plus"
-                    class="button is-rounded"
-                    @click="iconFoll()"
-                  >
-                    <i
-                      class="fa fa-plus-circle fas fa-lg"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                  <p id="text_plus" class="help">ติดตาม</p>
                 </div>
               </div>
 
@@ -170,7 +139,11 @@
       <div class="container is-max-desktop px-5 mb-5">
         <p class="is-size-3">รีวิวทั้งหมด</p>
         <!-- แสดง รีวิว -->
-        <div class="box mt-4">
+        <div
+          class="box mt-4"
+          v-for="(value, index) in book[0].review.SS"
+          :key="index"
+        >
           <article class="media">
             <div class="media-left">
               <figure class="image is-64x64">
@@ -184,47 +157,9 @@
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>John Smith</strong><br />
-                  <small id="date_review" class="help mb-3"
-                    >วันที่ 9/4/66 : 19.45 น.</small
-                  >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean efficitur sit amet massa fringilla egestas. Nullam
-                  condimentum luctus turpis. Lorem, ipsum dolor sit amet
-                  consectetur adipisicing elit. Esse incidunt ipsum iusto
-                  assumenda ad molestiae aliquam, doloremque inventore minus
-                  natus nesciunt! Neque porro cum eligendi ullam aliquam,
-                  veritatis culpa ab?
-                </p>
-              </div>
-            </div>
-          </article>
-        </div>
-        <div class="box mt-4">
-          <article class="media">
-            <div class="media-left">
-              <figure class="image is-64x64">
-                <img
-                  class="is-rounded"
-                  src="https://bulma.io/images/placeholders/128x128.png"
-                  alt="Image"
-                />
-              </figure>
-            </div>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong>John Smith</strong><br />
-                  <small id="date_review" class="help mb-3"
-                    >วันที่ 9/4/66 : 19.45 น.</small
-                  >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean efficitur sit amet massa fringilla egestas. Nullam
-                  condimentum luctus turpis. Lorem, ipsum dolor sit amet
-                  consectetur adipisicing elit. Esse incidunt ipsum iusto
-                  assumenda ad molestiae aliquam, doloremque inventore minus
-                  natus nesciunt! Neque porro cum eligendi ullam aliquam,
-                  veritatis culpa ab?
+                  <strong></strong><br />
+                  <small id="date_review" class="help mb-3"></small>
+                  {{ value }}
                 </p>
               </div>
             </div>
@@ -321,7 +256,7 @@ export default defineComponent({
 
 #detail_card {
   background: #d1d6e8e6;
-  width: 70%;
+  width: 65%;
   border-radius: 50px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.351);
 }

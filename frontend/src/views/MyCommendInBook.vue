@@ -181,6 +181,7 @@ export default {
       id: 1,
       user: [],
       mycomments: [],
+      type: "ชื่อหนังสือ",
     };
   },
   computed: {
@@ -203,7 +204,7 @@ export default {
         this.user = response2.data;
         console.log(this.user);
 
-        const usercomment = this.user[0].fav_Book.NS;
+        const usercomment = this.user[0].rev_book.NS;
         this.mycomments = this.book.filter((item) => {
           return usercomment.includes(String(item.book_id));
         });
@@ -218,8 +219,64 @@ export default {
     backPage() {
       this.currentPage--;
     },
-    getProducts() {},
+    getProducts() {
+      const usercomment = this.user[0].rev_book.NS;
+      if (this.search == "") {
+        this.mycomments = this.book.filter((item) => {
+          return usercomment.includes(String(item.book_id));
+        });
+      } else if (this.type == "ชื่อหนังสือ") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?title=${this.search}`
+            )
+            .then((response) => {
+              this.mycomments = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "ประเภท") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?type=${this.search}`
+            )
+            .then((response) => {
+              this.mycomments = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.type == "นักเขียน") {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?penname=${this.search}`
+            )
+            .then((response) => {
+              this.mycomments = response.data;
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
     changeTab(text, num) {
+      this.type = text;
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },

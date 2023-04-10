@@ -180,6 +180,7 @@ export default {
       bookshelf: [],
       id: 1,
       type: "ชื่อหนังสือ",
+      keepbook: [],
     };
   },
   computed: {
@@ -198,6 +199,7 @@ export default {
           )
           .then((response) => {
             this.books = response.data;
+            this.keepbook = response.data;
             this.lastpage = response.data.length / 5;
           })
           .catch((error) => {
@@ -214,8 +216,9 @@ export default {
       this.currentPage--;
     },
     getProducts() {
-      console.log(this.type);
-      console.log(this.search);
+      if (this.search == "") {
+        this.books = this.keepbook;
+      }
       if (this.type == "ชื่อหนังสือ") {
         try {
           axios

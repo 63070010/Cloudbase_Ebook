@@ -222,15 +222,12 @@ export default {
       this.currentPage--;
     },
     getProducts() {
-      console.log(this.type);
-      console.log(this.search);
       const getfavbook = this.user[0].fav_Book.NS;
-      if (this.search == ''){
+      if (this.search == "") {
         this.favoritebook = this.book.filter((item) => {
           return getfavbook.includes(String(item.book_id));
         });
-      }
-      else if (this.type == "ชื่อหนังสือ") {
+      } else if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(
