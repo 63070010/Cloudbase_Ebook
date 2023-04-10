@@ -56,21 +56,21 @@
                   </a>
                   <a class="dropdown-item">
                     <router-link
-                      :to="`/Profile_user/${user.id}`"
+                      :to="`/ItemsPoint`"
                       style="color: #8fc1e3"
                       >Item แต้มคะแนน</router-link
                     >
                   </a>
                   <a class="dropdown-item">
                     <router-link
-                      :to="`/Profile_user/${user.id}`"
+                      :to="`/Profile_user/${id}`"
                       style="color: #8fc1e3"
                       >จัดการบัญชี</router-link
                     >
                   </a>
                   <a class="dropdown-item">
                     <router-link
-                      :to="`/Profile_user/${user.id}`"
+                      :to="`/Bookshelf`"
                       style="color: #8fc1e3"
                       >ชั้นหนังสือของฉัน</router-link
                     >
