@@ -182,6 +182,7 @@ export default defineComponent({
       } catch (error) {
         console.log(error);
       }
+      console.log(localStorage);
     },
     async cardpush(event) {
       this.totalprice += event.price;

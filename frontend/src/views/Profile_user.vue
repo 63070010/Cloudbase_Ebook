@@ -3,14 +3,14 @@
     <NavBar />
     <br />
     <div class="container">
-      <h2 class="mb-4 is-size-1 has-text-centered has-text-weight-bold">
+      <h2 class="mb-5 is-size-1 has-text-centered has-text-weight-bold">
         จัดการบัญชี
       </h2>
 
       <div class="card">
         <div class="columns">
           <div class="columns">
-            <figure class="image is-128x128">
+            <figure class="image is-128x128 ml-5">
               <br />
 
               <img
@@ -148,7 +148,7 @@
           </div>
 
           <div class="tile is-parent is-4">
-            <router-link to="/register">
+            <router-link to="/UploadBook">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">อัปโหลดหนังสือ</p>
                 <p class="subtitle has-text-left">

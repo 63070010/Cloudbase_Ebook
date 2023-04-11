@@ -357,13 +357,13 @@ async function Users(event) {
     }
     else if (event.httpMethod == "PUT") {
         try {
-            const { id, email, gender, password, phone, username, receiving_money, profile } = JSON.parse(event.body);
+            const { id, email, gender, password, phone, username, receiving_money, profile, point } = JSON.parse(event.body);
             const params = {
                 TableName: 'user',
                 Key: {
                     id: { "S": id }
                 },
-                UpdateExpression: "set email = :email, gender = :gender, password = :password, phone = :phone, username = :username, receiving_money = :receiving_money, profile = :profile",
+                UpdateExpression: "set email = :email, gender = :gender, password = :password, phone = :phone, username = :username, receiving_money = :receiving_money, profile = :profile, point = :point",
                 ExpressionAttributeValues: {
                     "email": { "S": email },
                     "gender": { "S": gender },
@@ -372,6 +372,7 @@ async function Users(event) {
                     "username": { "S": username },
                     "receiving_money": { "S": receiving_money },
                     "profile": { "S": profile },
+                    "point": { "N": point },
                 },
                 ReturnValues: "UPDATED_NEW"
             };

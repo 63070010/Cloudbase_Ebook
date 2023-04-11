@@ -131,6 +131,7 @@ export default {
   components: {
     NavBar,
   },
+
   setup() {
     const state = reactive({
       username: "",
@@ -152,19 +153,27 @@ export default {
   },
   methods: {
     submit() {
+      console.log(this.state.username);
+      console.log(this.state.password);
       axios
         .post(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/login",
-          { username: this.username, password: this.password }
+          { username: this.state.username, password: this.state.password }
         )
         .then((response) => {
           // ถ้าเข้าสู่ระบบสำเร็จ
           // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
-          localStorage.setItem("token", response.data.token);
+          console.log(response.data);
+
+          localStorage.setItem("token", response.data);
           console.log(localStorage);
+
           // ล้างข้อมูล username และ password
-          this.username = "";
-          this.password = "";
+          this.state.username = "";
+          this.state.password = "";
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

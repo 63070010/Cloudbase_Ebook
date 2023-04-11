@@ -13,6 +13,7 @@ import FavoriteBook from '../views/Favorite_Book.vue'
 import Bookshelf from '../views/Bookshelf.vue'
 import MyCommendinBook from '../views/MyCommendInBook.vue'
 import ItemsPoint from '../views/ItemsPoint.vue'
+import UploadBook from '../views/UploadBook.vue'
 
 const routes = [
   {
@@ -100,6 +101,13 @@ const routes = [
     name: 'ItemsPoint',
 
     component: ItemsPoint
+  }
+  ,
+  {
+    path: '/UploadBook',
+    name: 'UploadBook',
+
+    component: UploadBook
   }
 
 

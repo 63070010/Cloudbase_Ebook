@@ -26,13 +26,16 @@
                 >
                   <br />
 
-                  <img v-if="showuser && showuser[0]"
+                  <img
+                    v-if="showuser && showuser[0]"
                     :src="showuser[0].profile"
                     alt="Image"
                     style="border-radius: 50%; width: 45px; max-height: 200%"
                   />
 
-                  <span class="ml-3" v-if="showuser && showuser[0]">{{ showuser[0].username }}</span>
+                  <span class="ml-3" v-if="showuser && showuser[0]">{{
+                    showuser[0].username
+                  }}</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
@@ -50,14 +53,10 @@
                       "
                     />
 
-                    <span>
-                      {{ showuser[0].point }} แต้ม
-                    </span>
+                    <span> {{ showuser[0].point }} แต้ม </span>
                   </a>
                   <a class="dropdown-item">
-                    <router-link
-                      :to="`/ItemsPoint`"
-                      style="color: #8fc1e3"
+                    <router-link :to="`/ItemsPoint`" style="color: #8fc1e3"
                       >Item แต้มคะแนน</router-link
                     >
                   </a>
@@ -69,9 +68,7 @@
                     >
                   </a>
                   <a class="dropdown-item">
-                    <router-link
-                      :to="`/Bookshelf`"
-                      style="color: #8fc1e3"
+                    <router-link :to="`/Bookshelf`" style="color: #8fc1e3"
                       >ชั้นหนังสือของฉัน</router-link
                     >
                   </a>
@@ -152,10 +149,12 @@ export default {
           `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
         );
         this.showuser = response2.data;
-        console.log(this.showuser)
       } catch (error) {
         console.log(error);
       }
+    },
+    async Logout() {
+      localStorage.removeItem("token");
     },
   },
 };
