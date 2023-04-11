@@ -51,7 +51,7 @@
                     />
 
                     <span>
-                      {{ showuser[0].point }}
+                      {{ showuser[0].point }} แต้ม
                     </span>
                   </a>
                   <a class="dropdown-item">
