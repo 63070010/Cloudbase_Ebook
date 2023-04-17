@@ -1,56 +1,46 @@
 <template>
   <div>
     <NavBar />
-    <div class="container is-max-desktop">
-      <textarea
-        class="hero textarea mt-6 mb-6 has-background-light is-fullheight"
-        v-model="content"
-        disabled
-      ></textarea>
-      <nav
-        class="pagination is-centered"
-        role="navigation"
-        aria-label="pagination"
-      >
-        <a
-          :href="`/ReadBook/${this.$route.params.bookId}/${
-            parseInt(this.$route.params.pageId) - 1
-          }`"
-          class="pagination-previous"
-          >Previous</a
-        >
-        <a
-          :href="`/ReadBook/${this.$route.params.bookId}/${
-            parseInt(this.$route.params.pageId) + 1
-          }`"
-          class="pagination-next"
-          @click="getContent"
-          >Next page</a
-        >
-      </nav>
-    </div>
-
     <br />
+    <div id="webviewer" ref="viewer" s></div>
   </div>
 </template>
 
 
 <script>
 import NavBar from "@/components/NavBar";
+import { ref, onMounted } from "vue";
+import WebViewer from "@pdftron/webviewer";
 export default {
   name: "ReadBook",
   components: {
     NavBar,
   },
-  data() {
+  setup() {
+    const viewer = ref(null);
+    onMounted(() => {
+      const path = `https://firebasestorage.googleapis.com/v0/b/image-a4852.appspot.com/o/cloud-midterm.pdf?alt=media&token=22d57546-6295-4300-bbdb-7513479e0df4&v=${Date.now()}`;
+      WebViewer(
+        {
+          path,
+          disabledElements: [
+            // ปิดการใช้งานปุ่มดาวโหลดและปริ้น
+            "downloadButton",
+            "printButton",
+          ],
+        },
+        viewer.value
+      );
+    });
+
     return {
-      bookContent: {
-        0: { image: "" },
-      },
-      content: "",
+      viewer,
     };
   },
 };
 </script>
-<style lang="">
+<style>
+#webviewer {
+  height: 100vh;
+}
 </style>

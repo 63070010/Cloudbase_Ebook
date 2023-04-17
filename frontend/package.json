@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@creativebulma/bulma-divider": "^1.1.0",
+    "@pdftron/webviewer": "^10.0.0",
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",
     "@vuepic/vue-datepicker": "^3.1.1",

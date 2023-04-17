@@ -14,6 +14,7 @@ import Bookshelf from '../views/Bookshelf.vue'
 import MyCommendinBook from '../views/MyCommendInBook.vue'
 import ItemsPoint from '../views/ItemsPoint.vue'
 import UploadBook from '../views/UploadBook.vue'
+import Readbook from '../views/ReadBook.vue'
 
 const routes = [
   {
@@ -109,7 +110,13 @@ const routes = [
 
     component: UploadBook
   }
+  ,
+  {
+    path: '/Readbook',
+    name: 'Readbook',
 
+    component: Readbook
+  }
 
 ]
 
