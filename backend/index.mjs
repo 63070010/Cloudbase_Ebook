@@ -196,9 +196,16 @@ async function Detailbook(event) {
 
                     image, penname, monthly, book_id, price, sales, title, Date, desc, point,
                     type: item.type ? { SS: item.type.SS } : { SS: [] },
-                    review: item.review ? { SS: item.review.SS } : { SS: [] }
+                    review: item.review ? { SS: item.review.SS } : { SS: [] },
+                    review_user: item.review_user ? { NS: review_user } : { NS: [] }
                 };
-            }); return {
+
+            }
+
+            );
+
+
+            return {
                 statusCode: 200,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -219,15 +226,16 @@ async function Detailbook(event) {
     }
     else if (event.httpMethod == "PUT") {
         try {
-            const { book_id, review } = JSON.parse(event.body);
+            const { book_id, review, review_user } = JSON.parse(event.body);
             const params = {
                 TableName: 'book',
                 Key: {
                     book_id: { "N": String(book_id) }
                 },
-                UpdateExpression: "set review = :review",
+                UpdateExpression: "set review = :review, review_user = :review_user",
                 ExpressionAttributeValues: {
                     ":review": { "SS": review },
+                    ":review_user": { "NS": review_user },
                 },
                 ReturnValues: "UPDATED_NEW"
             };
