@@ -218,7 +218,6 @@ export default {
           );
           const data = response.data;
 
-          // เรียงลำดับตามวันที่
           const sortedByDate = data.sort(function (a, b) {
             const dateA = new Date(a.Date).getTime();
             const dateB = new Date(b.Date).getTime();
@@ -237,12 +236,25 @@ export default {
           );
           const data = response.data;
 
-          // เรียงลำดับตามวันที่
-        const sortedBySales = [...data].sort(function (a, b) {
-          return b.sales - a.sales;
-        });
+          const sortedBySales = [...data].sort(function (a, b) {
+            return b.sales - a.sales;
+          });
 
           this.books = sortedBySales;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      if (id == "Books for this month") {
+        try {
+          const response2 = await axios.get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?monthly=${1}`
+          );
+
+          const datamothly = response2.data;
+          this.books = datamothly
+          
         } catch (error) {
           console.log(error);
         }
