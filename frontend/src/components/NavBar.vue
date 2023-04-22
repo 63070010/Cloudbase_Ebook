@@ -105,9 +105,17 @@
           <p class="navbar-item">
             <router-link to="/Admin_AddEvent" style="color: #687864"
               ><button class="button mr-3">
-                <span style="color: #687864">เพิ่มกิจกรรม</span>
+                <span style="color: #687864">Event</span>
                 <span class="icon is-size-5 ml-2">
                   <i class="fa fa-plus-circle" style="color: #687864"> </i>
+                </span>
+              </button>
+            </router-link>
+            <router-link to="/Admin_AddItem" style="color: #687864"
+              ><button class="button mr-3">
+                <span style="color: #687864">Item</span>
+                <span class="icon is-size-5 ml-2">
+                  <i class="fa fa-plus-square" style="color: #687864"></i>
                 </span>
               </button>
             </router-link>
