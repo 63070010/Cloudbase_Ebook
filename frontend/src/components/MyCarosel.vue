@@ -49,7 +49,6 @@ export default {
           )
           .then((response) => {
             this.promotion = response.data;
-             console.log(this.promotion)
           })
           .catch((error) => {
             console.error(error);

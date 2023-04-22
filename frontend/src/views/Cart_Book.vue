@@ -38,7 +38,7 @@
                   <span style="color: #8fc1e3">ราคา: {{ value.price }}</span>
                   <br />
                   <span style="color: #8fc1e3"
-                    >แต้มสะสม: {{ value.Points }}</span
+                    >แต้มสะสม: {{ value.point }}</span
                   >
                 </div>
                 <div class="level-right">
@@ -68,19 +68,25 @@
             >
               ยอดชำระเงิน : {{ totalprice }} บาท
             </h1>
+            <h1
+              class="title has-text-centered section-title is-size-4"
+              style="color: #31708e"
+            >
+              คะแนนสะสมรวม : {{ totalpoint }} บาท
+            </h1>
           </div>
           <div class="column is-10 has-text-centered is-offset-1">
             <h2 class="subtitle" style="color: #31708e">
               จำนวนหนังสือในตะกร้า : {{ cartitemlast.length }} เล่ม
             </h2>
-            <router-link style="color: #8fc1e3" v-if="cartitemlast.length > 0">
-              <button class="button">
-                ไปหน้าชำระเงิน&emsp;<i
-                  class="fa fa-arrow-circle-right"
-                  aria-hidden="true"
-                ></i>
-              </button>
-            </router-link>
+
+            <button class="button">
+              ไปหน้าชำระเงิน&emsp;<i
+                class="fa fa-arrow-circle-right"
+                aria-hidden="true"
+              ></i>
+            </button>
+
             <div>
               <button class="button" disabled v-if="cartitemlast.length == 0">
                 ไปหน้าชำระเงิน&emsp;<i
@@ -116,6 +122,7 @@ export default {
       totalprice: 0,
       bookshelf: [],
       id: 1,
+      totalpoint: 0,
     };
   },
   methods: {
@@ -133,6 +140,7 @@ export default {
         this.cartitem = this.cart[0].cart_item.NS;
         this.bookshelf = this.cart[0].bookshelf.NS;
         this.totalprice = this.cart[0].price;
+        this.totalpoint = this.cart[0].point;
 
         this.cartitemlast = this.book.filter((item) => {
           return this.cartitem.includes(String(item.book_id));
@@ -144,6 +152,7 @@ export default {
     },
     async dropbook(event) {
       this.totalprice -= event.price;
+      this.totalpoint -= event.point;
       this.cartitem = this.cartitem.filter(
         (item) => item !== String(event.book_id)
       );
@@ -165,6 +174,7 @@ export default {
             cart_item: this.cartitem,
             user_id: String(this.id),
             price: this.totalprice,
+            point: this.totalpoint,
           }
         )
         .then(function (response) {

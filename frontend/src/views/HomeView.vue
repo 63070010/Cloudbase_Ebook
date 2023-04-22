@@ -115,6 +115,7 @@ export default defineComponent({
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
+      totalpoint: 0,
     };
   },
 
@@ -131,6 +132,11 @@ export default defineComponent({
         );
         const data = response.data;
 
+        const response2 = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?monthly=${1}`
+        );
+
+        const datamothly = response2.data;
         // เรียงลำดับตามวันที่
         const sortedByDate = data.sort(function (a, b) {
           const dateA = new Date(a.Date).getTime();
@@ -143,7 +149,7 @@ export default defineComponent({
           return b.sales - a.sales;
         });
 
-        this.books = [sortedByDate, sortedBySales];
+        this.books = [sortedByDate, sortedBySales, datamothly];
 
         this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {
@@ -176,6 +182,7 @@ export default defineComponent({
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
             this.totalprice = this.cart[0].price;
+            this.totalpoint = this.cart[0].point;
           })
           .catch((error) => {
             console.error(error);
@@ -186,11 +193,11 @@ export default defineComponent({
       console.log(localStorage);
     },
     async cardpush(event) {
+      console.log(event);
       this.totalprice += event.price;
+      this.totalpoint += event.point;
       this.bookincart.push(String(event.book_id));
-
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
+      console.log(this.totalpoint);
       axios
         .put(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
@@ -200,6 +207,7 @@ export default defineComponent({
             cart_item: this.bookincart,
             user_id: String(this.id),
             price: this.totalprice,
+            point: this.totalpoint,
           }
         )
         .then(function (response) {

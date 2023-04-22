@@ -3,7 +3,7 @@
     <NavBar />
     <div>
       <div class="hero is-fullheight">
-        <div id="detail_card" class="container p-6">
+        <div id="detail_card" class="container p-6" v-if="book && book[0]">
           <h1 class="title is-3 has-text-centered">
             {{ book[0].title }}
           </h1>
@@ -23,7 +23,11 @@
               </p>
               <p class="is-size-4">
                 วันที่วางขาย :
-                <span id="text_color">12/03/2566</span>
+                <span id="text_color">{{ book[0].Date }}</span>
+              </p>
+              <p class="is-size-4">
+                แต้มสะสม :
+                <span id="text_color">{{ book[0].point }}</span>
               </p>
               <p class="is-size-4">คำโปรย :</p>
               <p class="is-size-5 mt-2 mb-4">
@@ -74,30 +78,28 @@
 
               <!-- ######## ส่วน Btn ซื้อ ########-->
               <div id="btn_buy" class="field has-addons mt-5">
-                <div class="button is-large is-primary is-rounded mr-3">
+                <div
+                  class="button is-large is-primary is-rounded mr-3"
+                  v-if="
+                    !bookshelf.includes(String(book[0].book_id)) &&
+                    !bookincart.includes(String(book[0].book_id))
+                  "
+                  @click="cardpush(book[0])"
+                >
                   ซื้อ {{ book[0].price }} บาท
+                </div>
+                <div
+                  v-else-if="bookincart.includes(String(book[0].book_id))"
+                  class="button is-large is-primary is-rounded mr-3"
+                >
+                  หนังสืออยู่ในตะกร้า
+                </div>
+                <div v-else class="button is-large is-primary is-rounded mr-3">
+                  มีหนังสือเล่มนี้แล้ว
                 </div>
               </div>
 
               <br />
-              <!-- <div v-show="
-                this.checkadmin.length == 0 &&
-                this.book[0].status == 'succeed'
-              ">
-                <div class="level-centere" v-if="
-                  this.totalBook.find((x) => x.book_id == book[0].id) ===
-                  undefined
-                ">
-                  <a class="button is-medium is-info is-outlined" @click="cardpush(book[0])">
-                    เพิ่มลงในตะกร้า
-                  </a>
-                </div>
-                <div class="level-centere" v-else>
-                  <a class="button is-medium is-info is-outlined" disabled>
-                    มีหนังสือเล่มนี้แล้ว
-                  </a>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -109,8 +111,12 @@
       </div>
 
       <!--######## ส่วน review ########-->
-      <div class="container is-fullheight mb-5">
-        <div id="main_review" class="card">
+      <div class="container is-fullheight mb-5" v-if="user && user[0]">
+        <div
+          id="main_review"
+          class="card"
+          v-if="!checkuser.includes(String(user[0].id))"
+        >
           <header id="head_review" class="card-header">
             <p class="card-header-title is-size-3 has-text-link-light">
               เขียนรีวิว
@@ -128,6 +134,32 @@
             <div
               id="btn_review"
               class="button is-info is-rounded mt-5 is-size-5"
+              @click="submit()"
+            >
+              ส่งรีวิว
+            </div>
+          </div>
+        </div>
+
+        <div id="main_review" class="card" v-else>
+          <header id="head_review" class="card-header">
+            <p class="card-header-title is-size-3 has-text-link-light">
+              แก้ไข รีวิว
+            </p>
+          </header>
+          <div
+            id="content_review"
+            class="card-content has-background-link-light"
+          >
+            <textarea
+              class="textarea"
+              placeholder="พิมพ์ความคิดเห็น..."
+              v-model="reviewText"
+            ></textarea>
+            <div
+              id="btn_review"
+              class="button is-info is-rounded mt-5 is-size-5"
+              @click="submitedit()"
             >
               ส่งรีวิว
             </div>
@@ -136,32 +168,35 @@
       </div>
 
       <!--######## ส่วน show review all #######-->
-      <div class="container is-max-desktop px-5 mb-5">
+      <div class="container is-max-desktop px-5 mb-5" v-if="book && book[0]">
         <p class="is-size-3">รีวิวทั้งหมด</p>
         <!-- แสดง รีวิว -->
         <div
           class="box mt-4"
-          v-for="(value, index) in book[0].review.SS"
+          v-for="(value, index) in this.reviewall"
           :key="index"
         >
-          <article class="media">
+          <article class="media" v-if="allcomments && allcomments[0]">
             <div class="media-left">
               <figure class="image is-64x64">
-                <img
-                  class="is-rounded"
-                  src="https://bulma.io/images/placeholders/128x128.png"
-                  alt="Image"
-                />
+                <img class="is-rounded" :src="allcomments[index].profile" />
               </figure>
             </div>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong></strong><br />
+                  <strong> {{ allcomments[index].username }} </strong><br />
                   <small id="date_review" class="help mb-3"></small>
                   {{ value }}
                 </p>
               </div>
+            </div>
+            <div class="level-right" v-if="allcomments[index].id == id">
+              <a class="level-item">
+                <span class="icon is-small">
+                  <i class="fa fa-user" style="color: #687864"></i>
+                </span>
+              </a>
             </div>
           </article>
         </div>
@@ -201,23 +236,65 @@ export default defineComponent({
       totalBook: [],
       checkadmin: [],
       checkBag: false,
-      checkfollow: false,
       reviewText: "",
       book_id: 1,
+      id: 2,
+      bookshelf: [],
+      bookincart: [],
+      totalprice: 0,
+      totalpoint: 0,
+      alluser: [],
+      allcomments: [],
+      user: [],
+      checkuser: [],
+      rev_book: [],
     };
   },
   created() {
     this.fetchData(this.$route.params.id);
+    this.getcart();
+    this.getuser();
   },
   methods: {
     async fetchData(id) {
       try {
+        const response = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${id}`
+        );
+        this.book = response.data;
+        const responseuser = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/alluser`
+        );
+        this.alluser = responseuser.data;
+        this.checkuser = this.book[0].review_user.SS;
+        this.reviewall = this.book[0].review.SS;
+        this.reviewall = this.reviewall.filter((item) => item !== "");
+
+        this.allcomments = this.alluser.filter((item) => {
+          return this.checkuser.includes(String(item.id));
+        });
+        this.allcomments = this.allcomments.sort((a, b) => {
+          return this.checkuser.indexOf(a.id) - this.checkuser.indexOf(b.id);
+        });
+
+        if (this.fav_Book.includes(String(this.book[0].book_id))) {
+          this.checkBag = true;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getuser() {
+      try {
         axios
           .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${id}`
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
           )
           .then((response) => {
-            this.book = response.data;
+            this.user = response.data;
+            this.rev_book = this.user[0].rev_book.NS;
+            this.fav_Book = this.user[0].fav_Book.NS;
           })
           .catch((error) => {
             console.error(error);
@@ -226,6 +303,83 @@ export default defineComponent({
         console.log(error);
       }
     },
+
+    async getcart() {
+      try {
+        axios
+          .get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+          )
+          .then((response) => {
+            this.cart = response.data;
+            this.bookshelf = this.cart[0].bookshelf.NS;
+            this.bookincart = this.cart[0].cart_item.NS;
+            this.totalprice = this.cart[0].price;
+            this.totalpoint = this.cart[0].point;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async cardpush(event) {
+      this.totalprice += event.price;
+      this.bookincart.push(String(event.book_id));
+      this.totalpoint += event.point;
+
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+          {
+            id: String(this.id),
+            bookshelf: this.bookshelf,
+            cart_item: this.bookincart,
+            user_id: String(this.id),
+            price: this.totalprice,
+            point: this.totalpoint,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    async submit() {
+      this.reviewall.push(String(this.reviewText));
+      this.checkuser.push(String(this.user[0].id));
+      this.rev_book.push(String(this.book[0].book_id));
+      this.allcomments = this.alluser.filter((item) => {
+        return this.checkuser.includes(String(item.id));
+      });
+      this.allcomments = this.allcomments.sort((a, b) => {
+        return this.checkuser.indexOf(a.id) - this.checkuser.indexOf(b.id);
+      });
+      this.reviewall = this.reviewall.filter((item) => item !== "");
+      console.log(this.allcomments);
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook",
+          {
+            id: String(this.id),
+            review: this.reviewall,
+            review_user: this.checkuser,
+            rev_book: this.rev_book,
+            fav_Book: this.fav_Book,
+            book_id: this.book[0].book_id,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+          console.log(111);
+        });
+    },
     iconBagIsActive() {
       this.checkBag = false;
       this.book[0].want_have = false;
@@ -233,14 +387,6 @@ export default defineComponent({
     iconBag() {
       this.checkBag = true;
       this.book[0].want_have = true;
-    },
-    iconFoll() {
-      this.checkfollow = true;
-      this.book[0].follow = true;
-    },
-    iconFollIsActive() {
-      this.checkfollow = false;
-      this.book[0].follow = false;
     },
   },
 });
@@ -296,20 +442,6 @@ export default defineComponent({
 
 #text_bag {
   color: #003478;
-}
-
-#icon_plus_active {
-  color: #ffeff3;
-  background: #ff4974;
-}
-
-#text_plus_active {
-  color: #ff3c3c;
-}
-
-#icon_plus {
-  color: #003478;
-  background: #0063ba2d;
 }
 
 #text_plus {
