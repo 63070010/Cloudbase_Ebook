@@ -43,6 +43,9 @@ export const handler = async (event) => {
             case '/alluser': {
                 return await Alluser();
             };
+            case '/fav': {
+                return await Fav(event);
+            };
             case 'OPTIONS': { // เพิ่ม options เพื่อทำการ preflight สำหรับ CORS
                 return {
                     statusCode: 200,
@@ -230,7 +233,7 @@ async function Detailbook(event) {
     }
     else if (event.httpMethod == "PUT") {
         try {
-            const { book_id, review, review_user, rev_book, fav_Book, id } = JSON.parse(event.body);
+            const { book_id, review, review_user, rev_book, id } = JSON.parse(event.body);
             const params = {
                 TableName: 'book',
                 Key: {
@@ -248,17 +251,14 @@ async function Detailbook(event) {
                 Key: {
                     id: { "S": id }
                 },
-                UpdateExpression: "set rev_book = :rev_book, fav_Book = :fav_Book",
+                UpdateExpression: "set rev_book = :rev_book",
                 ExpressionAttributeValues: {
                     ":rev_book": { "NS": rev_book },
-                    ":fav_Book": { "NS": fav_Book },
                 },
                 ReturnValues: "UPDATED_NEW"
             };
             await dynamo.send(new UpdateItemCommand(params));
             await dynamo.send(new UpdateItemCommand(paramsuser));
-
-
 
             return {
                 statusCode: 200,
@@ -902,6 +902,41 @@ async function Alluser() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(items)
+        };
+    } catch (err) {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+}
+
+async function Fav(event) {
+    try {
+        const { id, fav_Book } = JSON.parse(event.body);
+        const paramsuser = {
+            TableName: 'user',
+            Key: {
+                id: { "S": id }
+            },
+            UpdateExpression: "set fav_Book = :fav_Book",
+            ExpressionAttributeValues: {
+                ":fav_Book": { "NS": fav_Book },
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+        await dynamo.send(new UpdateItemCommand(paramsuser));
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: 'Item updated in DynamoDB' })
         };
     } catch (err) {
         return {

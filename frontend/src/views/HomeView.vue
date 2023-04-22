@@ -131,6 +131,11 @@ export default defineComponent({
         );
         const data = response.data;
 
+        const response2 = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?monthly=${1}`
+        );
+
+        const datamothly = response2.data;
         // เรียงลำดับตามวันที่
         const sortedByDate = data.sort(function (a, b) {
           const dateA = new Date(a.Date).getTime();
@@ -143,7 +148,7 @@ export default defineComponent({
           return b.sales - a.sales;
         });
 
-        this.books = [sortedByDate, sortedBySales];
+        this.books = [sortedByDate, sortedBySales, datamothly];
 
         this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {
