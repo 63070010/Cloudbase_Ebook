@@ -14,7 +14,8 @@
               class="field has-addons is-pulled-right"
               style="color: #123c69"
             >
-              <button class="button">ดูหนังสือทั้งหมด</button>
+              <router-link :to="`/SearchBook/${nameevent[indexallbooks].engname}`">
+              <button class="button">ดูหนังสือทั้งหมด</button></router-link>
             </div>
             <h1 class="ml-4">{{ nameevent[indexallbooks].thainame }}</h1>
             <div class="divider is-info" style="color: #123c69">

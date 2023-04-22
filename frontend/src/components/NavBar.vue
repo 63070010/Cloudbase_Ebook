@@ -111,7 +111,7 @@
                 ></span>
               </button>
             </router-link>
-            <router-link to="/SearchBook" style="color: #687864">
+            <router-link :to="`/SearchBook/${'all'}`" style="color: #687864">
               <button class="button">
                 <span style="color: #687864">ค้นหาหนังสือ</span>
                 <span class="icon is-size-5 ml-2"

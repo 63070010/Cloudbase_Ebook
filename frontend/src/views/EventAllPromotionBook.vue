@@ -53,7 +53,7 @@
       </div>
 
       <!--######### ส่วนแสดงผล #########-->
-      <div class="container">
+      <div class="container"  v-if="bookinevent && bookinevent[0]">
         <section class="card is-small is-narrow p-5">
           <div class="columns">
             <div
@@ -158,13 +158,12 @@ import NavBar from "@/components/NavBar";
 import axios from "axios";
 
 export default {
-  name: "SearchBook",
+  name: "EventAllPromotion",
   components: {
     NavBar,
   },
   created() {
     this.fetchData(this.$route.params.id);
-    this.getcart();
   },
   data() {
     return {
@@ -181,71 +180,36 @@ export default {
       id: 1,
       type: "ชื่อหนังสือ",
       keepbook: [],
+      bookinevent: [],
     };
   },
   computed: {
     paginatedBooks() {
       const startIndex = (this.currentPage - 1) * 5;
       const endIndex = startIndex + 5;
-      return this.books.slice(startIndex, endIndex);
+      return this.bookinevent.slice(startIndex, endIndex);
     },
   },
   methods: {
     async fetchData(id) {
-      if (id == "all") {
-        try {
-          axios
-            .get(
-              "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-            )
-            .then((response) => {
-              this.books = response.data;
-              this.keepbook = response.data;
-              this.lastpage = response.data.length / 5;
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      try {
+        console.log(id)
+        const response = await axios.get(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+        );
+        this.books = response.data;
+        const response2 = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/getevent?event_id=${id}`
+        );
+        this.event = response2.data;
 
-      if (id == "Latest new books") {
-        try {
-          const response = await axios.get(
-            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-          );
-          const data = response.data;
-
-          // เรียงลำดับตามวันที่
-          const sortedByDate = data.sort(function (a, b) {
-            const dateA = new Date(a.Date).getTime();
-            const dateB = new Date(b.Date).getTime();
-            return dateB - dateA;
-          });
-          this.books = sortedByDate;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      if (id == "Bestseller") {
-        try {
-          const response = await axios.get(
-            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-          );
-          const data = response.data;
-
-          // เรียงลำดับตามวันที่
-        const sortedBySales = [...data].sort(function (a, b) {
-          return b.sales - a.sales;
+        const getevent = this.event[0].book_id.NS;
+        this.bookinevent = this.books.filter((item) => {
+          return getevent.includes(String(item.book_id));
         });
-
-          this.books = sortedBySales;
-        } catch (error) {
-          console.log(error);
-        }
+        console.log(this.event);
+      } catch (error) {
+        console.log(error);
       }
     },
     nextPage() {

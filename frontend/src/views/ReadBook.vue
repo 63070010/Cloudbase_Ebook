@@ -1,67 +1,56 @@
 <template>
   <div>
-    <NavBar />
-    <br />
-    <div id="webviewer" ref="viewer">
-      <div class="rectangle" v-if="isLoaded == true"></div>
-    </div>
+    <div ref="pdfViewer"></div>
+    <button @click="printLicense">Print License</button>
   </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar";
-import { ref, onMounted } from "vue";
 import WebViewer from "@pdftron/webviewer";
 
 export default {
-  name: "ReadBook",
-  components: {
-    NavBar,
-  },
+  name: "PdfViewer",
   data() {
     return {
-      isLoaded: false,
+      licenseKey: "your_license_key_here",
+      instance: null,
     };
   },
-  setup() {
-    const viewer = ref(null);
+  methods: {
+    async printLicense() {
+      // Make sure the instance is loaded and not null
+      if (!this.instance) {
+        console.error("WebViewer instance is not loaded yet!");
+        return;
+      }
 
-    onMounted(() => {
-      const path = `https://firebasestorage.googleapis.com/v0/b/image-a4852.appspot.com/o/cloud-midterm.pdf?alt=media&token=22d57546-6295-4300-bbdb-7513479e0df4&v`;
-      setTimeout(() => {
-        WebViewer(
-          {
-            path,
-          },
-          viewer.value
-        );
-      }, 1000);
+      // Check if the license is valid
+      if (!this.instance.isFullPDFEnabled()) {
+        console.error("Invalid license key!");
+        return;
+      }
+
+      // Print the license text into the PDF
+      await this.instance.print();
+    },
+  },
+  mounted() {
+    // Load PDFTron WebViewer
+    WebViewer(
+      {
+        path: "path/to/webviewer",
+        initialDoc: "path/to/my/pdf",
+        licenseKey: this.licenseKey,
+      },
+      this.$refs.pdfViewer
+    ).then((instance) => {
+      this.instance = instance;
     });
-
-    return {
-      viewer,
-    };
   },
-  created() {
-    setTimeout(() => {
-      this.isLoaded = true;
-    }, 1800);
+  unmounted() {
+    // Cleanup WebViewer instance
+    this.instance && this.instance.closeDocument();
+    this.instance && this.instance.delete();
   },
 };
 </script>
-
-<style>
-#webviewer {
-  height: 100vh;
-  position: relative;
-}
-.rectangle {
-  width: 120px;
-  height: 40px;
-  background-color: #333333;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-}
-</style>

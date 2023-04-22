@@ -14,6 +14,8 @@ import MyCommendinBook from '../views/MyCommendInBook.vue'
 import ItemsPoint from '../views/ItemsPoint.vue'
 import UploadBook from '../views/UploadBook.vue'
 import Readbook from '../views/ReadBook.vue'
+import QrCodeWithCheck from '../views/QRCode.vue'
+import EventAllPromotion from '../views/EventAllPromotionBook.vue'
 
 const routes = [
   {
@@ -60,7 +62,7 @@ const routes = [
   }
   ,
   {
-    path: '/SearchBook',
+    path: '/SearchBook/:id',
     name: 'SearchBook',
 
     component: SearchBook
@@ -111,7 +113,20 @@ const routes = [
 
     component: Readbook
   }
+  ,
+  {
+    path: '/QrCodeWithCheck',
+    name: 'QrCodeWithCheck',
 
+    component: QrCodeWithCheck
+  }
+  ,
+  {
+    path: '/EventAllPromotion/:id',
+    name: 'EventAllPromotion',
+
+    component: EventAllPromotion
+  }
 ]
 
 const router = createRouter({

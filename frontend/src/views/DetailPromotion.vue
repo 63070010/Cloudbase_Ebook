@@ -48,7 +48,8 @@
               class="field has-addons is-pulled-right"
               style="color: #123c69"
             >
-              <button class="button">ดูหนังสือทั้งหมด</button>
+              <router-link :to="`/EventAllPromotion/${this.$route.params.id}`">
+              <button class="button">ดูหนังสือทั้งหมด</button></router-link>
             </div>
             <h1 class="ml-4">book in event</h1>
             <div class="divider is-info" style="color: #123c69">
