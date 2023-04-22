@@ -2,7 +2,7 @@
   <div>
     <NavBar />
     <br />
-    <div class="container">
+    <div class="container" v-if="showprofileuser.length > 0">
       <h2 class="mb-5 is-size-1 has-text-centered has-text-weight-bold">
         จัดการบัญชี
       </h2>
@@ -15,6 +15,7 @@
 
               <img
                 class="is-rounded"
+                v-if="showprofileuser[0].profile != ''"
                 :src="showprofileuser[0].profile"
                 alt="Image"
                 style="object-fit: cover"
@@ -268,7 +269,7 @@ export default {
         gender: "ชาย",
         password: "123456789",
       },
-      id: 1,
+
       Change_password: false,
       showprofileuser: [],
     };

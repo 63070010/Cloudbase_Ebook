@@ -53,7 +53,7 @@
       </div>
 
       <!--######### ส่วนแสดงผล #########-->
-      <div class="container"  v-if="bookinevent && bookinevent[0]">
+      <div class="container" v-if="bookinevent && bookinevent[0]">
         <section class="card is-small is-narrow p-5">
           <div class="columns">
             <div
@@ -116,7 +116,10 @@
           </div>
 
           <!--######### BTN NEXT && BACK #########-->
-          <div class="field next_or_back has-addons">
+          <div
+            class="field next_or_back has-addons"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <button
               v-if="this.currentPage == 1"
               disabled
@@ -193,7 +196,7 @@ export default {
   methods: {
     async fetchData(id) {
       try {
-        console.log(id)
+        console.log(id);
         const response = await axios.get(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
         );

@@ -8,11 +8,7 @@
         <div class="container p-5">
           <div class="file is-centered is-boxed has-name mb-5">
             <label class="file-label">
-              <input
-                class="file-input"
-                type="button"
-                value="Choose a file"
-              />
+              <input class="file-input" type="button" value="Choose a file" />
               <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -27,13 +23,22 @@
           <div class="field mt-5">
             <label class="label">หัวข้อกิจกรรม</label>
             <div class="control">
-              <input class="input" type="text" placeholder="ชื่อกิจกรรม" v-model="title">
+              <input
+                class="input"
+                type="text"
+                placeholder="ชื่อกิจกรรม"
+                v-model="title"
+              />
             </div>
           </div>
           <div class="field mt-5">
             <label class="label">รายละเอียด</label>
             <div class="control">
-              <textarea class="textarea" placeholder="รายละเอียด" v-model="desc"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="รายละเอียด"
+                v-model="desc"
+              ></textarea>
             </div>
           </div>
           <button
@@ -64,8 +69,8 @@ export default {
   },
   data() {
     return {
-      title: '',
-      desc: '',
+      title: "",
+      desc: "",
     };
   },
   methods: {
@@ -86,7 +91,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-
     },
   },
 };
@@ -102,7 +106,6 @@ body {
 .container {
   margin-top: 3%;
 }
-
 
 .columns {
   display: flex;
@@ -120,5 +123,4 @@ body {
 .card-content {
   height: 100px;
 }
-
 </style>

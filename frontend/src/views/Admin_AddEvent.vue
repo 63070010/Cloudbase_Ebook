@@ -8,11 +8,7 @@
         <div class="container p-5">
           <div class="file is-centered is-boxed has-name mb-5">
             <label class="file-label">
-              <input
-                class="file-input"
-                type="button"
-                value="Choose a file"
-              />
+              <input class="file-input" type="button" value="Choose a file" />
               <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -27,13 +23,22 @@
           <div class="field mt-5">
             <label class="label">หัวข้อกิจกรรม</label>
             <div class="control">
-              <input class="input" type="text" placeholder="ชื่อกิจกรรม" v-model="title">
+              <input
+                class="input"
+                type="text"
+                placeholder="ชื่อกิจกรรม"
+                v-model="title"
+              />
             </div>
           </div>
           <div class="field mt-5">
             <label class="label">รายละเอียด</label>
             <div class="control">
-              <textarea class="textarea" placeholder="รายละเอียด" v-model="desc"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="รายละเอียด"
+                v-model="desc"
+              ></textarea>
             </div>
           </div>
           <button
@@ -46,16 +51,12 @@
       </section>
     </div>
 
-
     <!-- ### ส่วน search ### -->
-    <div class="container is-max-widescreen px-6">
-      <div class="divider is-info" style="color: #123c69">
-        ** ** **
-      </div>
+    <div class="container is-max-widescreen">
       <h2 class="subtitle">ค้นหาหนังสือ</h2>
       <!--######### tab ค้นหา #########-->
       <div class="tabs is-boxed">
-        <ul id="taball">
+        <ul>
           <li
             :class="[number == 1 ? 'is-active' : '']"
             @click="changeTab('ชื่อหนังสือ', 1)"
@@ -80,34 +81,101 @@
               <span>นักเขียน</span>
             </a>
           </li>
-          <li id="tab-search">
-            <!--######### search #########-->
-          <div class="search">
-            <div class="field search_field has-addons">
-              <p class="control search_input">
-                <input
-                  v-model="search"
-                  class="input is-rounded"
-                  type="text"
-                  :placeholder="typeTab"
-                />
-              </p>
-              <p class="control" @click="getProducts()">
-                <button class="button is-link is-rounded">
-                  <i class="fa fa-search"></i>
-                </button>
-              </p>
-            </div>
-          </div>
-          </li>
         </ul>
+      </div>
+
+      <!--######### search #########-->
+      <div class="search">
+        <div class="field search_field has-addons">
+          <p class="control search_input">
+            <input
+              v-model="search"
+              class="input is-rounded"
+              type="text"
+              :placeholder="typeTab"
+            />
+          </p>
+          <p class="control" @click="getProducts()">
+            <button class="button is-link is-rounded">
+              <i class="fa fa-search"></i>
+            </button>
+          </p>
+        </div>
       </div>
 
       <!--######### ส่วนแสดงผล #########-->
       <div class="container">
         <section class="card is-small is-narrow p-5">
-            <!--######### BTN NEXT && BACK #########-->
-          <div class="field next_or_back has-addons has-text-centered">
+          <div class="columns">
+            <div
+              class="column is-one-fifth"
+              v-for="(value, index) in paginatedBooks"
+              :key="index"
+            >
+              <div class="card">
+                <router-link :to="`/DetailsBook/${value.book_id}`">
+                  <div class="card-image">
+                    <figure class="image is-square">
+                      <img :src="value.image" />
+                    </figure>
+                  </div>
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-content" style="color: #edc7b7">
+                        <p class="is-size-6 has-text-centered subtitle">
+                          {{ value.title }}
+                        </p>
+                        <p class="is-size-7" style="color: #bab2b5">
+                          By {{ value.penname }}
+                        </p>
+                        <p class="is-size-7" style="color: #bab2b5">
+                          Date {{ value.Date }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </router-link>
+                <br />
+                <div
+                  class="level ml-2 mt-6"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div id="icon_area">
+                    <button
+                      id="icon_bag_active"
+                      class="button is-rounded"
+                      @click="iconAddIsActive(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag_active" class="help">
+                      เพิ่มหนังสือลงกิจกรรมแล้ว
+                    </p>
+                  </div>
+                  <div id="icon_area">
+                    <button
+                      id="icon_bag"
+                      class="button is-rounded"
+                      @click="iconAdd(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag" class="help">เพิ่มหนังสือลงกิจกรรม</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--######### BTN NEXT && BACK #########-->
+          <div
+            class="field next_or_back has-addons"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <button
               v-if="this.currentPage == 1"
               disabled
@@ -134,50 +202,9 @@
               <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </button>
           </div>
-          <div class="columns">
-            <div
-              class="column is-one-fifth"
-              v-for="(value, index) in paginatedBooks"
-              :key="index"
-            >
-              <div class="card">
-
-                <router-link :to="`/DetailsBook/${value.book_id}`">
-                  <div class="card-image">
-                    <figure class="image is-square">
-                      <img :src="value.image" />
-                    </figure>
-                  </div>
-                  <div class="card-content">
-                    <div class="media">
-                      <div class="media-content" style="color: #edc7b7">
-                        <p class="is-size-6 has-text-centered subtitle">
-                          {{ value.title }}
-                        </p>
-                        <p class="is-size-7" style="color: #bab2b5">
-                          By {{ value.penname }}
-                        </p>
-                        <p class="is-size-7" style="color: #bab2b5">
-                          Date {{ value.Date }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </router-link>
-                <div class="level ml-2 mt-6">
-                  <button
-                    class="button is-ghost has-text-danger pb-4"
-                    @click="cardpush(value)">
-                  <i class="fa fa-plus-circle fas fa-2x" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
         </section>
       </div>
+      <br />
     </div>
 
     <br />
@@ -195,7 +222,6 @@ export default {
   },
   created() {
     this.fetchData();
-    this.getcart();
   },
   data() {
     return {
@@ -212,8 +238,9 @@ export default {
       id: 1,
       type: "ชื่อหนังสือ",
       keepbook: [],
-      title: '',
-      desc: '',
+      title: "",
+      desc: "",
+      book_id: [],
     };
   },
   computed: {
@@ -241,7 +268,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-
     },
     nextPage() {
       this.currentPage++;
@@ -308,49 +334,24 @@ export default {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },
-    async getcart() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.bookshelf = this.cart[0].bookshelf.NS;
-            this.bookincart = this.cart[0].cart_item.NS;
-            this.totalprice = this.cart[0].price;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
+  },
+  iconAddIsActive(event) {
+    this.books = this.books.map((book) => {
+      if (book.book_id === event.book_id) {
+        return { ...book, monthly: false };
+      } else {
+        return book;
       }
-    },
-    async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
-
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
+    });
+  },
+  iconAdd(event) {
+    this.books = this.books.map((book) => {
+      if (book.book_id === event.book_id) {
+        return { ...book, monthly: true };
+      } else {
+        return book;
+      }
+    });
   },
 };
 </script>
@@ -411,5 +412,21 @@ body {
 .card-content {
   height: 100px;
 }
+#icon_bag_active {
+  color: #ffeff3;
+  background: #ff4974;
+}
 
+#text_bag_active {
+  color: #ff3c3c;
+}
+
+#icon_bag {
+  color: #003478;
+  background: #0063ba2d;
+}
+
+#text_bag {
+  color: #003478;
+}
 </style>

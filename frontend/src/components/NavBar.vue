@@ -1,6 +1,10 @@
 <template>
   <div>
-    <nav class="navbar is-fixed-top" style="background-color: #5085a5">
+    <nav
+      class="navbar is-fixed-top"
+      style="background-color: #5085a5"
+      v-if="showuser && showuser[0]"
+    >
       <div class="navbar-menu mt-1 mb-1">
         <div class="navbar-start ml-3">
           <div v-if="!user" class="navbar-item">
@@ -16,7 +20,11 @@
           </div>
 
           <div v-else class="navbar-item">
-            <div class="dropdown" :class="{ 'is-active': Open_dropdown }">
+            <div
+              class="dropdown"
+              :class="{ 'is-active': Open_dropdown }"
+              v-if="showuser && showuser[0]"
+            >
               <div class="dropdown-trigger" style="overflow: hidden">
                 <button
                   class="button"
@@ -27,15 +35,13 @@
                   <br />
 
                   <img
-                    v-if="showuser && showuser[0]"
+                    v-if="showuser[0].profile != ''"
                     :src="showuser[0].profile"
                     alt="Image"
                     style="border-radius: 50%; width: 45px; max-height: 200%"
                   />
 
-                  <span class="ml-3" v-if="showuser && showuser[0]">{{
-                    showuser[0].username
-                  }}</span>
+                  <span class="ml-3">{{ showuser[0].username }}</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
@@ -103,7 +109,10 @@
 
         <div class="navbar-end">
           <p class="navbar-item">
-            <router-link to="/Admin_AddEvent" style="color: #687864"
+            <router-link
+              to="/Admin_AddEvent"
+              style="color: #687864"
+              v-if="showuser[0].id == '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">Event</span>
                 <span class="icon is-size-5 ml-2">
@@ -111,7 +120,21 @@
                 </span>
               </button>
             </router-link>
-            <router-link to="/Admin_AddItem" style="color: #687864"
+            <router-link
+              to="/Admin_Monthly"
+              style="color: #687864"
+              v-if="showuser[0].id == '0'"
+              ><button class="button mr-3">
+                <span style="color: #687864">Monthly</span>
+                <span class="icon is-size-5 ml-2">
+                  <i class="fa fa-plus-circle" style="color: #687864"> </i>
+                </span>
+              </button>
+            </router-link>
+            <router-link
+              to="/Admin_AddItem"
+              style="color: #687864"
+              v-if="showuser[0].id == '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">Item</span>
                 <span class="icon is-size-5 ml-2">
@@ -119,7 +142,10 @@
                 </span>
               </button>
             </router-link>
-            <router-link to="/Cart_Book" style="color: #687864"
+            <router-link
+              to="/Cart_Book"
+              style="color: #687864"
+              v-if="showuser[0].id != '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">ตะกร้า</span>
                 <span class="icon is-size-5 ml-2"
@@ -127,7 +153,11 @@
                 ></span>
               </button>
             </router-link>
-            <router-link :to="`/SearchBook/${'all'}`" style="color: #687864">
+            <router-link
+              :to="`/SearchBook/${'all'}`"
+              style="color: #687864"
+              v-if="showuser[0].id != '0'"
+            >
               <button class="button">
                 <span style="color: #687864">ค้นหาหนังสือ</span>
                 <span class="icon is-size-5 ml-2"
@@ -151,7 +181,7 @@ export default {
       user: 1,
       name: "NavBar",
       Open_dropdown: false,
-      id: 1,
+      id: 0,
       showuser: [],
     };
   },
@@ -162,7 +192,7 @@ export default {
     async fetchData() {
       try {
         const response2 = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
         );
         this.showuser = response2.data;
       } catch (error) {
