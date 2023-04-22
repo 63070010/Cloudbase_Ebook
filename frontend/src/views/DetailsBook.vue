@@ -74,6 +74,29 @@
                   </button>
                   <p id="text_bag" class="help">ชอบเรื่องนี้</p>
                 </div>
+                <!-- ส่วน icon บล็อก -->
+                <div id="icon_area" v-if="checkBlock">
+                  <button
+                    id="icon_bag_active"
+                    class="button is-rounded"
+                    @click="iconBlockIsActive()"
+                  >
+                    <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
+                  </button>
+                  <p id="text_bag_active" class="help">
+                    บล็อกแล้ว
+                  </p>
+                </div>
+                <div id="icon_area" v-else>
+                  <button
+                    id="icon_bag"
+                    class="button is-rounded"
+                    @click="iconBlock()"
+                  >
+                    <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
+                  </button>
+                  <p id="text_bag" class="help">ปลดบล็อก</p>
+                </div>
               </div>
 
               <!-- ######## ส่วน Btn ซื้อ ########-->
@@ -236,9 +259,10 @@ export default defineComponent({
       totalBook: [],
       checkadmin: [],
       checkBag: false,
+      checkBlock: false,
       reviewText: "",
       book_id: 1,
-      id: 2,
+      id: 1,
       bookshelf: [],
       bookincart: [],
       totalprice: 0,
@@ -462,6 +486,12 @@ export default defineComponent({
         .catch(function (error) {
           console.log(error);
         });
+    },
+    iconBlockIsActive(){
+      this.checkBlock = false;
+    },
+    iconBlock(){
+      this.checkBlock = true;
     },
   },
 });
