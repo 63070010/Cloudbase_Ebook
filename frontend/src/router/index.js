@@ -16,6 +16,7 @@ import UploadBook from '../views/UploadBook.vue'
 import Readbook from '../views/ReadBook.vue'
 import QrCodeWithCheck from '../views/QRCode.vue'
 import EventAllPromotion from '../views/EventAllPromotionBook.vue'
+import Admin_AddEvent from '../views/Admin_AddEvent.vue'
 
 const routes = [
   {
@@ -126,6 +127,13 @@ const routes = [
     name: 'EventAllPromotion',
 
     component: EventAllPromotion
+  }
+  ,
+  {
+    path: '/Admin_AddEvent',
+    name: 'Admin_AddEvent',
+
+    component: Admin_AddEvent
   }
 ]
 

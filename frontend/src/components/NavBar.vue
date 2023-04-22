@@ -103,6 +103,14 @@
 
         <div class="navbar-end">
           <p class="navbar-item">
+            <router-link to="/Admin_AddEvent" style="color: #687864"
+              ><button class="button mr-3">
+                <span style="color: #687864">เพิ่มกิจกรรม</span>
+                <span class="icon is-size-5 ml-2">
+                  <i class="fa fa-plus-circle" style="color: #687864"> </i>
+                </span>
+              </button>
+            </router-link>
             <router-link to="/Cart_Book" style="color: #687864"
               ><button class="button mr-3">
                 <span style="color: #687864">ตะกร้า</span>
