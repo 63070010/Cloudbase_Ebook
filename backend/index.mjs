@@ -40,6 +40,9 @@ export const handler = async (event) => {
             case '/getevent': {
                 return await Getevent(event)
             }
+            case '/alluser': {
+                return await Alluser();
+            };
             case 'OPTIONS': { // เพิ่ม options เพื่อทำการ preflight สำหรับ CORS
                 return {
                     statusCode: 200,
@@ -70,7 +73,7 @@ export const handler = async (event) => {
 
 async function Login(event) {
     const { password, username } = JSON.parse(event.body);
-    const TABLE_NAME = 'test'; // ชื่อตารางที่เก็บข้อมูลผู้ใช้งาน
+    const TABLE_NAME = 'user'; // ชื่อตารางที่เก็บข้อมูลผู้ใช้งาน
     const JWT_SECRET = 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY4MTEwNzcyMiwiaWF0IjoxNjgxMTA3NzIyfQ.4qRym_hhXciVkH8FV10fHupG3T3lyQi8oCFPX9UihcY';
     try {
         // ค้นหาผู้ใช้งานจาก DynamoDB
@@ -88,7 +91,8 @@ async function Login(event) {
         const user = users.find((u) => u.password === password);
         if (user) {
             // สร้าง token ให้กับผู้ใช้งาน
-            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+            const payload = { username, id: user.id }; // ประกาศ object payload ที่จะเก็บข้อมูลใน token
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // เพิ่ม payload เข้าไปใน token
 
             // ส่งข้อมูล token กลับไปยังผู้ใช้งาน
             return {
@@ -97,7 +101,7 @@ async function Login(event) {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(token),
+                body: JSON.stringify({ token, id: user.id }),
             };
         } else {
             // ถ้าชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
@@ -197,7 +201,7 @@ async function Detailbook(event) {
                     image, penname, monthly, book_id, price, sales, title, Date, desc, point,
                     type: item.type ? { SS: item.type.SS } : { SS: [] },
                     review: item.review ? { SS: item.review.SS } : { SS: [] },
-                    review_user: item.review_user ? { NS: review_user } : { NS: [] }
+                    review_user: item.review_user ? { SS: item.review_user.SS } : { SS: [] }
                 };
 
             }
@@ -226,7 +230,7 @@ async function Detailbook(event) {
     }
     else if (event.httpMethod == "PUT") {
         try {
-            const { book_id, review, review_user } = JSON.parse(event.body);
+            const { book_id, review, review_user, rev_book, fav_Book, id } = JSON.parse(event.body);
             const params = {
                 TableName: 'book',
                 Key: {
@@ -235,11 +239,27 @@ async function Detailbook(event) {
                 UpdateExpression: "set review = :review, review_user = :review_user",
                 ExpressionAttributeValues: {
                     ":review": { "SS": review },
-                    ":review_user": { "NS": review_user },
+                    ":review_user": { "SS": review_user },
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            const paramsuser = {
+                TableName: 'user',
+                Key: {
+                    id: { "S": id }
+                },
+                UpdateExpression: "set rev_book = :rev_book, fav_Book = :fav_Book",
+                ExpressionAttributeValues: {
+                    ":rev_book": { "NS": rev_book },
+                    ":fav_Book": { "NS": fav_Book },
                 },
                 ReturnValues: "UPDATED_NEW"
             };
             await dynamo.send(new UpdateItemCommand(params));
+            await dynamo.send(new UpdateItemCommand(paramsuser));
+
+
+
             return {
                 statusCode: 200,
                 headers: {
@@ -292,7 +312,6 @@ async function Users(event) {
                     receiving_money,
                     profile,
                     rev_book: item.rev_book ? { NS: item.rev_book.NS } : { NS: [] },
-                    item_count: item.item_count ? { NS: item.item_count.NS } : { NS: [] },
                     fav_Book: item.fav_Book ? { NS: item.fav_Book.NS } : { NS: [] }
                 };
             });
@@ -322,7 +341,7 @@ async function Users(event) {
                 password,
                 phone,
                 point,
-                username, receiving_money, profile, rev_book, item_count, fav_Book } = JSON.parse(event.body);
+                username, receiving_money, profile, rev_book, fav_Book } = JSON.parse(event.body);
             const params = {
                 TableName: 'user',
                 Item: {
@@ -336,7 +355,6 @@ async function Users(event) {
                     receiving_money: { "S": receiving_money },
                     profile: { "S": profile },
                     rev_book: { "NS": rev_book },
-                    item_count: { "NS": item_count },
                     fav_Book: { "NS": fav_Book }
                 }
             };
@@ -424,6 +442,7 @@ async function Carts(event) {
                 return {
                     id: parseInt(item.id.N),
                     price: parseInt(item.price.N),
+                    point: parseInt(item.point.N),
                     user_id: item.user_id.S,
                     bookshelf: item.bookshelf ? { NS: item.bookshelf.NS } : { NS: [] },
                     cart_item: item.cart_item ? { NS: item.cart_item.NS } : { NS: [] }
@@ -454,7 +473,7 @@ async function Carts(event) {
     }
     else if (event.httpMethod == "POST") {
         try {
-            const { id, bookshelf, price, user_id, cart_item } = JSON.parse(event.body);
+            const { id, bookshelf, price, user_id, cart_item, point } = JSON.parse(event.body);
             const params = {
                 TableName: 'cart',
                 Item: {
@@ -462,7 +481,8 @@ async function Carts(event) {
                     bookshelf: { "NS": bookshelf },
                     cart_item: { "NS": cart_item },
                     price: { "N": String(price) }, // แปลงค่า price เป็น string
-                    user_id: { "S": user_id }
+                    user_id: { "S": user_id },
+                    point: { "N": String(point) }
                 }
             };
             await dynamo.send(new PutItemCommand(params));
@@ -488,7 +508,7 @@ async function Carts(event) {
 
     else if (event.httpMethod == "PUT") {
         try {
-            const { id, bookshelf, price, user_id, cart_item } = JSON.parse(event.body);
+            const { id, bookshelf, price, user_id, cart_item, point } = JSON.parse(event.body);
             const params = {
                 TableName: 'cart',
                 Key: {
@@ -499,7 +519,8 @@ async function Carts(event) {
                     ":bookshelf": { "NS": bookshelf },
                     ":cart_item": { "NS": cart_item },
                     ":price": { "N": String(price) },
-                    ":user_id": { "S": user_id }
+                    ":user_id": { "S": user_id },
+                    ":point": { "N": String(point) }
                 },
                 ReturnValues: "UPDATED_NEW"
             };
@@ -848,6 +869,41 @@ async function Getevent(event) {
         }
     }
     else {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+}
+
+async function Alluser() {
+    try {
+        const params = {
+            TableName: 'user',
+        };
+        const data = await dynamo.send(new ScanCommand(params));
+        const items = data.Items.map((item) => {
+            const { id,
+                username, profile } = unmarshall(item);
+            return {
+                id,
+                username,
+                profile,
+            };
+        });
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(items)
+        };
+    } catch (err) {
         return {
             statusCode: 500,
             headers: {
