@@ -45,20 +45,6 @@
               </label>
             </div>
           </div>
-          <div class="field">
-            <label class="label" style="color: #8fc1e3">ชื่อผู้ใช้</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                class="input is-medium is-rounded"
-                type="text"
-                style="background-color: #f7f9fb"
-                v-model="user_name"
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-              </span>
-            </div>
-          </div>
 
           <div class="field">
             <label class="label" style="color: #8fc1e3">อีเมล</label>
@@ -102,7 +88,9 @@
 
           <div class="field-body">
             <div class="field">
-              <label class="label" style="color: #8fc1e3">ช่องทางการรับเงิน</label>
+              <label class="label" style="color: #8fc1e3"
+                >ช่องทางการรับเงิน</label
+              >
               <input
                 :disabled="disabled"
                 class="input is-medium is-rounded"
@@ -114,7 +102,10 @@
           </div>
         </section>
         <footer class="modal-card-foot">
-          <div class="control has-text-centered"  style="width: 400px; height: 55px;">
+          <div
+            class="control has-text-centered"
+            style="width: 400px; height: 55px"
+          >
             <button
               class="button is-rounded is-medium"
               style="color: #f7f9fb; background-color: #31708e"

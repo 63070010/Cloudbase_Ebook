@@ -359,7 +359,7 @@ export default defineComponent({
         return this.checkuser.indexOf(a.id) - this.checkuser.indexOf(b.id);
       });
       this.reviewall = this.reviewall.filter((item) => item !== "");
-      console.log(this.allcomments);
+
       axios
         .put(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook",
@@ -368,7 +368,6 @@ export default defineComponent({
             review: this.reviewall,
             review_user: this.checkuser,
             rev_book: this.rev_book,
-            fav_Book: this.fav_Book,
             book_id: this.book[0].book_id,
           }
         )
@@ -380,13 +379,89 @@ export default defineComponent({
           console.log(111);
         });
     },
+    async submitedit() {
+      const index = this.allcomments.findIndex(
+        (val) => val.id === String(this.id)
+      );
+      let oldVal = this.reviewall[index]; // ตัวแปรที่ต้องการเปลี่ยนค่า
+      let newVal = this.reviewText; // ค่าใหม่ที่ต้องการเปลี่ยน
+      this.reviewall = new Set(this.reviewall);
+
+      if (this.reviewall.has(oldVal)) {
+        let index = [...this.reviewall].indexOf(oldVal); // หาตำแหน่งของสมาชิกที่ต้องการเปลี่ยนค่า
+        this.reviewall.delete(oldVal); // ลบสมาชิกที่ต้องการเปลี่ยนค่าออกจาก Set
+        let newSet = new Set(
+          [...this.reviewall]
+            .slice(0, index)
+            .concat(newVal, [...this.reviewall].slice(index))
+        ); // เปลี่ยนค่าใน Set
+        this.reviewall = newSet; // กำหนดค่า Set ใหม่
+      }
+      this.reviewall = [...this.reviewall];
+      this.allcomments = this.alluser.filter((item) => {
+        return this.checkuser.includes(String(item.id));
+      });
+      this.allcomments = this.allcomments.sort((a, b) => {
+        return this.checkuser.indexOf(a.id) - this.checkuser.indexOf(b.id);
+      });
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook",
+          {
+            id: String(this.id),
+            review: this.reviewall,
+            review_user: this.checkuser,
+            rev_book: this.rev_book,
+            book_id: this.book[0].book_id,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     iconBagIsActive() {
+      const check = String(this.book[0].book_id);
       this.checkBag = false;
-      this.book[0].want_have = false;
+      this.fav_Book = this.fav_Book.filter((item) => item !== check);
+      console.log(this.fav_Book);
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/fav",
+          {
+            id: String(this.id),
+            fav_Book: this.fav_Book,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     iconBag() {
+      const check = String(this.book[0].book_id);
       this.checkBag = true;
-      this.book[0].want_have = true;
+
+      this.fav_Book.push(check);
+      console.log(this.fav_Book);
+      axios
+        .put(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/fav",
+          {
+            id: String(this.id),
+            fav_Book: this.fav_Book,
+          }
+        )
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 });
