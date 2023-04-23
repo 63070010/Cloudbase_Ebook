@@ -18,6 +18,7 @@ import EventAllPromotion from '../views/EventAllPromotionBook.vue'
 import Admin_AddEvent from '../views/Admin_AddEvent.vue'
 import Admin_AddItem from '../views/Admin_AddItem.vue'
 import Admin_Monthly from '../views/Admin_Monthly.vue'
+import QRCodeForMonthly from '../views/QRCodeMontlyPage.vue'
 
 const routes = [
   {
@@ -144,6 +145,13 @@ const routes = [
     name: 'Admin_Monthly',
 
     component: Admin_Monthly
+  }
+  ,
+  {
+    path: '/QRCodeForMonthly',
+    name: 'QRCodeForMonthly',
+
+    component: QRCodeForMonthly
   }
 
 ]
