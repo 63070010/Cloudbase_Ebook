@@ -180,13 +180,26 @@ export default {
           }
         )
         .then(() => {
-          // ถ้าเข้าสู่ระบบสำเร็จ
-          // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
+          axios
+            .post(
+              "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/login",
+              { username: this.state.username, password: this.state.password }
+            )
+            .then((response) => {
+              // ถ้าเข้าสู่ระบบสำเร็จ
+              // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
+              console.log(response.data);
+              localStorage.setItem("token", response.data);
+              console.log(localStorage);
 
-          // ล้างข้อมูล username และ password
-          this.state.username = "";
-          this.state.password = "";
-          this.state.email = "";
+              // ล้างข้อมูล username และ password
+              this.state.username = "";
+              this.state.password = "";
+              this.$router.push("/");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
