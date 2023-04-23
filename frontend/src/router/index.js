@@ -19,6 +19,7 @@ import Admin_AddEvent from '../views/Admin_AddEvent.vue'
 import Admin_AddItem from '../views/Admin_AddItem.vue'
 import Admin_Monthly from '../views/Admin_Monthly.vue'
 import QRCodeForMonthly from '../views/QRCodeMontlyPage.vue'
+import MyBook from '../views/MyBookPage.vue'
 
 const routes = [
   {
@@ -153,7 +154,13 @@ const routes = [
 
     component: QRCodeForMonthly
   }
+  ,
+  {
+    path: '/Mybook',
+    name: 'MyBook',
 
+    component: MyBook
+  }
 ]
 
 const router = createRouter({
