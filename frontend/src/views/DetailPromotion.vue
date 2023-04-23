@@ -15,7 +15,7 @@
               height: auto;
               margin-left: auto;
               margin-right: auto;
-              border:8px solid #5085a5;
+              border: 8px solid #5085a5;
             "
           />
         </figure>
@@ -49,7 +49,8 @@
               style="color: #123c69"
             >
               <router-link :to="`/EventAllPromotion/${this.$route.params.id}`">
-              <button class="button">ดูหนังสือทั้งหมด</button></router-link>
+                <button class="button">ดูหนังสือทั้งหมด</button></router-link
+              >
             </div>
             <h1 class="ml-4">book in event</h1>
             <div class="divider is-info" style="color: #123c69">
@@ -86,9 +87,11 @@
                     </div>
                   </router-link>
                   <div class="level ml-2">
-                    ฿ {{ value.price }}
+                    <span v-if="!bookshelf.includes(String(value.book_id))">
+                      ฿ {{ value.price }}</span
+                    >
                     <button
-                      class="button is-ghost level-right"
+                      class="button is-ghost level-right mb-2"
                       @click="cardpush(value)"
                       v-if="
                         !bookshelf.includes(String(value.book_id)) &&
@@ -104,13 +107,27 @@
 
                     <span
                       v-else-if="bookincart.includes(String(value.book_id))"
-                      class="mt-4 mr-2"
+                      class="mt-4 mr-2 mb-2"
                       style="color: #5085a5"
                       >หนังสืออยู่ในตะกร้า</span
                     >
-                    <span v-else class="mt-4 mr-2" style="color: #5085a5"
-                      >มีหนังสือเล่มนี้แล้ว</span
+                    <router-link
+                      to="/Bookshelf"
+                      style="margin-left: auto; margin-right: auto"
+                      v-else
                     >
+                      <button
+                        class="button is-rounded mb-2"
+                        style="
+                          color: #f7f9fb;
+                          background-color: #5085a5;
+                          margin-left: auto;
+                          margin-right: auto;
+                        "
+                      >
+                        Go bookshelf
+                      </button>
+                    </router-link>
                   </div>
                 </div>
               </div>

@@ -85,9 +85,11 @@
                   </div>
                 </router-link>
                 <div class="level ml-2 mt-6">
-                  ฿ {{ value.price }}
+                  <span v-if="!bookshelf.includes(String(value.book_id))">
+                    ฿ {{ value.price }}</span
+                  >
                   <button
-                    class="button is-ghost level-right"
+                    class="button is-ghost level-right mb-2"
                     @click="cardpush(value)"
                     v-if="
                       !bookshelf.includes(String(value.book_id)) &&
@@ -103,13 +105,27 @@
 
                   <span
                     v-else-if="bookincart.includes(String(value.book_id))"
-                    class="mt-4 mr-2"
+                    class="mt-4 mr-2 mb-2"
                     style="color: #5085a5"
                     >หนังสืออยู่ในตะกร้า</span
                   >
-                  <span v-else class="mt-4 mr-2" style="color: #5085a5"
-                    >มีหนังสือเล่มนี้แล้ว</span
+                  <router-link
+                    to="/Bookshelf"
+                    style="margin-left: auto; margin-right: auto"
+                    v-else
                   >
+                    <button
+                      class="button is-rounded mb-2"
+                      style="
+                        color: #f7f9fb;
+                        background-color: #5085a5;
+                        margin-left: auto;
+                        margin-right: auto;
+                      "
+                    >
+                      Go bookshelf
+                    </button>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -167,6 +183,7 @@ export default {
   },
   created() {
     this.fetchData(this.$route.params.id);
+    this.getcart();
   },
   data() {
     return {
@@ -291,6 +308,7 @@ export default {
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
             this.totalprice = this.cart[0].price;
+            console.log(this.bookshelf);
           })
           .catch((error) => {
             console.error(error);

@@ -104,14 +104,14 @@ const routes = [
   }
   ,
   {
-    path: '/UploadBook/:book_id',
+    path: '/UploadBook',
     name: 'UploadBook',
 
     component: UploadBook
   }
   ,
   {
-    path: '/Readbook',
+    path: '/Readbook/:book_id',
     name: 'Readbook',
 
     component: Readbook

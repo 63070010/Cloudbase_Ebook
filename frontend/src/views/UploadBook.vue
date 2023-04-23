@@ -1,43 +1,58 @@
 <template>
   <div>
     <NavBar />
-    <div class="hero is-fullheight">
-      <div class="hero is-fullheight">
-        <div class="container mb-4">
-          <input
-            type="file"
-            @change="onFileChange"
-            ref="fileInput"
-            class="is-hidden"
-          />
-          <div class="file is-centered is-boxed has-name">
+
+    <div class="container is-max-widescreen px-6">
+      <section class="card is-small is-narrow p-5">
+        <div class="container p-5">
+          <div class="file is-centered is-boxed has-name mb-5">
             <label class="file-label">
               <input
-                class="file-input"
-                type="button"
-                @click="$refs.fileInput.click()"
-                value="Choose a file"
+                type="file"
+                ref="fileInput"
+                class="is-hidden"
+                @change="onFileChange"
               />
               <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
                 </span>
-                <span class="file-label"> Choose a file… </span>
+                <span class="file-label"> Choose a book cover </span>
               </span>
               <span class="file-name" v-if="file">
                 {{ file.name }}
               </span>
             </label>
           </div>
+          <div class="field mt-5">
+            <label class="label">ชื่อหนังสือ</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                placeholder="ชื่อกิจกรรม"
+                v-model="title"
+              />
+            </div>
+          </div>
+          <div class="field mt-5">
+            <label class="label">รายละเอียดหนังสือ</label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                placeholder="รายละเอียด"
+                v-model="desc"
+              ></textarea>
+            </div>
+          </div>
           <button
-            class="button is-primary is-fullwidth mt-4"
-            :disabled="!file"
+            class="button is-primary is-fullwidth mt-6"
             @click="submitFile"
           >
-            Upload and Submit
+            Add MyBooks
           </button>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
