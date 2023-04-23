@@ -27,15 +27,16 @@ export default {
     };
   },
   created() {
-    this.getmonthly();
+    this.$nextTick(() => {
+      this.getmonthly();
+    });
   },
-
   methods: {
     async getmonthly() {
       const canvas = this.$refs.canvas;
-      QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, () => {});
       canvas.style.width = "300px";
       canvas.style.height = "300px";
+      QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions);
     },
   },
 };
