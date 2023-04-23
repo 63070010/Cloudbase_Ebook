@@ -1,7 +1,7 @@
 
 aws clound
 
-lambda
+lambda (index.mjs)
 s3
 dynamodb
 cloundwatch
