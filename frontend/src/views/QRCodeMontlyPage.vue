@@ -37,7 +37,7 @@ export default {
         const canvas = this.$refs.canvas;
         if (!canvas) return; // กรณีไม่มี element ที่ ref="canvas"
         QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, () => {});
-        canvas.style.width = "300px";
+        canvas.style.width = "310px";
         canvas.style.height = "300px";
       } catch (error) {
         console.log(error);
