@@ -243,7 +243,7 @@ export default defineComponent({
       books: [],
       booksevent: [],
       cart: [],
-      id: 1,
+      id: null,
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
@@ -258,6 +258,11 @@ export default defineComponent({
     this.getcart();
   },
 
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
+    console.log(this.id);
+  },
   methods: {
     async fetchData() {
       try {
@@ -318,53 +323,57 @@ export default defineComponent({
       }
     },
     async getcart() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.bookshelf = this.cart[0].bookshelf.NS;
-            this.bookincart = this.cart[0].cart_item.NS;
-            this.totalprice = this.cart[0].price;
-            this.totalpoint = this.cart[0].point;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
+      if (this.id != null) {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+            )
+            .then((response) => {
+              this.cart = response.data;
+              this.bookshelf = this.cart[0].bookshelf.NS;
+              this.bookincart = this.cart[0].cart_item.NS;
+              this.totalprice = this.cart[0].price;
+              this.totalpoint = this.cart[0].point;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
       }
-      console.log(localStorage);
     },
     async cardpush(event) {
-      console.log(event);
-      this.totalprice += event.price;
-      this.totalpoint += event.point;
-      this.bookincart.push(String(event.book_id));
-      console.log(this.totalpoint);
-      console.log(this.totalprice);
-      console.log(this.bookincart);
-      console.log(this.bookshelf);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: String(this.totalprice),
-            point: String(this.totalpoint),
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (this.id == null) {
+        alert("กรุณาเข้าสู่ระบบหรือสมัครสมาชิก");
+      } else {
+        this.totalprice += event.price;
+        this.totalpoint += event.point;
+        this.bookincart.push(String(event.book_id));
+        console.log(this.totalpoint);
+        console.log(this.totalprice);
+        console.log(this.bookincart);
+        console.log(this.bookshelf);
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+            {
+              id: String(this.id),
+              bookshelf: this.bookshelf,
+              cart_item: this.bookincart,
+              user_id: String(this.id),
+              price: String(this.totalprice),
+              point: String(this.totalpoint),
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     },
   },
 });

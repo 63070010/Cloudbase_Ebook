@@ -164,17 +164,16 @@ export default {
           // ถ้าเข้าสู่ระบบสำเร็จ
           // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
           console.log(response.data);
-          console.log(response.data.message);
-          localStorage.setItem("token", response.data);
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("id", response.data.id);
           console.log(localStorage);
 
           // ล้างข้อมูล username และ password
-          this.state.username = "";
-          this.state.password = "";
-          if (response.data.message != "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"){
+
+          if (response.data.message == "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง") {
+            alert("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
+          } else {
             this.$router.push("/");
-          }else{
-            alert("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง")
           }
         })
         .catch((error) => {

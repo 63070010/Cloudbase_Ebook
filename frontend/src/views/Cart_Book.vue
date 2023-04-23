@@ -123,9 +123,14 @@ export default {
       cartitem: [],
       totalprice: 0,
       bookshelf: [],
-      id: 1,
+      id: null,
       totalpoint: 0,
     };
+  },
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
+    console.log(this.id);
   },
   methods: {
     async getcartitem() {

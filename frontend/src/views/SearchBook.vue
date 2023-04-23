@@ -7,7 +7,9 @@
           เริ่มตั้งแต่วันที่: {{ datamothly[0].datestart }} จนถึงวันที่:
           {{ datamothly[0].dateend }}</span
         ><br />
-        <router-link to="/QRCodeForMonthly"
+        <router-link
+          v-if="!userlist.includes(String(id))"
+          to="/QRCodeForMonthly"
           ><button class="button mr-3 is-info is-rounded">
             <span>ชำระเงิน</span>
             <span class="icon is-size-5 ml-2">
@@ -226,7 +228,7 @@ export default {
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
-      id: 1,
+      id: 2,
       type: "ชื่อหนังสือ",
       keepbook: [],
       datamothly: [],

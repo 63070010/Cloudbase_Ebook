@@ -1,13 +1,9 @@
 <template>
   <div>
-    <nav
-      class="navbar is-fixed-top"
-      style="background-color: #5085a5"
-      v-if="showuser && showuser[0]"
-    >
+    <nav class="navbar is-fixed-top" style="background-color: #5085a5">
       <div class="navbar-menu mt-1 mb-1">
         <div class="navbar-start ml-3">
-          <div v-if="!user" class="navbar-item">
+          <div v-if="id == null" class="navbar-item">
             <a>
               <router-link to="/register" style="color: #f7f9fb"
                 >ลงทะเบียน</router-link
@@ -112,7 +108,7 @@
             <router-link
               to="/Admin_AddEvent"
               style="color: #687864"
-              v-if="showuser[0].id == '0'"
+              v-if="id == '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">Event</span>
                 <span class="icon is-size-5 ml-2">
@@ -123,7 +119,7 @@
             <router-link
               to="/Admin_Monthly"
               style="color: #687864"
-              v-if="showuser[0].id == '0'"
+              v-if="id == '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">Monthly</span>
                 <span class="icon is-size-5 ml-2">
@@ -134,7 +130,7 @@
             <router-link
               to="/Admin_AddItem"
               style="color: #687864"
-              v-if="showuser[0].id == '0'"
+              v-if="id == '0'"
               ><button class="button mr-5">
                 <span style="color: #687864">Item</span>
                 <span class="icon is-size-5 ml-2">
@@ -143,9 +139,9 @@
               </button>
             </router-link>
             <router-link
+              v-if="id != null"
               to="/Cart_Book"
               style="color: #687864"
-              v-if="showuser[0].id != '0'"
               ><button class="button mr-3">
                 <span style="color: #687864">ตะกร้า</span>
                 <span class="icon is-size-5 ml-2"
@@ -153,10 +149,18 @@
                 ></span>
               </button>
             </router-link>
+
+            <button class="button mr-3" @click="check()" v-else>
+              <span style="color: #687864">ตะกร้า</span>
+              <span class="icon is-size-5 ml-2"
+                ><i class="fas fa-shopping-cart" style="color: #687864"> </i
+              ></span>
+            </button>
+
             <router-link
               :to="`/SearchBook/${'all'}`"
               style="color: #687864"
-              v-if="showuser[0].id != '0'"
+              v-if="id != null"
             >
               <button class="button mr-5">
                 <span style="color: #687864">ค้นหาหนังสือ</span>
@@ -165,6 +169,13 @@
                 ></span>
               </button>
             </router-link>
+
+            <button class="button mr-5" v-else @click="check()">
+              <span style="color: #687864">ค้นหาหนังสือ</span>
+              <span class="icon is-size-5 ml-2"
+                ><i class="fas fa-search" style="color: #687864"> </i
+              ></span>
+            </button>
           </p>
         </div>
       </div>
@@ -178,18 +189,25 @@ import axios from "axios";
 export default {
   data() {
     return {
-      user: 1,
       name: "NavBar",
       Open_dropdown: false,
-      id: 1,
+      id: null,
       showuser: [],
     };
   },
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
+    console.log(this.id);
+  },
   created() {
+    this.id = localStorage.getItem("id");
+
     this.fetchData();
   },
   methods: {
     async fetchData() {
+      console.log(this.id);
       try {
         const response2 = await axios.get(
           `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
@@ -200,7 +218,12 @@ export default {
       }
     },
     async Logout() {
+      localStorage.removeItem("id");
       localStorage.removeItem("token");
+      this.$router.push("/login");
+    },
+    check() {
+      alert("กรุณาล็อคอินหรือเข้าสู่ระบบ");
     },
   },
 };

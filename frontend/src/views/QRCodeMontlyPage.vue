@@ -17,13 +17,15 @@
 
 <script>
 import QRCode from "qrcode";
+import axios from "axios";
 
 export default {
   name: "QRCodeForMonthly",
   data() {
     return {
       qrCodeValue: "http://localhost:8080/",
-      cart: [],
+      userlist: [],
+      id: 2,
     };
   },
   created() {
@@ -34,12 +36,37 @@ export default {
   methods: {
     async getmonthly() {
       try {
+        const response = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly`
+        );
+        this.userlist = response.data[0].userlist.NS;
+        this.mothlyid = response.data[0].id;
+        console.log(this.userlist);
+        this.userlist.push(String(this.id));
+        console.log(this.userlist);
         await this.$nextTick(); // รอให้ DOM ประกอบกันให้เสร็จก่อน
         const canvas = this.$refs.canvas;
         if (!canvas) return; // กรณีไม่มี element ที่ ref="canvas"
         QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, () => {});
         canvas.style.width = "300px";
         canvas.style.height = "300px";
+
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly",
+            {
+              id: String(this.mothlyid),
+              userlist: this.userlist,
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+
+            alert("ชำระเงินเสร็จสิ้น");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       } catch (error) {
         console.log(error);
       }

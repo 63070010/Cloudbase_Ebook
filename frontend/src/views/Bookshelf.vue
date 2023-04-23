@@ -171,10 +171,15 @@ export default {
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
-      id: 1,
+      id: null,
       showbookshelf: [],
       type: "ชื่อหนังสือ",
     };
+  },
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
+    console.log(this.id);
   },
   computed: {
     paginatedBooks() {
@@ -191,7 +196,7 @@ export default {
         );
         this.book = response.data;
         const response2 = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${"1"}`
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
         );
         this.cart = response2.data;
         console.log(this.cart);

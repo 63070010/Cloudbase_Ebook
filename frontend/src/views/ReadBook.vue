@@ -10,42 +10,58 @@
 
 <script>
 import NavBar from "@/components/NavBar";
-import { ref, onMounted } from "vue";
-import WebViewer from "@pdftron/webviewer";
 
+import { reactive, ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+import { watch } from "vue";
+import WebViewer from "@pdftron/webviewer";
 export default {
-  name: "ReadBook",
   components: {
     NavBar,
   },
-  data() {
-    return {
-      isLoaded: false,
-    };
-  },
   setup() {
     const viewer = ref(null);
-    onMounted(() => {
-      const path =
-        "https://firebasestorage.googleapis.com/v0/b/image-a4852.appspot.com/o/cloud-midterm.pdf?alt=media&token=22d57546-6295-4300-bbdb-7513479e0df4&v";
+    const state = reactive({
+      isLoaded: false,
+      book: "",
+    });
 
-     setTimeout(() => {
-        WebViewer(
-          {
-            path,
-          },
-          viewer.value
-        );
-      }, 1000);
+    onMounted(async () => {
+      await watch(
+        () => state.book,
+        async (newVal) => {
+          if (newVal !== "") {
+            const path = newVal;
+            setTimeout(() => {
+              WebViewer(
+                {
+                  path,
+                },
+                viewer.value
+              );
+            }, 1000);
+          }
+        }
+      );
     });
 
     return {
       viewer,
+      state,
     };
   },
-  created() {
+  async created() {
+    const route = useRoute();
+    const bookId = route.params.book_id;
+    console.log(bookId);
+    const response = await axios.get(
+      `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/detailbook?book_id=${bookId}`
+    );
+    this.state.book = response.data[0].story;
+
     setTimeout(() => {
-      this.isLoaded = true;
+      this.state.isLoaded = true;
     }, 1600);
   },
 };

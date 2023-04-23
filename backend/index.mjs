@@ -185,7 +185,7 @@ async function Books(event) {
                 title,
                 type,
                 price, point, penname, Date, desc
-                , image, story, id, mybook } = JSON.parse(event.body);
+                , image, story, id } = JSON.parse(event.body);
 
             const paramsgetid = {
                 TableName: 'book'
@@ -220,7 +220,18 @@ async function Books(event) {
 
                 }
             };
+            const paramsgetuserid = {
+                TableName: 'user'
+            };
+            const datauser = await dynamo.send(new ScanCommand(paramsgetuserid));
+            const itemsuser = datauser.Items.map((item) => {
+                return {
+                    mybook: item.mybook ? { NS: item.mybook.NS } : { NS: [] },
 
+                };
+            });
+            const mybook = itemsuser[0].mybook.NS;
+            mybook.push(String(book_id));
             const paramsuser = {
                 TableName: 'user',
                 Key: {
@@ -228,7 +239,7 @@ async function Books(event) {
                 },
                 UpdateExpression: "set mybook = :mybook",
                 ExpressionAttributeValues: {
-                    "mybook": { "NS": mybook },
+                    ":mybook": { "NS": mybook },
                 },
                 ReturnValues: "UPDATED_NEW"
             };
@@ -388,7 +399,7 @@ async function Users(event) {
                     password,
                     phone,
                     point,
-                    username, receiving_money, profile, mybook } = unmarshall(item);
+                    username, receiving_money, profile, } = unmarshall(item);
                 return {
                     id,
                     email,
@@ -399,7 +410,7 @@ async function Users(event) {
                     username,
                     receiving_money,
                     profile,
-                    mybook,
+                    mybook: item.mybook ? { NS: item.mybook.NS } : { NS: [] },
                     rev_book: item.rev_book ? { NS: item.rev_book.NS } : { NS: [] },
                     fav_Book: item.fav_Book ? { NS: item.fav_Book.NS } : { NS: [] }
                 };
@@ -1201,7 +1212,7 @@ async function Monthly(event) {
     }
     else if (event.httpMethod == "PUT") {
         try {
-            const { userlist } = JSON.parse(event.body);
+            const { id, userlist } = JSON.parse(event.body);
             const params = {
                 TableName: 'Monthly',
                 Key: {
