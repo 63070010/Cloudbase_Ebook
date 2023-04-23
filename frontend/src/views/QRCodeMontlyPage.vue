@@ -33,10 +33,16 @@ export default {
   },
   methods: {
     async getmonthly() {
-      const canvas = this.$refs.canvas;
-      canvas.style.width = "300px";
-      canvas.style.height = "300px";
-      QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions);
+      try {
+        await this.$nextTick(); // รอให้ DOM ประกอบกันให้เสร็จก่อน
+        const canvas = this.$refs.canvas;
+        if (!canvas) return; // กรณีไม่มี element ที่ ref="canvas"
+        QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, () => {});
+        canvas.style.width = "300px";
+        canvas.style.height = "300px";
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
