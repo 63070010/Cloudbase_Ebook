@@ -103,6 +103,119 @@
           </section>
         </div>
       </div>
+
+      <div class="container mb-4">
+        <div class="column mt-4">
+          <section class="card is-small is-narrow p-5">
+            <div
+              class="field has-addons is-pulled-right"
+              style="color: #123c69"
+            >
+              <router-link :to="`/SearchBook/${nameevent[2].engname}`">
+                <button class="button">ดูหนังสือทั้งหมด</button></router-link
+              >
+            </div>
+            <h1 class="ml-4">{{ nameevent[2].thainame }}</h1>
+            <div class="divider is-info" style="color: #123c69">
+              {{ nameevent[2].engname }}
+            </div>
+            <div class="columns">
+              <div
+                class="column"
+                v-for="(value, index) in Monthlybooks.slice(0, 5)"
+                :key="index"
+              >
+                <div class="card" style="width: 220px">
+                  <router-link :to="`/DetailsBook/${value.book_id}`">
+                    <div class="card-image" style="width: 220px">
+                      <figure class="image is-square">
+                        <img :src="value.image" />
+                      </figure>
+                    </div>
+
+                    <div class="card-content" style="height: 160px">
+                      <div class="media">
+                        <div class="media-content" style="color: #edc7b7">
+                          <p class="is-size-6 has-text-centered subtitle">
+                            {{ value.title }}
+                          </p>
+                          <p class="is-size-7" style="color: #bab2b5">
+                            By {{ value.penname }}
+                          </p>
+                          <p class="is-size-7" style="color: #bab2b5">
+                            Date {{ value.Date }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </router-link>
+                  <div class="level ml-2" v-if="userlist.includes(String(id))">
+                    <router-link
+                      :to="`/ReadBook/${value.book_id}`"
+                      class="ml-6"
+                    >
+                      <button
+                        class="button is-rounded mb-2"
+                        style="
+                          color: #f7f9fb;
+                          background-color: #5085a5;
+
+                          width: 150%;
+                        "
+                      >
+                        Read
+                      </button>
+                    </router-link>
+                  </div>
+                  <div class="level ml-2" v-else>
+                    <span v-if="!bookshelf.includes(String(value.book_id))">
+                      ฿ {{ value.price }}</span
+                    >
+                    <button
+                      class="button is-ghost level-right mb-2"
+                      @click="cardpush(value)"
+                      v-if="
+                        !bookshelf.includes(String(value.book_id)) &&
+                        !bookincart.includes(String(value.book_id))
+                      "
+                    >
+                      <i
+                        class="fa fa-cart-plus is-size-4"
+                        style="color: #5085a5"
+                        aria-hidden="true"
+                      ></i>
+                    </button>
+
+                    <span
+                      v-else-if="bookincart.includes(String(value.book_id))"
+                      class="mt-4 mr-2 mb-2"
+                      style="color: #5085a5"
+                      >หนังสืออยู่ในตะกร้า</span
+                    >
+                    <router-link
+                      to="/Bookshelf"
+                      style="margin-left: auto; margin-right: auto"
+                      v-else
+                    >
+                      <button
+                        class="button is-rounded mb-2"
+                        style="
+                          color: #f7f9fb;
+                          background-color: #5085a5;
+                          margin-left: auto;
+                          margin-right: auto;
+                        "
+                      >
+                        Go bookshelf
+                      </button>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -135,6 +248,8 @@ export default defineComponent({
       bookincart: [],
       bookshelf: [],
       totalpoint: 0,
+      Monthlybooks: [],
+      userlist: [],
     };
   },
 
@@ -162,8 +277,9 @@ export default defineComponent({
         // เรียงหนังสือรายเดือน
         const datamothly = monthly.data;
         this.checkmonthly = datamothly[0].Monthlybook.NS;
+        this.userlist = datamothly[0].userlist.NS;
 
-        const Monthlybooks = data2.filter((item) => {
+        this.Monthlybooks = data2.filter((item) => {
           return this.checkmonthly.includes(String(item.book_id));
         });
 
@@ -179,7 +295,7 @@ export default defineComponent({
           return b.sales - a.sales;
         });
 
-        this.books = [sortedByDate, sortedBySales, Monthlybooks];
+        this.books = [sortedByDate, sortedBySales];
 
         this.booksevent = data.reduce((result, current) => {
           if (current.eventname !== "") {

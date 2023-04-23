@@ -6,7 +6,14 @@
         <span v-if="this.$route.params.id == 'Books for this month'">
           เริ่มตั้งแต่วันที่: {{ datamothly[0].datestart }} จนถึงวันที่:
           {{ datamothly[0].dateend }}</span
-        >
+        ><br />
+        <router-link to="/QRCodeForMonthly"
+          ><button class="button mr-3 is-info is-rounded">
+            <span>ชำระเงิน</span>
+            <span class="icon is-size-5 ml-2">
+              <i class="fa fa-coins"> </i>
+            </span></button
+        ></router-link>
       </div>
       <br />
 
@@ -91,7 +98,25 @@
                     </div>
                   </div>
                 </router-link>
-                <div class="level ml-2 mt-6">
+                <div
+                  class="level ml-2 mt-6"
+                  v-if="userlist.includes(String(id))"
+                >
+                  <router-link :to="`/ReadBook/${value.book_id}`" class="ml-6">
+                    <button
+                      class="button is-rounded mb-2"
+                      style="
+                        color: #f7f9fb;
+                        background-color: #5085a5;
+
+                        width: 150%;
+                      "
+                    >
+                      Read
+                    </button>
+                  </router-link>
+                </div>
+                <div class="level ml-2 mt-6" v-else>
                   <span v-if="!bookshelf.includes(String(value.book_id))">
                     ฿ {{ value.price }}</span
                   >
@@ -205,6 +230,7 @@ export default {
       type: "ชื่อหนังสือ",
       keepbook: [],
       datamothly: [],
+      userlist: [],
     };
   },
   computed: {
@@ -248,6 +274,7 @@ export default {
             return dateB - dateA;
           });
           this.books = sortedByDate;
+          this.keepbook = sortedByDate;
         } catch (error) {
           console.log(error);
         }
@@ -265,6 +292,7 @@ export default {
           });
 
           this.books = sortedBySales;
+          this.keepbook = sortedBySales;
         } catch (error) {
           console.log(error);
         }
@@ -282,11 +310,12 @@ export default {
           );
           this.datamothly = response2.data;
           this.checkmonthly = this.datamothly[0].Monthlybook.NS;
+          this.userlist = this.datamothly[0].userlist.NS;
 
           const Monthlybooks = data.filter((item) => {
             return this.checkmonthly.includes(String(item.book_id));
           });
-
+          this.keepbook = Monthlybooks;
           this.books = Monthlybooks;
         } catch (error) {
           console.log(error);
