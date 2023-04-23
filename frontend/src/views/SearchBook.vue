@@ -116,7 +116,10 @@
           </div>
 
           <!--######### BTN NEXT && BACK #########-->
-          <div class="field next_or_back has-addons">
+          <div
+            class="field next_or_back has-addons"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <button
               v-if="this.currentPage == 1"
               disabled
@@ -146,9 +149,6 @@
         </section>
       </div>
       <br />
-      <!-- <div class="container" v-for="(valueallbooks, indexallbooks) in books" :key="indexallbooks">
-        <div>{{ valueallbooks.book_id }}</div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -253,8 +253,7 @@ export default {
           );
 
           const datamothly = response2.data;
-          this.books = datamothly
-          
+          this.books = datamothly;
         } catch (error) {
           console.log(error);
         }

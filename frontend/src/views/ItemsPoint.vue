@@ -22,8 +22,7 @@
             :key="value.id"
             style="font-size: 22px; color: #8fc1e3"
           >
-            &ensp;
-            คุณ {{value.username}}
+            &ensp; คุณ {{ value.username }}
             <img
               src="../img/coins.png"
               style="
@@ -81,7 +80,9 @@
                   <button
                     class="button is-ghost level-right"
                     @click="buyitems[index] = true"
-                    :disabled="countitems[index] <= 0 || user[0].point < value.point"
+                    :disabled="
+                      countitems[index] <= 0 || user[0].point < value.point
+                    "
                   >
                     <i
                       class="fa fa-shopping-bag fas fa-lg"
@@ -340,7 +341,10 @@
           </div>
 
           <!--######### BTN NEXT && BACK #########-->
-          <div class="field next_or_back has-addons">
+          <div
+            class="field next_or_back has-addons"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <button
               v-if="this.currentPage == 1"
               disabled

@@ -58,7 +58,7 @@
           <div class="columns">
             <div
               class="column is-one-fifth"
-              v-for="(value, index) in showbookshelf"
+              v-for="(value, index) in paginatedBooks"
               :key="index"
             >
               <div class="card">
@@ -84,32 +84,37 @@
                     </div>
                   </div>
                 </router-link>
-                <div class="level ml-2 mt-6">
-                  ฿ {{ value.price }}
-                  <button
-                    class="button is-ghost level-right"
-                    @click="cardpush(value)"
-                    v-if="
-                      !bookshelf.includes(String(value.book_id)) &&
-                      !bookincart.includes(String(value.book_id))
-                    "
-                  >
-                    <i
-                      class="fa fa-cart-plus is-size-4"
-                      style="color: #5085a5"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-
-                  <span
-                    v-else-if="bookincart.includes(String(value.book_id))"
-                    class="mt-4 mr-2"
-                    style="color: #5085a5"
-                    >หนังสืออยู่ในตะกร้า</span
-                  >
-                  <span v-else class="mt-4 mr-2" style="color: #5085a5"
-                    >มีหนังสือเล่มนี้แล้ว</span
-                  >
+                <br />
+                <div
+                  class="level ml-2 mt-6"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div id="icon_area" v-if="value.monthly == true">
+                    <button
+                      id="icon_bag_active"
+                      class="button is-rounded"
+                      @click="iconAddIsActive(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag_active" class="help">
+                      เพิ่มหนังสือลงรายเดือนแล้ว
+                    </p>
+                  </div>
+                  <div id="icon_area" v-else>
+                    <button
+                      id="icon_bag"
+                      class="button is-rounded"
+                      @click="iconAdd(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag" class="help">เพิ่มหนังสือลงรายเดือน</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -149,9 +154,6 @@
         </section>
       </div>
       <br />
-      <!-- <div class="container" v-for="(valueallbooks, indexallbooks) in books" :key="indexallbooks">
-        <div>{{ valueallbooks.book_id }}</div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -161,13 +163,12 @@ import NavBar from "@/components/NavBar";
 import axios from "axios";
 
 export default {
-  name: "BookshelfComponent",
+  name: "Admin_Monthly",
   components: {
     NavBar,
   },
   created() {
     this.fetchData();
-    this.getcart();
   },
   data() {
     return {
@@ -178,43 +179,37 @@ export default {
       currentPage: 1,
       lastpage: 1,
       cart: [],
-      totalprice: 0,
-      bookincart: [],
-      bookshelf: [],
       id: 1,
-      showbookshelf: [],
       type: "ชื่อหนังสือ",
+      keepbook: [],
     };
   },
   computed: {
     paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * 3;
-      const endIndex = startIndex + 3;
+      const startIndex = (this.currentPage - 1) * 5;
+      const endIndex = startIndex + 5;
       return this.books.slice(startIndex, endIndex);
     },
   },
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-        );
-        this.book = response.data;
-        const response2 = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${"1"}`
-        );
-        this.cart = response2.data;
-        console.log(this.cart);
-
-        const getshelfbook = this.cart[0].bookshelf.NS;
-        this.showbookshelf = this.book.filter((item) => {
-          return getshelfbook.includes(String(item.book_id));
-        });
+        axios
+          .get(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+          )
+          .then((response) => {
+            this.books = response.data;
+            this.keepbook = response.data;
+            this.lastpage = response.data.length / 5;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } catch (error) {
         console.log(error);
       }
     },
-
     nextPage() {
       this.currentPage++;
     },
@@ -222,19 +217,17 @@ export default {
       this.currentPage--;
     },
     getProducts() {
-      const getshelfbook = this.cart[0].bookshelf.NS;
       if (this.search == "") {
-        this.showbookshelf = this.book.filter((item) => {
-          return getshelfbook.includes(String(item.book_id));
-        });
-      } else if (this.type == "ชื่อหนังสือ") {
+        this.books = this.keepbook;
+      }
+      if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?title=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -250,7 +243,7 @@ export default {
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?type=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -266,7 +259,7 @@ export default {
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?penname=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -282,48 +275,23 @@ export default {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },
-    async getcart() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.bookshelf = this.cart[0].bookshelf.NS;
-            this.bookincart = this.cart[0].cart_item.NS;
-            this.totalprice = this.cart[0].price;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
-      }
+    iconAddIsActive(event) {
+      this.books = this.books.map((book) => {
+        if (book.book_id === event.book_id) {
+          return { ...book, monthly: false };
+        } else {
+          return book;
+        }
+      });
     },
-    async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
-
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    iconAdd(event) {
+      this.books = this.books.map((book) => {
+        if (book.book_id === event.book_id) {
+          return { ...book, monthly: true };
+        } else {
+          return book;
+        }
+      });
     },
   },
 };
@@ -395,4 +363,22 @@ body {
     display: none;
   }
 } */
+
+#icon_bag_active {
+  color: #ffeff3;
+  background: #ff4974;
+}
+
+#text_bag_active {
+  color: #ff3c3c;
+}
+
+#icon_bag {
+  color: #003478;
+  background: #0063ba2d;
+}
+
+#text_bag {
+  color: #003478;
+}
 </style>

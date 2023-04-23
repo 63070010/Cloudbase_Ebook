@@ -1,6 +1,57 @@
 <template>
   <div>
     <NavBar />
+    <!-- ### ส่วน add Event ### -->
+    <div class="container is-max-widescreen px-6">
+      <h2 class="subtitle">เพิ่มกิจกรรม</h2>
+      <section class="card is-small is-narrow p-5">
+        <div class="container p-5">
+          <div class="file is-centered is-boxed has-name mb-5">
+            <label class="file-label">
+              <input class="file-input" type="button" value="Choose a file" />
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label"> Choose a file… </span>
+              </span>
+              <span class="file-name" v-if="file">
+                {{ file.name }}
+              </span>
+            </label>
+          </div>
+          <div class="field mt-5">
+            <label class="label">หัวข้อกิจกรรม</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                placeholder="ชื่อกิจกรรม"
+                v-model="title"
+              />
+            </div>
+          </div>
+          <div class="field mt-5">
+            <label class="label">รายละเอียด</label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                placeholder="รายละเอียด"
+                v-model="desc"
+              ></textarea>
+            </div>
+          </div>
+          <button
+            class="button is-primary is-fullwidth mt-6"
+            @click="submitFile"
+          >
+            Add Event
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ### ส่วน search ### -->
     <div class="container is-max-widescreen">
       <h2 class="subtitle">ค้นหาหนังสือ</h2>
       <!--######### tab ค้นหา #########-->
@@ -58,7 +109,7 @@
           <div class="columns">
             <div
               class="column is-one-fifth"
-              v-for="(value, index) in showbookshelf"
+              v-for="(value, index) in paginatedBooks"
               :key="index"
             >
               <div class="card">
@@ -84,32 +135,37 @@
                     </div>
                   </div>
                 </router-link>
-                <div class="level ml-2 mt-6">
-                  ฿ {{ value.price }}
-                  <button
-                    class="button is-ghost level-right"
-                    @click="cardpush(value)"
-                    v-if="
-                      !bookshelf.includes(String(value.book_id)) &&
-                      !bookincart.includes(String(value.book_id))
-                    "
-                  >
-                    <i
-                      class="fa fa-cart-plus is-size-4"
-                      style="color: #5085a5"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-
-                  <span
-                    v-else-if="bookincart.includes(String(value.book_id))"
-                    class="mt-4 mr-2"
-                    style="color: #5085a5"
-                    >หนังสืออยู่ในตะกร้า</span
-                  >
-                  <span v-else class="mt-4 mr-2" style="color: #5085a5"
-                    >มีหนังสือเล่มนี้แล้ว</span
-                  >
+                <br />
+                <div
+                  class="level ml-2 mt-6"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div id="icon_area">
+                    <button
+                      id="icon_bag_active"
+                      class="button is-rounded"
+                      @click="iconAddIsActive(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag_active" class="help">
+                      เพิ่มหนังสือลงกิจกรรมแล้ว
+                    </p>
+                  </div>
+                  <div id="icon_area">
+                    <button
+                      id="icon_bag"
+                      class="button is-rounded"
+                      @click="iconAdd(value)"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag" class="help">เพิ่มหนังสือลงกิจกรรม</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -149,10 +205,9 @@
         </section>
       </div>
       <br />
-      <!-- <div class="container" v-for="(valueallbooks, indexallbooks) in books" :key="indexallbooks">
-        <div>{{ valueallbooks.book_id }}</div>
-      </div> -->
     </div>
+
+    <br />
   </div>
 </template>
 
@@ -161,13 +216,12 @@ import NavBar from "@/components/NavBar";
 import axios from "axios";
 
 export default {
-  name: "BookshelfComponent",
+  name: "Admin_AddEvent",
   components: {
     NavBar,
   },
   created() {
     this.fetchData();
-    this.getcart();
   },
   data() {
     return {
@@ -182,39 +236,39 @@ export default {
       bookincart: [],
       bookshelf: [],
       id: 1,
-      showbookshelf: [],
       type: "ชื่อหนังสือ",
+      keepbook: [],
+      title: "",
+      desc: "",
+      book_id: [],
     };
   },
   computed: {
     paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * 3;
-      const endIndex = startIndex + 3;
+      const startIndex = (this.currentPage - 1) * 5;
+      const endIndex = startIndex + 5;
       return this.books.slice(startIndex, endIndex);
     },
   },
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
-        );
-        this.book = response.data;
-        const response2 = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${"1"}`
-        );
-        this.cart = response2.data;
-        console.log(this.cart);
-
-        const getshelfbook = this.cart[0].bookshelf.NS;
-        this.showbookshelf = this.book.filter((item) => {
-          return getshelfbook.includes(String(item.book_id));
-        });
+        axios
+          .get(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
+          )
+          .then((response) => {
+            this.books = response.data;
+            this.keepbook = response.data;
+            this.lastpage = response.data.length / 5;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } catch (error) {
         console.log(error);
       }
     },
-
     nextPage() {
       this.currentPage++;
     },
@@ -222,19 +276,17 @@ export default {
       this.currentPage--;
     },
     getProducts() {
-      const getshelfbook = this.cart[0].bookshelf.NS;
       if (this.search == "") {
-        this.showbookshelf = this.book.filter((item) => {
-          return getshelfbook.includes(String(item.book_id));
-        });
-      } else if (this.type == "ชื่อหนังสือ") {
+        this.books = this.keepbook;
+      }
+      if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?title=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -250,7 +302,7 @@ export default {
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?type=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -266,7 +318,7 @@ export default {
               `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?penname=${this.search}`
             )
             .then((response) => {
-              this.showbookshelf = response.data;
+              this.books = response.data;
               console.log(response.data);
             })
             .catch((error) => {
@@ -282,49 +334,24 @@ export default {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },
-    async getcart() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.bookshelf = this.cart[0].bookshelf.NS;
-            this.bookincart = this.cart[0].cart_item.NS;
-            this.totalprice = this.cart[0].price;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
+  },
+  iconAddIsActive(event) {
+    this.books = this.books.map((book) => {
+      if (book.book_id === event.book_id) {
+        return { ...book, monthly: false };
+      } else {
+        return book;
       }
-    },
-    async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
-
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
+    });
+  },
+  iconAdd(event) {
+    this.books = this.books.map((book) => {
+      if (book.book_id === event.book_id) {
+        return { ...book, monthly: true };
+      } else {
+        return book;
+      }
+    });
   },
 };
 </script>
@@ -343,29 +370,31 @@ body {
 .search {
   margin-top: 3%;
   width: 100%;
-  position: relative;
+  /* position: relative; */
 }
 
 .search_field {
-  margin: auto;
-  /* display: block; */
-  width: 40%;
+  width: 100%;
 }
 
 .search_input {
   width: 100%;
 }
 
-.next_or_back {
-  display: block;
-  margin: auto;
-  width: 15%;
-  text-align: center;
+#taball {
+  position: relative;
+  padding-top: 5px;
+}
+#tab-search {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
 }
 
-/* .textPage {
-  margin: 5px;
-} */
+.next_or_back {
+  width: 100%;
+  padding-left: 82%;
+}
 
 .columns {
   display: flex;
@@ -383,16 +412,21 @@ body {
 .card-content {
   height: 100px;
 }
+#icon_bag_active {
+  color: #ffeff3;
+  background: #ff4974;
+}
 
-/* @media screen and (max-width: 900px) {
-  .column {
-    margin-top: 20px;
-    width: 50%;
-  }
-} */
-/* @media screen and (max-height: 1000px) {
-  .columns {
-    display: none;
-  }
-} */
+#text_bag_active {
+  color: #ff3c3c;
+}
+
+#icon_bag {
+  color: #003478;
+  background: #0063ba2d;
+}
+
+#text_bag {
+  color: #003478;
+}
 </style>

@@ -16,6 +16,9 @@ import UploadBook from '../views/UploadBook.vue'
 import Readbook from '../views/ReadBook.vue'
 import QrCodeWithCheck from '../views/QRCode.vue'
 import EventAllPromotion from '../views/EventAllPromotionBook.vue'
+import Admin_AddEvent from '../views/Admin_AddEvent.vue'
+import Admin_AddItem from '../views/Admin_AddItem.vue'
+import Admin_Monthly from '../views/Admin_Monthly.vue'
 
 const routes = [
   {
@@ -127,6 +130,28 @@ const routes = [
 
     component: EventAllPromotion
   }
+  ,
+  {
+    path: '/Admin_AddEvent',
+    name: 'Admin_AddEvent',
+
+    component: Admin_AddEvent
+  }
+  ,
+  {
+    path: '/Admin_AddItem',
+    name: 'Admin_AddItem',
+
+    component: Admin_AddItem
+  }
+  ,
+  {
+    path: '/Admin_Monthly',
+    name: 'Admin_Monthly',
+
+    component: Admin_Monthly
+  }
+
 ]
 
 const router = createRouter({

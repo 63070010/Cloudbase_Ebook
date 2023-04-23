@@ -43,7 +43,7 @@
 </template>
 <script>
 import NavBar from "@/components/NavBar";
-import axios from "axios";
+import { storage } from "../firebase/firebaseDB";
 
 export default {
   name: "UploadBook",
@@ -64,30 +64,18 @@ export default {
 
     async submitFile() {
       try {
-        const formData = new FormData();
-        formData.append("file", this.file);
+        // สร้าง reference ของไฟล์ที่จะอัปโหลด
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(this.file.name);
+        await fileRef.put(this.file);
 
-        // Upload file to S3
-        const response = await axios.post("YOUR_UPLOAD_URL", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        const { data } = response;
-        const fileLocation = data.fileLocation;
+        const downloadURL = await fileRef.getDownloadURL();
+        console.log(downloadURL);
 
-        // Save file location to DynamoDB
-        const params = {
-          id: "USER_ID",
-          profile: fileLocation,
-        };
-        await axios.post("YOUR_DYNAMODB_API_URL", params);
-
-        // Clear the file input
+        // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+        alert("Upload success!");
         this.file = null;
         this.$refs.fileInput.value = null;
-
-        alert("Upload success!");
       } catch (err) {
         console.error(err);
         alert("Upload failed!");

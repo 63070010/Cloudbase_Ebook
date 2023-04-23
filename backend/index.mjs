@@ -170,6 +170,71 @@ async function Books(event) {
             };
         }
     }
+    else if (event.httpMethod == "POST") {
+        try {
+            const {
+                title,
+                type,
+                price, point, penname, Date, desc
+                , image, story } = JSON.parse(event.body);
+
+            const paramsgetid = {
+                TableName: 'book'
+            };
+            const data = await dynamo.send(new ScanCommand(paramsgetid));
+            const items = data.Items.map((item) => {
+                const { book_id } = unmarshall(item);
+                return {
+                    book_id,
+
+                };
+            });
+            const book_id = Math.max(...items.map(item => item.book_id)) + 1;
+
+            const params = {
+                TableName: 'book',
+                Item: {
+                    book_id: { "N": String(book_id) },
+                    title: { "S": title },
+                    type: { "SS": type },
+                    price: { "N": String(price) },
+                    point: { "N": String(point) },
+                    penname: { "S": penname },
+                    Date: { "S": Date },
+                    desc: { "S": desc },
+                    image: { "S": image },
+                    monthly: { "BOOL": false },
+                    review: { "SS": [''] },
+                    review_user: { "SS": [''] },
+                    sales: { "N": '0' },
+                    story: { "S": story },
+
+                }
+            };
+
+
+            await dynamo.send(new PutItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item added to DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+
+        }
+    }
+
     else {
         return {
             statusCode: 500,
@@ -198,10 +263,10 @@ async function Detailbook(event) {
             };
             const data = await dynamo.send(new QueryCommand(params));
             const items = data.Items.map((item) => {
-                const { Date, image, penname, monthly, book_id, price, title, desc, sales, point } = unmarshall(item);
+                const { Date, image, penname, monthly, book_id, price, title, desc, sales, point, story } = unmarshall(item);
                 return {
 
-                    image, penname, monthly, book_id, price, sales, title, Date, desc, point,
+                    image, penname, monthly, book_id, price, sales, title, Date, desc, point, story,
                     type: item.type ? { SS: item.type.SS } : { SS: [] },
                     review: item.review ? { SS: item.review.SS } : { SS: [] },
                     review_user: item.review_user ? { SS: item.review_user.SS } : { SS: [] }
@@ -336,29 +401,56 @@ async function Users(event) {
     }
     else if (event.httpMethod == "POST") {
         try {
-            const { id, email,
-                gender,
+            const {
+                email,
                 password,
-                phone,
-                point,
-                username, receiving_money, profile, rev_book, fav_Book } = JSON.parse(event.body);
+                username, } = JSON.parse(event.body);
+
+            const paramsgetid = {
+                TableName: 'cart'
+            };
+            const data = await dynamo.send(new ScanCommand(paramsgetid));
+            const items = data.Items.map((item) => {
+                const { id } = unmarshall(item);
+                return {
+                    id,
+
+                };
+            });
+            const id = Math.max(...items.map(item => item.id)) + 1;
+
             const params = {
                 TableName: 'user',
                 Item: {
-                    id: { "S": id },
+                    id: { "S": String(id) },
                     email: { "S": email },
-                    gender: { "S": gender },
+                    gender: { "S": 'ไม่ระบุ' },
                     password: { "S": password },
-                    phone: { "N": phone },
-                    point: { "N": point },
+                    phone: { "S": "" },
+                    point: { "N": "0" },
                     username: { "S": username },
-                    receiving_money: { "S": receiving_money },
-                    profile: { "S": profile },
-                    rev_book: { "NS": rev_book },
-                    fav_Book: { "NS": fav_Book }
+                    receiving_money: { "S": '' },
+                    profile: { "S": '' },
+                    rev_book: { "NS": ["0"] },
+                    fav_Book: { "NS": ["0"] },
                 }
             };
+
+            const paramscart = {
+                TableName: 'cart',
+                Item: {
+                    id: { 'N': String(id) },
+                    bookshelf: { 'NS': ["0"] },
+                    price: { 'N': "0" },
+                    user_id: { 'S': String(id) },
+                    cart_item: { 'NS': ["0"] },
+                    point: { 'N': "0" }
+                }
+            };
+
+
             await dynamo.send(new PutItemCommand(params));
+            await dynamo.send(new PutItemCommand(paramscart));
             return {
                 statusCode: 200,
                 headers: {
@@ -369,6 +461,7 @@ async function Users(event) {
             };
         } catch (err) {
             return {
+
                 statusCode: 500,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -394,7 +487,7 @@ async function Users(event) {
                     "email": { "S": email },
                     "gender": { "S": gender },
                     "password": { "S": password },
-                    "phone": { "N": phone },
+                    "phone": { "S": phone },
                     "username": { "S": username },
                     "receiving_money": { "S": receiving_money },
                     "profile": { "S": profile },
@@ -470,40 +563,6 @@ async function Carts(event) {
             };
         }
 
-    }
-    else if (event.httpMethod == "POST") {
-        try {
-            const { id, bookshelf, price, user_id, cart_item, point } = JSON.parse(event.body);
-            const params = {
-                TableName: 'cart',
-                Item: {
-                    id: { "N": id },
-                    bookshelf: { "NS": bookshelf },
-                    cart_item: { "NS": cart_item },
-                    price: { "N": String(price) }, // แปลงค่า price เป็น string
-                    user_id: { "S": user_id },
-                    point: { "N": String(point) }
-                }
-            };
-            await dynamo.send(new PutItemCommand(params));
-            return {
-                statusCode: 200,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message: 'Item added to DynamoDB' })
-            };
-        } catch (err) {
-            return {
-                statusCode: 500,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ error: err.message })
-            };
-        }
     }
 
     else if (event.httpMethod == "PUT") {
@@ -612,8 +671,6 @@ async function Item(event) {
                 return {
                     item_id,
                     image, desc, title, point, type, status,
-                    book_id: item.book_id ? { NS: item.book_id.NS } : { NS: [] },
-
                 };
             }); return {
                 statusCode: 200,

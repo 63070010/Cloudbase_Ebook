@@ -138,13 +138,9 @@
 <script>
 import NavBar from "@/components/NavBar";
 import useValidate from "@vuelidate/core";
-import {
-  required,
-  email,
-  minLength,
-  sameAs,
-} from "@vuelidate/validators";
+import { required, email, minLength, sameAs } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+import axios from "axios";
 export default {
   components: {
     NavBar,
@@ -174,12 +170,27 @@ export default {
   },
   methods: {
     submit() {
-      this.v$.$validate();
-      if (this.v$.$error) {
-        alert("Form failed validation");
-      } else {
-        alert("Form successfully submitted.");
-      }
+      axios
+        .post(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user",
+          {
+            username: this.state.username,
+            password: this.state.password,
+            email: this.state.email,
+          }
+        )
+        .then(() => {
+          // ถ้าเข้าสู่ระบบสำเร็จ
+          // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
+
+          // ล้างข้อมูล username และ password
+          this.state.username = "";
+          this.state.password = "";
+          this.state.email = "";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

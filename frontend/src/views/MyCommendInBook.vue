@@ -116,7 +116,10 @@
           </div>
 
           <!--######### BTN NEXT && BACK #########-->
-          <div class="field next_or_back has-addons">
+          <div
+            class="field next_or_back has-addons"
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <button
               v-if="this.currentPage == 1"
               disabled
