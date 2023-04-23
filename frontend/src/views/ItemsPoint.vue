@@ -331,7 +331,7 @@
                         style="color: #f7f9fb; background-color: #5085a5"
                         @click="submit"
                       >
-                        เข้าสู่ระบบ
+                        ยืนยันข้อมูล
                       </button>
                     </div>
                   </footer>

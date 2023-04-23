@@ -80,15 +80,17 @@
               จำนวนหนังสือในตะกร้า : {{ cartitemlast.length }} เล่ม
             </h2>
 
-            <button class="button">
-              ไปหน้าชำระเงิน&emsp;<i
-                class="fa fa-arrow-circle-right"
-                aria-hidden="true"
-              ></i>
-            </button>
+            <router-link to="/QrCodeWithCheck" v-if="cartitemlast.length != 0"
+              ><button class="button">
+                ไปหน้าชำระเงิน&emsp;<i
+                  class="fa fa-arrow-circle-right"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </router-link>
 
-            <div>
-              <button class="button" disabled v-if="cartitemlast.length == 0">
+            <div v-else>
+              <button class="button" disabled>
                 ไปหน้าชำระเงิน&emsp;<i
                   class="fa fa-arrow-circle-right"
                   aria-hidden="true"

@@ -135,7 +135,7 @@
               to="/Admin_AddItem"
               style="color: #687864"
               v-if="showuser[0].id == '0'"
-              ><button class="button mr-3">
+              ><button class="button mr-5">
                 <span style="color: #687864">Item</span>
                 <span class="icon is-size-5 ml-2">
                   <i class="fa fa-plus-square" style="color: #687864"></i>
@@ -158,7 +158,7 @@
               style="color: #687864"
               v-if="showuser[0].id != '0'"
             >
-              <button class="button">
+              <button class="button mr-5">
                 <span style="color: #687864">ค้นหาหนังสือ</span>
                 <span class="icon is-size-5 ml-2"
                   ><i class="fas fa-search" style="color: #687864"> </i
@@ -181,7 +181,7 @@ export default {
       user: 1,
       name: "NavBar",
       Open_dropdown: false,
-      id: 0,
+      id: 1,
       showuser: [],
     };
   },

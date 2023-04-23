@@ -84,32 +84,22 @@
                     </div>
                   </div>
                 </router-link>
-                <div class="level ml-2 mt-6">
-                  ฿ {{ value.price }}
-                  <button
-                    class="button is-ghost level-right"
-                    @click="cardpush(value)"
-                    v-if="
-                      !bookshelf.includes(String(value.book_id)) &&
-                      !bookincart.includes(String(value.book_id))
-                    "
-                  >
-                    <i
-                      class="fa fa-cart-plus is-size-4"
-                      style="color: #5085a5"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
+                <br />
+                <br />
+                <div class="level">
+                  <router-link :to="`/ReadBook/${value.book_id}`" class="ml-6">
+                    <button
+                      class="button is-rounded mb-2"
+                      style="
+                        color: #f7f9fb;
+                        background-color: #5085a5;
 
-                  <span
-                    v-else-if="bookincart.includes(String(value.book_id))"
-                    class="mt-4 mr-2"
-                    style="color: #5085a5"
-                    >หนังสืออยู่ในตะกร้า</span
-                  >
-                  <span v-else class="mt-4 mr-2" style="color: #5085a5"
-                    >มีหนังสือเล่มนี้แล้ว</span
-                  >
+                        width: 150%;
+                      "
+                    >
+                      Read
+                    </button>
+                  </router-link>
                 </div>
               </div>
             </div>

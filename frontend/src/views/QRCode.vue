@@ -7,9 +7,7 @@
         <span class="qrcode-text2">ยอดชำระ {{ totalprice }} บาท </span>
       </div>
       <router-link to="/" style="margin-bottom: -600px; position: absolute"
-        ><button
-          class="button is-info is-rounded"
-        >
+        ><button class="button is-info is-rounded">
           กลับไปหน้าแรก
         </button></router-link
       >
@@ -34,32 +32,47 @@ export default {
   created() {
     this.getcartitem();
   },
-  mounted() {
-    const canvas = this.$refs.canvas;
-    QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, (error) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("QR Code is generated!");
-      }
-    });
-    canvas.style.width = "300px";
-    canvas.style.height = "300px";
-  },
+
   methods: {
     async getcartitem() {
       try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.totalprice = this.cart[0].price;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        const response = await axios.get(
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+        );
+        this.cart = response.data;
+        this.totalprice = this.cart[0].price;
+        const canvas = this.$refs.canvas;
+        this.cartitem = this.cart[0].cart_item.NS;
+        this.bookshelf = this.cart[0].bookshelf.NS;
+
+        QRCode.toCanvas(canvas, this.qrCodeValue, this.qrCodeOptions, () => {
+          const combined = Array.from(
+            new Set([...this.bookshelf, ...this.cartitem])
+          );
+          this.cart_item = ["0"];
+          console.log(1);
+          axios
+            .put(
+              "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/checkout",
+              {
+                id: String(this.id),
+                price: "0",
+                point: "0",
+                cart_item: this.cart_item,
+                bookshelf: combined,
+              }
+            )
+            .then(function (response) {
+              console.log(response.data);
+
+              alert("ชำระเงินเสร็จสิ้น");
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
+        canvas.style.width = "300px";
+        canvas.style.height = "300px";
       } catch (error) {
         console.log(error);
       }

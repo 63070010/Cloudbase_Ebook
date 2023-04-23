@@ -2,6 +2,39 @@
   <div>
     <NavBar />
     <div class="container is-max-widescreen">
+      <section
+        class="card is-small is-narrow p-5"
+        style="max-width: 50%; margin-left: auto; margin-right: auto"
+      >
+        <div class="container p-5">
+          <h2 class="subtitle">กำหนดเวลาหนังสือรายเดือน</h2>
+
+          <div class="columns is-centered">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">ตั้งแต่วันที่:</label>
+                <div class="control">
+                  <input type="date" v-model="datestart" class="input" />
+                </div>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">จนถึงวันที่ :</label>
+                <div class="control">
+                  <input type="date" v-model="dateend" class="input" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="button is-primary is-fullwidth mt-6" @click="submit">
+            Books in Monthly
+          </button>
+        </div>
+      </section>
+
+      <br />
       <h2 class="subtitle">ค้นหาหนังสือ</h2>
       <!--######### tab ค้นหา #########-->
       <div class="tabs is-boxed">
@@ -93,27 +126,30 @@
                     align-items: center;
                   "
                 >
-                  <div id="icon_area" v-if="value.monthly == true">
+                  <div
+                    id="icon_area"
+                    v-if="!eventbook.includes(String(value.book_id))"
+                  >
                     <button
-                      id="icon_bag_active"
+                      id="icon_bag"
                       class="button is-rounded"
                       @click="iconAddIsActive(value)"
                     >
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
-                    <p id="text_bag_active" class="help">
-                      เพิ่มหนังสือลงรายเดือนแล้ว
-                    </p>
+                    <p id="text_bag" class="help">เพิ่มหนังสือลงกิจกรรมแล้ว</p>
                   </div>
                   <div id="icon_area" v-else>
                     <button
-                      id="icon_bag"
+                      id="icon_bag_active"
                       class="button is-rounded"
                       @click="iconAdd(value)"
                     >
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
-                    <p id="text_bag" class="help">เพิ่มหนังสือลงรายเดือน</p>
+                    <p id="text_bag_active" class="help">
+                      เพิ่มหนังสือลงกิจกรรม
+                    </p>
                   </div>
                 </div>
               </div>
@@ -153,6 +189,7 @@
           </div>
         </section>
       </div>
+
       <br />
     </div>
   </div>
@@ -182,6 +219,9 @@ export default {
       id: 1,
       type: "ชื่อหนังสือ",
       keepbook: [],
+      eventbook: [],
+      datestart: null,
+      dateend: null,
     };
   },
   computed: {
@@ -276,22 +316,33 @@ export default {
       this.number = num;
     },
     iconAddIsActive(event) {
-      this.books = this.books.map((book) => {
-        if (book.book_id === event.book_id) {
-          return { ...book, monthly: false };
-        } else {
-          return book;
-        }
-      });
+      this.eventbook.push(String(event.book_id));
     },
     iconAdd(event) {
-      this.books = this.books.map((book) => {
-        if (book.book_id === event.book_id) {
-          return { ...book, monthly: true };
-        } else {
-          return book;
-        }
-      });
+      this.eventbook = this.eventbook.filter(
+        (item) => item !== String(event.book_id)
+      );
+    },
+    submit() {
+      axios
+        .post(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly",
+          {
+            Monthlybook: this.eventbook,
+            dateend: this.dateend,
+            datestart: this.datestart,
+          }
+        )
+        .then(() => {
+          // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+          this.dateend = null;
+          this.datestart = null;
+          this.eventbook = [];
+          alert("Upload success!");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

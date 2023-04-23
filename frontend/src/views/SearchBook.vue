@@ -2,8 +2,15 @@
   <div>
     <NavBar />
     <div class="container is-max-widescreen">
+      <div v-if="datamothly && datamothly.length > 0">
+        <span v-if="this.$route.params.id == 'Books for this month'">
+          เริ่มตั้งแต่วันที่: {{ datamothly[0].datestart }} จนถึงวันที่:
+          {{ datamothly[0].dateend }}</span
+        >
+      </div>
+      <br />
+
       <h2 class="subtitle">ค้นหาหนังสือ</h2>
-      <!--######### tab ค้นหา #########-->
       <div class="tabs is-boxed">
         <ul>
           <li
@@ -181,6 +188,7 @@ export default {
       id: 1,
       type: "ชื่อหนังสือ",
       keepbook: [],
+      datamothly: [],
     };
   },
   computed: {
@@ -248,12 +256,22 @@ export default {
 
       if (id == "Books for this month") {
         try {
-          const response2 = await axios.get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/search?monthly=${1}`
+          const response = await axios.get(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book"
           );
+          const data = response.data;
 
-          const datamothly = response2.data;
-          this.books = datamothly;
+          const response2 = await axios.get(
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly`
+          );
+          this.datamothly = response2.data;
+          this.checkmonthly = this.datamothly[0].Monthlybook.NS;
+
+          const Monthlybooks = data.filter((item) => {
+            return this.checkmonthly.includes(String(item.book_id));
+          });
+
+          this.books = Monthlybooks;
         } catch (error) {
           console.log(error);
         }

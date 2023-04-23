@@ -104,7 +104,7 @@ const routes = [
   }
   ,
   {
-    path: '/UploadBook',
+    path: '/UploadBook/:book_id',
     name: 'UploadBook',
 
     component: UploadBook

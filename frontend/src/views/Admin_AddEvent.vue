@@ -8,7 +8,12 @@
         <div class="container p-5">
           <div class="file is-centered is-boxed has-name mb-5">
             <label class="file-label">
-              <input class="file-input" type="button" value="Choose a file" />
+              <input
+                type="file"
+                ref="fileInput"
+                class="is-hidden"
+                @change="onFileChange"
+              />
               <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -144,27 +149,30 @@
                     align-items: center;
                   "
                 >
-                  <div id="icon_area">
+                  <div
+                    id="icon_area"
+                    v-if="!eventbook.includes(String(value.book_id))"
+                  >
                     <button
-                      id="icon_bag_active"
+                      id="icon_bag"
                       class="button is-rounded"
                       @click="iconAddIsActive(value)"
                     >
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
-                    <p id="text_bag_active" class="help">
-                      เพิ่มหนังสือลงกิจกรรมแล้ว
-                    </p>
+                    <p id="text_bag" class="help">เพิ่มหนังสือลงกิจกรรมแล้ว</p>
                   </div>
-                  <div id="icon_area">
+                  <div id="icon_area" v-else>
                     <button
-                      id="icon_bag"
+                      id="icon_bag_active"
                       class="button is-rounded"
                       @click="iconAdd(value)"
                     >
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
-                    <p id="text_bag" class="help">เพิ่มหนังสือลงกิจกรรม</p>
+                    <p id="text_bag_active" class="help">
+                      เพิ่มหนังสือลงกิจกรรม
+                    </p>
                   </div>
                 </div>
               </div>
@@ -214,6 +222,7 @@
 <script>
 import NavBar from "@/components/NavBar";
 import axios from "axios";
+import { storage } from "../firebase/firebaseDB";
 
 export default {
   name: "Admin_AddEvent",
@@ -241,6 +250,8 @@ export default {
       title: "",
       desc: "",
       book_id: [],
+      eventbook: [],
+      file: null,
     };
   },
   computed: {
@@ -334,24 +345,52 @@ export default {
       this.typeTab = "ค้นหา " + text;
       this.number = num;
     },
-  },
-  iconAddIsActive(event) {
-    this.books = this.books.map((book) => {
-      if (book.book_id === event.book_id) {
-        return { ...book, monthly: false };
-      } else {
-        return book;
-      }
-    });
-  },
-  iconAdd(event) {
-    this.books = this.books.map((book) => {
-      if (book.book_id === event.book_id) {
-        return { ...book, monthly: true };
-      } else {
-        return book;
-      }
-    });
+
+    iconAddIsActive(event) {
+      this.eventbook.push(String(event.book_id));
+      console.log(this.eventbook);
+    },
+    iconAdd(event) {
+      this.eventbook = this.eventbook.filter(
+        (item) => item !== String(event.book_id)
+      );
+
+      console.log(this.eventbook);
+    },
+    onFileChange(event) {
+      this.file = event.target.files[0];
+    },
+    async submitFile() {
+      const storageRef = storage.ref();
+      const fileRef = storageRef.child(this.file.name);
+      await fileRef.put(this.file);
+
+      const downloadURL = await fileRef.getDownloadURL();
+      console.log(downloadURL);
+
+      axios
+        .post(
+          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/getevent",
+          {
+            title: this.title,
+            desc: this.desc,
+            book_id: this.eventbook,
+            image: downloadURL,
+          }
+        )
+        .then(() => {
+          // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+          this.title = "";
+          this.desc = "";
+          this.eventbook = [];
+          this.file = null;
+          this.$refs.fileInput.value = null;
+          alert("Upload success!");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>

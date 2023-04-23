@@ -46,6 +46,15 @@ export const handler = async (event) => {
             case '/fav': {
                 return await Fav(event);
             };
+            case '/monthly': {
+                return await Monthly(event);
+            };
+            case '/ban': {
+                return await Ban(event);
+            };
+            case '/checkout': {
+                return await Checkout(event);
+            };
             case 'OPTIONS': { // เพิ่ม options เพื่อทำการ preflight สำหรับ CORS
                 return {
                     statusCode: 200,
@@ -145,10 +154,10 @@ async function Books(event) {
             };
             const data = await dynamo.send(new ScanCommand(params));
             const items = data.Items.map((item) => {
-                const { Date, image, penname, monthly, book_id, price, sales, title, point } = unmarshall(item);
+                const { Date, image, penname, status, book_id, price, sales, title, point } = unmarshall(item);
                 return {
 
-                    image, penname, monthly, book_id, price, sales, title, Date, point,
+                    image, penname, status, book_id, price, sales, title, Date, point,
                     type: item.type ? { SS: item.type.SS } : { SS: [] }
                 };
             }); return {
@@ -176,7 +185,7 @@ async function Books(event) {
                 title,
                 type,
                 price, point, penname, Date, desc
-                , image, story } = JSON.parse(event.body);
+                , image, story, id, mybook } = JSON.parse(event.body);
 
             const paramsgetid = {
                 TableName: 'book'
@@ -203,7 +212,7 @@ async function Books(event) {
                     Date: { "S": Date },
                     desc: { "S": desc },
                     image: { "S": image },
-                    monthly: { "BOOL": false },
+                    status: { "BOOL": true },
                     review: { "SS": [''] },
                     review_user: { "SS": [''] },
                     sales: { "N": '0' },
@@ -212,8 +221,22 @@ async function Books(event) {
                 }
             };
 
-
+            const paramsuser = {
+                TableName: 'user',
+                Key: {
+                    id: { "S": id }
+                },
+                UpdateExpression: "set mybook = :mybook",
+                ExpressionAttributeValues: {
+                    "mybook": { "NS": mybook },
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dynamo.send(new UpdateItemCommand(paramsuser));
             await dynamo.send(new PutItemCommand(params));
+
+
+
             return {
                 statusCode: 200,
                 headers: {
@@ -263,10 +286,10 @@ async function Detailbook(event) {
             };
             const data = await dynamo.send(new QueryCommand(params));
             const items = data.Items.map((item) => {
-                const { Date, image, penname, monthly, book_id, price, title, desc, sales, point, story } = unmarshall(item);
+                const { Date, image, penname, status, book_id, price, title, desc, sales, point, story } = unmarshall(item);
                 return {
 
-                    image, penname, monthly, book_id, price, sales, title, Date, desc, point, story,
+                    image, penname, status, book_id, price, sales, title, Date, desc, point, story,
                     type: item.type ? { SS: item.type.SS } : { SS: [] },
                     review: item.review ? { SS: item.review.SS } : { SS: [] },
                     review_user: item.review_user ? { SS: item.review_user.SS } : { SS: [] }
@@ -365,7 +388,7 @@ async function Users(event) {
                     password,
                     phone,
                     point,
-                    username, receiving_money, profile } = unmarshall(item);
+                    username, receiving_money, profile, mybook } = unmarshall(item);
                 return {
                     id,
                     email,
@@ -376,6 +399,7 @@ async function Users(event) {
                     username,
                     receiving_money,
                     profile,
+                    mybook,
                     rev_book: item.rev_book ? { NS: item.rev_book.NS } : { NS: [] },
                     fav_Book: item.fav_Book ? { NS: item.fav_Book.NS } : { NS: [] }
                 };
@@ -433,6 +457,7 @@ async function Users(event) {
                     profile: { "S": '' },
                     rev_book: { "NS": ["0"] },
                     fav_Book: { "NS": ["0"] },
+                    mybook: { "NS": ["0"] }
                 }
             };
 
@@ -492,6 +517,7 @@ async function Users(event) {
                     "receiving_money": { "S": receiving_money },
                     "profile": { "S": profile },
                     "point": { "N": point },
+
                 },
                 ReturnValues: "UPDATED_NEW"
             };
@@ -573,7 +599,7 @@ async function Carts(event) {
                 Key: {
                     id: { "N": id }
                 },
-                UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item, price = :price, user_id = :user_id",
+                UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item, price = :price, user_id = :user_id, point = :point",
                 ExpressionAttributeValues: {
                     ":bookshelf": { "NS": bookshelf },
                     ":cart_item": { "NS": cart_item },
@@ -667,10 +693,10 @@ async function Item(event) {
             };
             const data = await dynamo.send(new ScanCommand(params));
             const items = data.Items.map((item) => {
-                const { item_id, desc, image, title, point, type, status } = unmarshall(item);
+                const { item_id, desc, image, title, point, status } = unmarshall(item);
                 return {
                     item_id,
-                    image, desc, title, point, type, status,
+                    image, desc, title, point, status,
                 };
             }); return {
                 statusCode: 200,
@@ -689,6 +715,60 @@ async function Item(event) {
                 },
                 body: JSON.stringify({ error: err.message })
             };
+        }
+
+
+    }
+    else if (event.httpMethod == "POST") {
+        try {
+            const {
+                title, desc, image, point, } = JSON.parse(event.body);
+
+            const paramsgetid = {
+                TableName: 'item'
+            };
+            const data = await dynamo.send(new ScanCommand(paramsgetid));
+            const items = data.Items.map((item) => {
+                const { item_id } = unmarshall(item);
+                return {
+                    item_id,
+
+                };
+            });
+            const item_id = Math.max(...items.map(item => item.item_id)) + 1;
+
+            const params = {
+                TableName: 'item',
+                Item: {
+                    item_id: { "N": String(item_id) },
+                    title: { "S": title },
+                    desc: { "S": desc },
+                    image: { "S": image },
+                    point: { "S": String(point) },
+                    status: { "BOOL": false }
+                }
+            };
+
+
+            await dynamo.send(new PutItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item added to DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+
         }
     }
     else {
@@ -721,10 +801,10 @@ async function Search(event) {
 
                 const data = await dynamo.send(new ScanCommand(params));
                 const items = data.Items.map((item) => {
-                    const { Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    const { Date, image, penname, status, book_id, price, sales, title } = unmarshall(item);
                     return {
 
-                        image, penname, monthly, book_id, price, sales, title, Date,
+                        image, penname, status, book_id, price, sales, title, Date,
                         type: item.type ? { SS: item.type.SS } : { SS: [] }
                     };
                 });
@@ -762,10 +842,10 @@ async function Search(event) {
 
                 const data = await dynamo.send(new ScanCommand(params));
                 const items = data.Items.map((item) => {
-                    const { Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    const { Date, image, penname, status, book_id, price, sales, title } = unmarshall(item);
                     return {
 
-                        image, penname, monthly, book_id, price, sales, title, Date,
+                        image, penname, status, book_id, price, sales, title, Date,
                         type: item.type ? { SS: item.type.SS } : { SS: [] }
                     };
                 });
@@ -805,50 +885,14 @@ async function Search(event) {
 
                 const data = await dynamo.send(new ScanCommand(params));
                 const items = data.Items.map((item) => {
-                    const { Date, image, penname, monthly, book_id, price, sales, title } = unmarshall(item);
+                    const { Date, image, penname, status, book_id, price, sales, title } = unmarshall(item);
                     return {
 
-                        image, penname, monthly, book_id, price, sales, title, Date,
+                        image, penname, status, book_id, price, sales, title, Date,
                         type: item.type ? { SS: item.type.SS } : { SS: [] }
                     };
                 });
                 return {
-                    statusCode: 200,
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(items)
-                };
-            } catch (err) {
-                return {
-                    statusCode: 500,
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ error: err.message })
-                };
-            }
-        }
-        else if (event.queryStringParameters.monthly) {
-            try {
-                const params = {
-                    TableName: 'book',
-                    FilterExpression: 'monthly = :monthly',
-                    ExpressionAttributeValues: {
-                        ':monthly': { BOOL: true }
-                    }
-                };
-                const data = await dynamo.send(new ScanCommand(params));
-                const items = data.Items.map((item) => {
-                    const { Date, image, penname, monthly, book_id, price, sales, title, point } = unmarshall(item);
-                    return {
-
-                        image, penname, monthly, book_id, price, sales, title, Date, point,
-                        type: item.type ? { SS: item.type.SS } : { SS: [] }
-                    };
-                }); return {
                     statusCode: 200,
                     headers: {
                         'Access-Control-Allow-Origin': '*',
@@ -925,6 +969,59 @@ async function Getevent(event) {
             };
         }
     }
+    else if (event.httpMethod == "POST") {
+        try {
+            const {
+                book_id, desc, image, title, } = JSON.parse(event.body);
+
+            const paramsgetid = {
+                TableName: 'event'
+            };
+            const data = await dynamo.send(new ScanCommand(paramsgetid));
+            const items = data.Items.map((item) => {
+                const { event_id } = unmarshall(item);
+                return {
+                    event_id,
+
+                };
+            });
+            const event_id = Math.max(...items.map(item => item.event_id)) + 1;
+
+            const params = {
+                TableName: 'event',
+                Item: {
+                    event_id: { "N": String(event_id) },
+                    book_id: { "NS": book_id },
+                    desc: { "S": desc },
+                    image: { "S": image },
+                    title: { "S": title },
+                    status: { "BOOL": false }
+                }
+            };
+
+
+            await dynamo.send(new PutItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item added to DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+
+        }
+
+    }
     else {
         return {
             statusCode: 500,
@@ -987,6 +1084,209 @@ async function Fav(event) {
             ReturnValues: "UPDATED_NEW"
         };
         await dynamo.send(new UpdateItemCommand(paramsuser));
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: 'Item updated in DynamoDB' })
+        };
+    } catch (err) {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+}
+async function Monthly(event) {
+    if (event.httpMethod == "POST") {
+
+        try {
+            const { dateend, datestart, Monthlybook, } = JSON.parse(event.body);
+
+            const paramsgetid = {
+                TableName: 'Monthly'
+            };
+            const data = await dynamo.send(new ScanCommand(paramsgetid));
+            const items = data.Items.map((item) => {
+                const { id } = unmarshall(item);
+                return { id, };
+            });
+            const id = Math.max(...items.map(item => item.id)) + 1;
+
+            const params = {
+                TableName: 'Monthly',
+                Item: {
+                    id: { "N": String(id) },
+                    Monthlybook: { "NS": Monthlybook },
+                    dateend: { "S": dateend },
+                    datestart: { "S": datestart },
+                    userlist: { "NS": ['0'] }
+                }
+            };
+
+
+            await dynamo.send(new PutItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item added to DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+    else if (event.httpMethod == "GET") {
+        try {
+
+            const paramsgetid = {
+                TableName: 'Monthly'
+            };
+            const check = await dynamo.send(new ScanCommand(paramsgetid));
+            const itemscheck = check.Items.map((item) => {
+                const { id } = unmarshall(item);
+                return { id, };
+            });
+            const id = Math.max(...itemscheck.map(item => item.id));
+
+            const params = {
+                TableName: 'Monthly',
+                KeyConditionExpression: 'id = :id',
+                ExpressionAttributeValues: {
+                    ':id': { 'N': String(id) }
+                }
+            }
+            const data = await dynamo.send(new QueryCommand(params));
+            const items = data.Items.map((item) => {
+                const { id, dateend, datestart } = unmarshall(item);
+                return {
+                    id, dateend, datestart,
+                    Monthlybook: item.Monthlybook ? { NS: item.Monthlybook.NS } : { NS: [] },
+                    userlist: item.userlist ? { NS: item.userlist.NS } : { NS: [] }
+                };
+            }); return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+
+    }
+    else if (event.httpMethod == "PUT") {
+        try {
+            const { userlist } = JSON.parse(event.body);
+            const params = {
+                TableName: 'Monthly',
+                Key: {
+                    id: { "N": id }
+                },
+                UpdateExpression: "set userlist = :userlist",
+                ExpressionAttributeValues: {
+                    ":userlist": { "NS": userlist },
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dynamo.send(new UpdateItemCommand(params));
+            return {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: 'Item updated in DynamoDB' })
+            };
+        } catch (err) {
+            return {
+                statusCode: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: err.message })
+            };
+        }
+    }
+}
+async function Ban(event) {
+    try {
+        const { book_id, status } = JSON.parse(event.body);
+        const params = {
+            TableName: 'user',
+            Key: {
+                book_id: { "N": book_id }
+            },
+            UpdateExpression: "set status = :status",
+            ExpressionAttributeValues: {
+                ":status": { "BOOL": status },
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+        await dynamo.send(new UpdateItemCommand(params));
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: 'Item updated in DynamoDB' })
+        };
+    } catch (err) {
+        return {
+            statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ error: err.message })
+        };
+    }
+}
+
+async function Checkout(event) {
+    try {
+        const { id, bookshelf, cart_item, point, price } = JSON.parse(event.body);
+        const params = {
+            TableName: 'cart',
+            Key: {
+                id: { "N": id }
+            },
+            UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item, point = :point, price = :price",
+            ExpressionAttributeValues: {
+                ":bookshelf": { "NS": bookshelf },
+                ":cart_item": { "NS": cart_item },
+                ":point": { "N": String(point) },
+                ":price": { "N": String(price) },
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+        await dynamo.send(new UpdateItemCommand(params));
         return {
             statusCode: 200,
             headers: {
