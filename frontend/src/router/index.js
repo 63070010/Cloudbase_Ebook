@@ -6,7 +6,6 @@ import Profile_user from '../views/Profile_user.vue'
 import DetailsBook from '../views/DetailsBook.vue'
 import Cart_Book from '../views/Cart_Book.vue'
 import DetailPromotion from '../views/DetailPromotion.vue'
-import CheckoutPage from '../views/CheckoutPage.vue'
 import SearchBook from '../views/SearchBook.vue'
 import FavoriteBook from '../views/Favorite_Book.vue'
 import Bookshelf from '../views/Bookshelf.vue'
@@ -72,12 +71,7 @@ const routes = [
   }
   ,
 
-  {
-    path: '/CheckoutPage/:id',
-    name: 'CheckoutPage',
 
-    component: CheckoutPage
-  },
   {
     path: '/FavoriteBook',
     name: 'FavoriteBook',
