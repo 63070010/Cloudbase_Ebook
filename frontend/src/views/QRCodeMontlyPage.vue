@@ -4,7 +4,7 @@
       <div class="qrcode-wrapper">
         <canvas ref="canvas"></canvas>
         <span class="qrcode-text">สแกน QR Code เพื่อชำระเงิน</span><br />
-        <span class="qrcode-text2">ยอดชำระ {{ totalprice }} บาท </span>
+        <span class="qrcode-text2">ยอดชำระ 300 บาท </span>
       </div>
       <router-link to="/" style="margin-bottom: -600px; position: absolute"
         ><button class="button is-info is-rounded">
