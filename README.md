@@ -6,5 +6,6 @@ s3
 dynamodb
 cloundwatch
 apigateway
+iamrole
 
 fribase storage
