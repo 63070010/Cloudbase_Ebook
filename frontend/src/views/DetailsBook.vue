@@ -94,7 +94,7 @@
                     >
                       <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
                     </button>
-                    <p id="text_bag" class="help">ปลดบล็อก</p>
+                    <p id="text_bag" class="help">บล็อก</p>
                   </div>
                 </div>
               </div>
