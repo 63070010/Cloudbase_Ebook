@@ -4,7 +4,7 @@
     <br />
     <br />
     <br />
-    <div class="card">
+    <div class="card" v-if="pro && pro[0]">
       <div class="card-image">
         <figure class="image" v-if="pro && pro[0]">
           <img

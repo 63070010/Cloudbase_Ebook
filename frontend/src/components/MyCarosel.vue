@@ -20,12 +20,13 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { Carousel, Pagination, Slide } from "vue3-carousel";
-import "vue3-carousel/dist/carousel.css";
 import axios from "axios";
+import "vue3-carousel/dist/carousel.css";
 
-export default {
-  name: "CaroUse",
+export default defineComponent({
+  name: "MyCarosel",
   components: {
     Carousel,
     Slide,
@@ -34,7 +35,6 @@ export default {
   created() {
     this.fetchData();
   },
-
   data() {
     return {
       promotion: [],
@@ -58,5 +58,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
