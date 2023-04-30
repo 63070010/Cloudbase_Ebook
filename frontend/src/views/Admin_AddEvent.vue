@@ -367,6 +367,10 @@ export default {
       const downloadURL = await fileRef.getDownloadURL();
       console.log(downloadURL);
 
+      if (this.eventbook.length == 0) {
+        this.eventbook = ["0"];
+      }
+      console.log(this.eventbook);
       axios
         .post(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/getevent",
