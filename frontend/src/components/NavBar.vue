@@ -198,13 +198,9 @@ export default {
   mounted() {
     // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
     this.id = localStorage.getItem("id");
-    console.log(this.id);
-  },
-  created() {
-    this.id = localStorage.getItem("id");
-
     this.fetchData();
   },
+
   methods: {
     async fetchData() {
       console.log(this.id);

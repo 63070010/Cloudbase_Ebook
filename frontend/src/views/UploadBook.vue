@@ -146,14 +146,18 @@ export default {
       type: "fantasy",
       types: ["action", "fantasy", "si-fi", "comedy", "drama", "romance"],
       typechocie: [],
-      id: 1,
+      id: null,
       userdata: [],
       mybook: [],
     };
   },
-  created() {
+
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.getuser();
   },
+
   methods: {
     async getuser() {
       try {
@@ -202,18 +206,9 @@ export default {
 
         const downloadURL2 = await fileRef2.getDownloadURL();
 
-        const currentDate = new Date().toLocaleDateString();
+        const currentDate = new Date().toISOString().slice(0, 10);
         const point = this.price / 2;
-        console.log(this.title);
-        console.log(this.typechocie);
-        console.log(String(this.price));
-        console.log(String(point));
-        console.log(this.penname);
-        console.log(currentDate);
-
-        console.log(downloadURL);
-        console.log(downloadURL2);
-        console.log(String(this.id));
+        alert("Upload wait!");
 
         axios
           .post(
@@ -235,16 +230,18 @@ export default {
             // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
             this.title = "";
             this.desc = "";
-            this.point = 0;
-            this.file = null;
+            this.price = 0;
+            this.penname = "";
+            this.typechocie = "";
             this.$refs.fileInput.value = null;
+            this.$refs.filestoryInput.value = null;
+            this.filestory = null;
+            this.file = null;
             alert("Upload success!");
           })
           .catch((error) => {
             console.log(error);
           });
-        this.file = null;
-        this.filestory = null;
       } catch (err) {
         console.error(err);
         alert("Upload failed!");

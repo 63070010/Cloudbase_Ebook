@@ -56,7 +56,7 @@
             </a>
           </li>
           <li
-            :class="[number == 4 ? 'is-active' : '']"
+            :class="[number == 3 ? 'is-active' : '']"
             @click="changeTab('นักเขียน', 3)"
           >
             <a>
@@ -216,7 +216,6 @@ export default {
       currentPage: 1,
       lastpage: 1,
       cart: [],
-      id: 1,
       type: "ชื่อหนังสือ",
       keepbook: [],
       eventbook: [],
@@ -259,8 +258,7 @@ export default {
     getProducts() {
       if (this.search == "") {
         this.books = this.keepbook;
-      }
-      if (this.type == "ชื่อหนังสือ") {
+      } else if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(

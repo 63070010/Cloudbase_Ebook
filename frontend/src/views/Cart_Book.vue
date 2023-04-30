@@ -112,9 +112,6 @@ export default {
   components: {
     NavBar,
   },
-  created() {
-    this.getcartitem();
-  },
   data() {
     return {
       cart: [],
@@ -130,7 +127,7 @@ export default {
   mounted() {
     // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
     this.id = localStorage.getItem("id");
-    console.log(this.id);
+    this.getcartitem();
   },
   methods: {
     async getcartitem() {

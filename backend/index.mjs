@@ -1288,16 +1288,53 @@ async function Checkout(event) {
             Key: {
                 id: { "N": id }
             },
-            UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item, point = :point, price = :price",
+            UpdateExpression: "set bookshelf = :bookshelf, cart_item = :cart_item,  price = :price, point = :point",
             ExpressionAttributeValues: {
                 ":bookshelf": { "NS": bookshelf },
                 ":cart_item": { "NS": cart_item },
-                ":point": { "N": String(point) },
+                ":point": { "N": "0" },
                 ":price": { "N": String(price) },
             },
             ReturnValues: "UPDATED_NEW"
         };
+
+        const paramsgetuser = {
+            TableName: 'user',
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: {
+                ':id': { 'S': String(id) }
+            }
+        };
+
+        const data = await dynamo.send(new QueryCommand(paramsgetuser));
+
+        const items = data.Items.map((item) => {
+            const { point } = unmarshall(item);
+            return {
+                point
+            };
+        })
+
+        const pointtotal = items[0].point + point;
+
+        const paramsuser = {
+            TableName: 'user',
+            Key: {
+                id: {
+                    "S": String(id)
+                }
+            },
+            UpdateExpression: "set point = :point",
+            ExpressionAttributeValues: {
+                ":point": { "N": String(pointtotal) },
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+
+
+
         await dynamo.send(new UpdateItemCommand(params));
+        await dynamo.send(new UpdateItemCommand(paramsuser));
         return {
             statusCode: 200,
             headers: {

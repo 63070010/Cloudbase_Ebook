@@ -3,7 +3,7 @@
     <NavBar />
     <div>
       <div class="hero is-fullheight">
-        <div id="detail_card" class="container p-6" v-if="book && book[0]">
+        <div id="detail_card" class="container p-6" v-if="book.length > 0">
           <h1 class="title is-3 has-text-centered">
             {{ book[0].title }}
           </h1>
@@ -75,32 +75,36 @@
                   <p id="text_bag" class="help">ชอบเรื่องนี้</p>
                 </div>
                 <!-- ส่วน icon บล็อก -->
-                <div id="icon_area" v-if="checkBlock">
-                  <button
-                    id="icon_bag_active"
-                    class="button is-rounded"
-                    @click="iconBlockIsActive()"
-                  >
-                    <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
-                  </button>
-                  <p id="text_bag_active" class="help">
-                    บล็อกแล้ว
-                  </p>
-                </div>
-                <div id="icon_area" v-else>
-                  <button
-                    id="icon_bag"
-                    class="button is-rounded"
-                    @click="iconBlock()"
-                  >
-                    <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
-                  </button>
-                  <p id="text_bag" class="help">ปลดบล็อก</p>
+                <div v-if="id == '0'">
+                  <div id="icon_area" v-if="checkBlock">
+                    <button
+                      id="icon_bag_active"
+                      class="button is-rounded"
+                      @click="iconBlockIsActive()"
+                    >
+                      <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag_active" class="help">บล็อกแล้ว</p>
+                  </div>
+                  <div id="icon_area" v-else>
+                    <button
+                      id="icon_bag"
+                      class="button is-rounded"
+                      @click="iconBlock()"
+                    >
+                      <i class="fa fa-ban fas fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <p id="text_bag" class="help">ปลดบล็อก</p>
+                  </div>
                 </div>
               </div>
 
               <!-- ######## ส่วน Btn ซื้อ ########-->
-              <div id="btn_buy" class="field has-addons mt-5">
+              <div
+                id="btn_buy"
+                class="field has-addons mt-5"
+                v-if="book.length > 0"
+              >
                 <div
                   class="button is-large is-primary is-rounded mr-3"
                   v-if="
@@ -191,7 +195,7 @@
       </div>
 
       <!--######## ส่วน show review all #######-->
-      <div class="container is-max-desktop px-5 mb-5" v-if="book && book[0]">
+      <div class="container is-max-desktop px-5 mb-5" v-if="book.length > 0">
         <p class="is-size-3">รีวิวทั้งหมด</p>
         <!-- แสดง รีวิว -->
         <div
@@ -261,8 +265,6 @@ export default defineComponent({
       checkBag: false,
       checkBlock: false,
       reviewText: "",
-      book_id: 1,
-      id: 1,
       bookshelf: [],
       bookincart: [],
       totalprice: 0,
@@ -272,13 +274,18 @@ export default defineComponent({
       user: [],
       checkuser: [],
       rev_book: [],
+      id: null,
+      reviewall: [],
     };
   },
-  created() {
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.fetchData(this.$route.params.id);
     this.getcart();
     this.getuser();
   },
+
   methods: {
     async fetchData(id) {
       try {
@@ -300,77 +307,84 @@ export default defineComponent({
         this.allcomments = this.allcomments.sort((a, b) => {
           return this.checkuser.indexOf(a.id) - this.checkuser.indexOf(b.id);
         });
-
-        if (this.fav_Book.includes(String(this.book[0].book_id))) {
-          this.checkBag = true;
-        }
       } catch (error) {
         console.log(error);
       }
     },
 
     async getuser() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
-          )
-          .then((response) => {
-            this.user = response.data;
-            this.rev_book = this.user[0].rev_book.NS;
-            this.fav_Book = this.user[0].fav_Book.NS;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
+      if (this.id != null) {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
+            )
+            .then((response) => {
+              this.user = response.data;
+              this.rev_book = this.user[0].rev_book.NS;
+              this.fav_Book = this.user[0].fav_Book.NS;
+              if (this.fav_Book.includes(String(this.book[0].book_id))) {
+                this.checkBag = true;
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
 
     async getcart() {
-      try {
-        axios
-          .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
-          )
-          .then((response) => {
-            this.cart = response.data;
-            this.bookshelf = this.cart[0].bookshelf.NS;
-            this.bookincart = this.cart[0].cart_item.NS;
-            this.totalprice = this.cart[0].price;
-            this.totalpoint = this.cart[0].point;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } catch (error) {
-        console.log(error);
+      if (this.id != null) {
+        try {
+          axios
+            .get(
+              `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart?id=${this.id}`
+            )
+            .then((response) => {
+              this.cart = response.data;
+              this.bookshelf = this.cart[0].bookshelf.NS;
+              this.bookincart = this.cart[0].cart_item.NS;
+              this.totalprice = this.cart[0].price;
+              this.totalpoint = this.cart[0].point;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
     async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
-      this.totalpoint += event.point;
+      if (this.id != null) {
+        this.totalprice += event.price;
+        this.totalpoint += event.point;
+        this.bookincart.push(String(event.book_id));
 
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-            point: this.totalpoint,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+            {
+              id: String(this.id),
+              bookshelf: this.bookshelf,
+              cart_item: this.bookincart,
+              user_id: String(this.id),
+              price: String(this.totalprice),
+              point: String(this.totalpoint),
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        alert("กรุณาล็อคอิน");
+      }
     },
     async submit() {
       this.reviewall.push(String(this.reviewText));
@@ -467,30 +481,34 @@ export default defineComponent({
         });
     },
     iconBag() {
-      const check = String(this.book[0].book_id);
-      this.checkBag = true;
+      if (this.id != null) {
+        const check = String(this.book[0].book_id);
+        this.checkBag = true;
 
-      this.fav_Book.push(check);
-      console.log(this.fav_Book);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/fav",
-          {
-            id: String(this.id),
-            fav_Book: this.fav_Book,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        this.fav_Book.push(check);
+        console.log(this.fav_Book);
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/fav",
+            {
+              id: String(this.id),
+              fav_Book: this.fav_Book,
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        alert("กรุณาล็อคอิน");
+      }
     },
-    iconBlockIsActive(){
+    iconBlockIsActive() {
       this.checkBlock = false;
     },
-    iconBlock(){
+    iconBlock() {
       this.checkBlock = true;
     },
   },

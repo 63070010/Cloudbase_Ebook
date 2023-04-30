@@ -25,11 +25,12 @@ export default {
     return {
       qrCodeValue: "http://localhost:8080/",
       userlist: [],
-      id: 2,
+      id: null,
     };
   },
   created() {
     this.$nextTick(() => {
+      this.id = localStorage.getItem("id");
       this.getmonthly();
     });
   },

@@ -152,18 +152,22 @@ export default {
       event: [],
       bookinevent: [],
       cart: [],
-      id: 1,
+      id: null,
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
       pro: [],
+      totalpoint: 0,
     };
   },
-  created() {
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.fetchData(this.$route.params.id);
     this.promotion(this.$route.params.id);
     this.getcart();
   },
+
   methods: {
     async promotion(id) {
       try {
@@ -212,6 +216,7 @@ export default {
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
             this.totalprice = this.cart[0].price;
+            this.totalpoint = this.cart[0].point;
           })
           .catch((error) => {
             console.error(error);
@@ -221,26 +226,32 @@ export default {
       }
     },
     async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
+      if (this.id != null) {
+        this.totalprice += event.price;
+        this.totalpoint += event.point;
+        this.bookincart.push(String(event.book_id));
 
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+            {
+              id: String(this.id),
+              bookshelf: this.bookshelf,
+              cart_item: this.bookincart,
+              user_id: String(this.id),
+              price: String(this.totalprice),
+              point: String(this.totalpoint),
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        alert("กรุณาล็อคอิน");
+      }
     },
   },
 };

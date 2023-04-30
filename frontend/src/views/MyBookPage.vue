@@ -23,7 +23,7 @@
             </a>
           </li>
           <li
-            :class="[number == 4 ? 'is-active' : '']"
+            :class="[number == 3 ? 'is-active' : '']"
             @click="changeTab('นักเขียน', 3)"
           >
             <a>
@@ -84,7 +84,7 @@
                     </div>
                   </div>
                 </router-link>
-                <br>
+                <br />
                 <div class="level">
                   <router-link :to="`/ReadBook/${value.book_id}`" class="ml-6">
                     <button
@@ -154,7 +154,10 @@ export default {
   components: {
     NavBar,
   },
-  created() {
+
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.fetchData();
   },
   data() {
@@ -169,7 +172,7 @@ export default {
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
-      id: 1,
+      id: null,
       user: [],
       favoritebook: [],
       type: "ชื่อหนังสือ",
@@ -190,7 +193,7 @@ export default {
         );
         this.book = response.data;
         const response2 = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
         );
         this.user = response2.data;
         console.log(this.user);

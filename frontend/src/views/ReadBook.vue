@@ -20,10 +20,14 @@ export default {
   components: {
     NavBar,
   },
+  data() {
+    return {
+      isLoaded: false,
+    };
+  },
   setup() {
     const viewer = ref(null);
     const state = reactive({
-      isLoaded: false,
       book: "",
     });
 
@@ -61,8 +65,8 @@ export default {
     this.state.book = response.data[0].story;
 
     setTimeout(() => {
-      this.state.isLoaded = true;
-    }, 1600);
+      this.isLoaded = true;
+    }, 1400);
   },
 };
 </script>

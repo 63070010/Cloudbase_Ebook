@@ -188,8 +188,8 @@ export default {
             .then((response) => {
               // ถ้าเข้าสู่ระบบสำเร็จ
               // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
-              console.log(response.data);
-              localStorage.setItem("token", response.data);
+              localStorage.setItem("token", response.data.token);
+              localStorage.setItem("id", response.data.id);
               console.log(localStorage);
 
               // ล้างข้อมูล username และ password

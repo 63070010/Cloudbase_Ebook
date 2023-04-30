@@ -390,7 +390,9 @@ export default {
   components: {
     NavBar,
   },
-  created() {
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.fetchData();
   },
   data() {
@@ -405,7 +407,7 @@ export default {
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
-      id: 1,
+      id: null,
       item: [],
       countitems: [],
       ShowPopup: [],
@@ -454,14 +456,13 @@ export default {
     async fetchData() {
       try {
         const response = await axios.get(
-          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${"1"}`
+          `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
         );
         this.user = response.data;
         const response2 = await axios.get(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/item"
         );
         this.item = response2.data;
-        this.countitems = this.user[0].item_count.NS;
         console.log(this.item);
         console.log(this.countitems);
       } catch (error) {

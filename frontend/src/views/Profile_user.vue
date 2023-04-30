@@ -138,7 +138,7 @@
       <section class="info-tiles">
         <div class="tile is-ancestor has-text-centered">
           <div class="tile is-parent">
-            <router-link to="/register">
+            <router-link to="/Mybook">
               <article class="tile is-child box color_use">
                 <p class="title" style="color: #8fc1e3">หนังสือที่ลงขาย</p>
                 <p class="subtitle has-text-left">
@@ -262,27 +262,26 @@ export default {
   },
   data() {
     return {
-      user: {
-        username: "TestName",
-        email: "Test@hotmail.com",
-        phonenumber: "0812345678",
-        gender: "ชาย",
-        password: "123456789",
-      },
-
       Change_password: false,
       showprofileuser: [],
+      Password: "",
+      Retype_Password: "",
     };
   },
-  created() {
+
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.getprofileuser(this.$route.params.id);
   },
   methods: {
-    async getprofileuser(id) {
+    async getprofileuser(path) {
+      console.log(path);
+
       try {
         axios
           .get(
-            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${id}`
+            `https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user?id=${this.id}`
           )
           .then((response) => {
             this.showprofileuser = response.data;

@@ -30,12 +30,7 @@
             <label class="label" style="color: #8fc1e3">รูปโปรไฟล์</label>
             <div class="file">
               <label class="file-label">
-                <input
-                  class="file-input"
-                  type="file"
-                  name="comment_image"
-                  @change="handleFileChange"
-                />
+                <input class="file-input" type="file" name="comment_image" />
                 <span class="file-cta">
                   <span class="file-icon">
                     <i class="fas fa-upload"></i>
@@ -65,7 +60,6 @@
             <div class="field">
               <label class="label" style="color: #8fc1e3">เบอร์โทรศัพท์</label>
               <input
-                :disabled="disabled"
                 class="input is-medium is-rounded"
                 type="text"
                 v-model="PhoneNumber"
@@ -92,7 +86,6 @@
                 >ช่องทางการรับเงิน</label
               >
               <input
-                :disabled="disabled"
                 class="input is-medium is-rounded"
                 type="text"
                 v-model="BankName"
@@ -134,6 +127,10 @@ export default {
   data() {
     return {
       Edit_profile: false,
+      PhoneNumber: "",
+      BankName: "",
+      Email: "",
+      Sex: "",
     };
   },
   methods: {

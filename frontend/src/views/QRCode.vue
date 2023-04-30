@@ -24,12 +24,14 @@ export default {
   data() {
     return {
       qrCodeValue: "http://localhost:8080/",
-      id: 1,
+      id: null,
       cart: [],
       totalprice: 0,
     };
   },
-  created() {
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.getcartitem();
   },
 
@@ -41,6 +43,7 @@ export default {
         );
         this.cart = response.data;
         this.totalprice = this.cart[0].price;
+
         const canvas = this.$refs.canvas;
         this.cartitem = this.cart[0].cart_item.NS;
         this.bookshelf = this.cart[0].bookshelf.NS;
@@ -50,6 +53,7 @@ export default {
             new Set([...this.bookshelf, ...this.cartitem])
           );
           this.cart_item = ["0"];
+          const point = parseInt(this.totalprice) / 2;
           console.log(1);
           axios
             .put(
@@ -57,7 +61,7 @@ export default {
               {
                 id: String(this.id),
                 price: "0",
-                point: "0",
+                point: point,
                 cart_item: this.cart_item,
                 bookshelf: combined,
               }

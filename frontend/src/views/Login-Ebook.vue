@@ -153,8 +153,6 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.state.username);
-      console.log(this.state.password);
       axios
         .post(
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/login",

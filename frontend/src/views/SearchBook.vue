@@ -39,7 +39,7 @@
             </a>
           </li>
           <li
-            :class="[number == 4 ? 'is-active' : '']"
+            :class="[number == 3 ? 'is-active' : '']"
             @click="changeTab('นักเขียน', 3)"
           >
             <a>
@@ -212,7 +212,10 @@ export default {
   components: {
     NavBar,
   },
-  created() {
+
+  mounted() {
+    // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
+    this.id = localStorage.getItem("id");
     this.fetchData(this.$route.params.id);
     this.getcart();
   },
@@ -228,11 +231,12 @@ export default {
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
-      id: 2,
+      id: null,
       type: "ชื่อหนังสือ",
       keepbook: [],
       datamothly: [],
       userlist: [],
+      totalpoint: 0,
     };
   },
   computed: {
@@ -333,8 +337,7 @@ export default {
     getProducts() {
       if (this.search == "") {
         this.books = this.keepbook;
-      }
-      if (this.type == "ชื่อหนังสือ") {
+      } else if (this.type == "ชื่อหนังสือ") {
         try {
           axios
             .get(
@@ -400,6 +403,7 @@ export default {
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
             this.totalprice = this.cart[0].price;
+            this.totalpoint = this.cart[0].point;
           })
           .catch((error) => {
             console.error(error);
@@ -409,28 +413,32 @@ export default {
       }
     },
     async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
+      if (this.id != null) {
+        this.totalprice += event.price;
+        this.totalpoint += event.point;
+        this.bookincart.push(String(event.book_id));
 
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        axios
+          .put(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
+            {
+              id: String(this.id),
+              bookshelf: this.bookshelf,
+              cart_item: this.bookincart,
+              user_id: String(this.id),
+              price: String(this.totalprice),
+              point: String(this.totalpoint),
+            }
+          )
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        alert("กรุณาล็อคอิน");
+      }
     },
   },
 };

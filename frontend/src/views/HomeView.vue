@@ -243,24 +243,21 @@ export default defineComponent({
       books: [],
       booksevent: [],
       cart: [],
-      id: null,
       totalprice: 0,
       bookincart: [],
       bookshelf: [],
       totalpoint: 0,
       Monthlybooks: [],
       userlist: [],
+      id: null,
     };
-  },
-
-  created() {
-    this.fetchData();
-    this.getcart();
   },
 
   mounted() {
     // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
     this.id = localStorage.getItem("id");
+    this.fetchData();
+    this.getcart();
     console.log(this.id);
   },
   methods: {
@@ -351,10 +348,7 @@ export default defineComponent({
         this.totalprice += event.price;
         this.totalpoint += event.point;
         this.bookincart.push(String(event.book_id));
-        console.log(this.totalpoint);
-        console.log(this.totalprice);
-        console.log(this.bookincart);
-        console.log(this.bookshelf);
+
         axios
           .put(
             "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",

@@ -23,7 +23,7 @@
             </a>
           </li>
           <li
-            :class="[number == 4 ? 'is-active' : '']"
+            :class="[number == 3 ? 'is-active' : '']"
             @click="changeTab('นักเขียน', 3)"
           >
             <a>
@@ -155,10 +155,6 @@ export default {
   components: {
     NavBar,
   },
-  created() {
-    this.fetchData();
-    this.getcart();
-  },
   data() {
     return {
       search: "",
@@ -179,7 +175,8 @@ export default {
   mounted() {
     // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
     this.id = localStorage.getItem("id");
-    console.log(this.id);
+    this.fetchData();
+    this.getcart();
   },
   computed: {
     paginatedBooks() {
@@ -288,6 +285,7 @@ export default {
             this.bookshelf = this.cart[0].bookshelf.NS;
             this.bookincart = this.cart[0].cart_item.NS;
             this.totalprice = this.cart[0].price;
+            this.totalpoint = this.cart[0].point;
           })
           .catch((error) => {
             console.error(error);
@@ -295,30 +293,6 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    },
-    async cardpush(event) {
-      this.totalprice += event.price;
-      this.bookincart.push(String(event.book_id));
-
-      console.log(this.bookshelf);
-      console.log(this.bookincart);
-      axios
-        .put(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/cart",
-          {
-            id: String(this.id),
-            bookshelf: this.bookshelf,
-            cart_item: this.bookincart,
-            user_id: String(this.id),
-            price: this.totalprice,
-          }
-        )
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
   },
 };
