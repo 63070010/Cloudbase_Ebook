@@ -383,7 +383,7 @@ export default defineComponent({
             console.log(error);
           });
       } else {
-        alert("กรุณาล็อคอิน");
+        alert("กรุณาเข้าสู่ระบบ");
       }
     },
     async submit() {
@@ -502,7 +502,7 @@ export default defineComponent({
             console.log(error);
           });
       } else {
-        alert("กรุณาล็อคอิน");
+        alert("กรุณาเข้าสู่ระบบ");
       }
     },
     iconBlockIsActive() {

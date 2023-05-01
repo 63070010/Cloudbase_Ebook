@@ -253,7 +253,7 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
-              console.log(response.data);
+              this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
               console.error(error);
@@ -269,7 +269,7 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
-              console.log(response.data);
+              this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
               console.error(error);
@@ -285,7 +285,7 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
-              console.log(response.data);
+              this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
               console.error(error);
@@ -347,7 +347,7 @@ export default {
             console.log(error);
           });
       } else {
-        alert("กรุณาล็อคอิน");
+        alert("กรุณาเข้าสู่ระบบ");
       }
     },
   },

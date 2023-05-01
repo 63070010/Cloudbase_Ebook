@@ -322,25 +322,33 @@ export default {
       );
     },
     submit() {
-      axios
-        .post(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly",
-          {
-            Monthlybook: this.eventbook,
-            dateend: this.dateend,
-            datestart: this.datestart,
-          }
-        )
-        .then(() => {
-          // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
-          this.dateend = null;
-          this.datestart = null;
-          this.eventbook = [];
-          alert("Upload success!");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (
+        this.datestart == null ||
+        this.dateend == null ||
+        this.eventbook.length == 0
+      ) {
+        alert("กรุณากรอกข้อมูลให้ครบ");
+      } else {
+        axios
+          .post(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/monthly",
+            {
+              Monthlybook: this.eventbook,
+              dateend: this.dateend,
+              datestart: this.datestart,
+            }
+          )
+          .then(() => {
+            // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+            this.dateend = null;
+            this.datestart = null;
+            this.eventbook = [];
+            alert("Upload success!");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };

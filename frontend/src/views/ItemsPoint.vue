@@ -329,9 +329,16 @@
                       <button
                         class="button is-rounded is-medium"
                         style="color: #f7f9fb; background-color: #5085a5"
-                        @click="submit"
+                        @click="submit(index)"
                       >
                         ยืนยันข้อมูล
+                      </button>
+                      <button
+                        class="button is-rounded is-medium"
+                        style="color: #f7f9fb; background-color: #5085a5"
+                        @click="drop(index)"
+                      >
+                        กลับไปแลก ITEM
                       </button>
                     </div>
                   </footer>
@@ -463,25 +470,22 @@ export default {
           "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/item"
         );
         this.item = response2.data;
-        console.log(this.item);
-        console.log(this.countitems);
       } catch (error) {
         console.log(error);
       }
     },
-    submit() {
+    submit(index) {
       this.v$.$validate();
       if (this.v$.$error) {
         alert("คุณกรอกรายละเอียดไม่ครบถ้วน");
       } else {
         alert("สำเร็จ \u2705 รอรับของได้เลย.");
-
-        setTimeout(function () {
-          window.location.href = "ItemsPoint";
-        }, 1500);
+        this.buyitems[index] = false;
       }
     },
-
+    drop(index) {
+      this.buyitems[index] = false;
+    },
     nextPage() {
       this.currentPage++;
     },

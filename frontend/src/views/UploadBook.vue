@@ -192,59 +192,67 @@ export default {
       this.filestory = event.target.files[0];
     },
     async submit() {
-      try {
-        // สร้าง reference ของไฟล์ที่จะอัปโหลด
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(this.file.name);
-        await fileRef.put(this.file);
+      if (
+        (this.filestory == null || this.file == null || this.title == "",
+        this.desc == "" || this.typechocie == [])
+      ) {
+        alert("กรุณากรอกข้อมูลให้ครบ");
+      } else {
+        try {
+          alert("Upload wait!");
 
-        const downloadURL = await fileRef.getDownloadURL();
+          // สร้าง reference ของไฟล์ที่จะอัปโหลด
+          const storageRef = storage.ref();
+          const fileRef = storageRef.child(this.file.name);
+          await fileRef.put(this.file);
 
-        const storageRef2 = storage.ref();
-        const fileRef2 = storageRef2.child(this.filestory.name);
-        await fileRef2.put(this.filestory);
+          const downloadURL = await fileRef.getDownloadURL();
 
-        const downloadURL2 = await fileRef2.getDownloadURL();
+          const storageRef2 = storage.ref();
+          const fileRef2 = storageRef2.child(this.filestory.name);
+          await fileRef2.put(this.filestory);
 
-        const currentDate = new Date().toISOString().slice(0, 10);
-        const point = this.price / 2;
-        alert("Upload wait!");
+          const downloadURL2 = await fileRef2.getDownloadURL();
 
-        axios
-          .post(
-            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book",
-            {
-              title: this.title,
-              type: this.typechocie,
-              price: this.price,
-              point: point,
-              penname: this.penname,
-              Date: currentDate,
-              desc: this.desc,
-              image: downloadURL,
-              story: downloadURL2,
-              id: String(this.id),
-            }
-          )
-          .then(() => {
-            // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
-            this.title = "";
-            this.desc = "";
-            this.price = 0;
-            this.penname = "";
-            this.typechocie = "";
-            this.$refs.fileInput.value = null;
-            this.$refs.filestoryInput.value = null;
-            this.filestory = null;
-            this.file = null;
-            alert("Upload success!");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } catch (err) {
-        console.error(err);
-        alert("Upload failed!");
+          const currentDate = new Date().toISOString().slice(0, 10);
+          const point = this.price / 2;
+
+          axios
+            .post(
+              "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/book",
+              {
+                title: this.title,
+                type: this.typechocie,
+                price: this.price,
+                point: point,
+                penname: this.penname,
+                Date: currentDate,
+                desc: this.desc,
+                image: downloadURL,
+                story: downloadURL2,
+                id: String(this.id),
+              }
+            )
+            .then(() => {
+              // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+              this.title = "";
+              this.desc = "";
+              this.price = 0;
+              this.penname = "";
+              this.typechocie = "";
+              this.$refs.fileInput.value = null;
+              this.$refs.filestoryInput.value = null;
+              this.filestory = null;
+              this.file = null;
+              alert("Upload success!");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (err) {
+          console.error(err);
+          alert("Upload failed!");
+        }
       }
     },
   },

@@ -170,40 +170,50 @@ export default {
   },
   methods: {
     submit() {
-      axios
-        .post(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user",
-          {
-            username: this.state.username,
-            password: this.state.password,
-            email: this.state.email,
-          }
-        )
-        .then(() => {
-          axios
-            .post(
-              "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/login",
-              { username: this.state.username, password: this.state.password }
-            )
-            .then((response) => {
-              // ถ้าเข้าสู่ระบบสำเร็จ
-              // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
-              localStorage.setItem("token", response.data.token);
-              localStorage.setItem("id", response.data.id);
-              console.log(localStorage);
+      if (this.state.password != this.state.confirm_password) {
+        alert("ใส่ข้อมูลไม่ถูกต้องกรุณากรอกข้อมูลใหม่");
+      } else if (
+        this.state.username == "" ||
+        this.state.password == "" ||
+        this.state.email == ""
+      ) {
+        alert("กรอกข้อมูลให้ครบถ้วน");
+      } else {
+        axios
+          .post(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/user",
+            {
+              username: this.state.username,
+              password: this.state.password,
+              email: this.state.email,
+            }
+          )
+          .then(() => {
+            axios
+              .post(
+                "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/login",
+                { username: this.state.username, password: this.state.password }
+              )
+              .then((response) => {
+                // ถ้าเข้าสู่ระบบสำเร็จ
+                // จะสามารถบันทึก token ไว้ใน localStorage เพื่อใช้ในการเรียก API อื่นๆ
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("id", response.data.id);
+                console.log(localStorage);
 
-              // ล้างข้อมูล username และ password
-              this.state.username = "";
-              this.state.password = "";
-              this.$router.push("/");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+                // ล้างข้อมูล username และ password
+                this.state.username = "";
+                this.state.password = "";
+                this.$router.push("/");
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };

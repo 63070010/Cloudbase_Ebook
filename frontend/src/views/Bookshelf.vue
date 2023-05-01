@@ -58,7 +58,7 @@
           <div class="columns">
             <div
               class="column is-one-fifth"
-              v-for="(value, index) in showbookshelf"
+              v-for="(value, index) in paginatedBooks"
               :key="index"
             >
               <div class="card">
@@ -180,9 +180,9 @@ export default {
   },
   computed: {
     paginatedBooks() {
-      const startIndex = (this.currentPage - 1) * 3;
-      const endIndex = startIndex + 3;
-      return this.books.slice(startIndex, endIndex);
+      const startIndex = (this.currentPage - 1) * 10;
+      const endIndex = startIndex + 10;
+      return this.showbookshelf.slice(startIndex, endIndex);
     },
   },
   methods: {
@@ -202,6 +202,7 @@ export default {
         this.showbookshelf = this.book.filter((item) => {
           return getshelfbook.includes(String(item.book_id));
         });
+        this.lastpage = response.data.length / 10;
       } catch (error) {
         console.log(error);
       }
@@ -227,6 +228,8 @@ export default {
             )
             .then((response) => {
               this.showbookshelf = response.data;
+              this.lastpage = response.data.length / 5;
+
               console.log(response.data);
             })
             .catch((error) => {
@@ -243,6 +246,8 @@ export default {
             )
             .then((response) => {
               this.showbookshelf = response.data;
+              this.lastpage = response.data.length / 5;
+
               console.log(response.data);
             })
             .catch((error) => {
@@ -259,6 +264,8 @@ export default {
             )
             .then((response) => {
               this.showbookshelf = response.data;
+              this.lastpage = response.data.length / 5;
+
               console.log(response.data);
             })
             .catch((error) => {

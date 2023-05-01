@@ -139,7 +139,7 @@
               </button>
             </router-link>
             <router-link
-              v-if="id != null"
+              v-if="id != null && id != '0'"
               to="/Cart_Book"
               style="color: #687864"
               ><button class="button mr-3">
@@ -150,7 +150,7 @@
               </button>
             </router-link>
 
-            <button class="button mr-3" @click="check()" v-else>
+            <button class="button mr-3" @click="check()" v-else-if="id != '0'">
               <span style="color: #687864">ตะกร้า</span>
               <span class="icon is-size-5 ml-2"
                 ><i class="fas fa-shopping-cart" style="color: #687864"> </i
@@ -198,6 +198,7 @@ export default {
   mounted() {
     // ดึงค่า id จาก LocalStorage เมื่อ component ถูกโหลด
     this.id = localStorage.getItem("id");
+    console.log(this.id);
     this.fetchData();
   },
 
@@ -219,7 +220,7 @@ export default {
       this.$router.push("/login");
     },
     check() {
-      alert("กรุณาล็อคอินหรือเข้าสู่ระบบ");
+      alert("กรุณาเข้าสู่ระบบหรือสมัครสมาชิก");
     },
   },
 };

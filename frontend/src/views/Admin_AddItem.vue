@@ -92,35 +92,39 @@ export default {
       this.file = event.target.files[0];
     },
     async submitFile() {
-      const storageRef = storage.ref();
-      const fileRef = storageRef.child(this.file.name);
-      await fileRef.put(this.file);
+      if (this.title == "" || this.desc == "" || this.file == null) {
+        alert("กรุณากรอกข้อมูล");
+      } else {
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(this.file.name);
+        await fileRef.put(this.file);
 
-      const downloadURL = await fileRef.getDownloadURL();
-      console.log(downloadURL);
+        const downloadURL = await fileRef.getDownloadURL();
+        console.log(downloadURL);
 
-      axios
-        .post(
-          "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/item",
-          {
-            title: this.title,
-            desc: this.desc,
-            point: this.point,
-            image: downloadURL,
-          }
-        )
-        .then(() => {
-          // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
-          this.title = "";
-          this.desc = "";
-          this.point = 0;
-          this.file = null;
-          this.$refs.fileInput.value = null;
-          alert("Upload success!");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        axios
+          .post(
+            "https://5ixfubta0m.execute-api.us-east-1.amazonaws.com/ebook/item",
+            {
+              title: this.title,
+              desc: this.desc,
+              point: this.point,
+              image: downloadURL,
+            }
+          )
+          .then(() => {
+            // แสดงข้อความแจ้งเตือนและล้างข้อมูลทั้งหมด
+            this.title = "";
+            this.desc = "";
+            this.point = 0;
+            this.file = null;
+            this.$refs.fileInput.value = null;
+            alert("Upload success!");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };

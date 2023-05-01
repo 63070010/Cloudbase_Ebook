@@ -7,7 +7,7 @@
         <div class="container">
           <div class="columns is-centered">
             <div class="column is-three-quarters">
-              <div class="card column" style="width: 700px; margin-top: 120px">
+              <div class="card column" style="width: 700px">
                 <div class="field has-text-centered">
                   <img style="height: 150px" alt="img" src="../img/book1.png" />
                   <p
@@ -21,31 +21,6 @@
                     "
                   >
                     ล็อกอินเข้าสู่ระบบ
-                  </p>
-                  <p
-                    class="label is-size-6"
-                    style="color: #5085a5; text-align: center"
-                  >
-                    เข้าสู่ระบบผ่าน Social Network
-                  </p>
-                </div>
-
-                <div class="field column">
-                  <div class="control has-text-centered">
-                    <button
-                      class="button is-rounded is-medium"
-                      style="color: #f7f9fb; background-color: #f16363"
-                    >
-                      เข้าสู่ระบบด้วย google account
-                    </button>
-                  </div>
-                  <br />
-
-                  <p
-                    class="label is-size-6"
-                    style="color: #5085a5; text-align: center"
-                  >
-                    หรือเข้าสู่ระบบผ่าน E-Book
                   </p>
                 </div>
 

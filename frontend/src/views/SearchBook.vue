@@ -281,6 +281,9 @@ export default {
           });
           this.books = sortedByDate;
           this.keepbook = sortedByDate;
+          this.lastpage = response.data.length / 5;
+
+          console.log(this.books);
         } catch (error) {
           console.log(error);
         }
@@ -299,6 +302,7 @@ export default {
 
           this.books = sortedBySales;
           this.keepbook = sortedBySales;
+          this.lastpage = response.data.length / 5;
         } catch (error) {
           console.log(error);
         }
@@ -323,6 +327,7 @@ export default {
           });
           this.keepbook = Monthlybooks;
           this.books = Monthlybooks;
+          this.lastpage = response.data.length / 5;
         } catch (error) {
           console.log(error);
         }
@@ -437,7 +442,7 @@ export default {
             console.log(error);
           });
       } else {
-        alert("กรุณาล็อคอิน");
+        alert("กรุณาเข้าสู่ระบบ");
       }
     },
   },

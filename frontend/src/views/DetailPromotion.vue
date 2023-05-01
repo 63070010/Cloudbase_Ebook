@@ -250,7 +250,7 @@ export default {
             console.log(error);
           });
       } else {
-        alert("กรุณาล็อคอิน");
+        alert("กรุณาเข้าสู่ระบบ");
       }
     },
   },
