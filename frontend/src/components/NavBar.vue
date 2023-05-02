@@ -157,11 +157,7 @@
               ></span>
             </button>
 
-            <router-link
-              :to="`/SearchBook/${'all'}`"
-              style="color: #687864"
-              v-if="id != null"
-            >
+            <router-link :to="`/SearchBook/${'all'}`" style="color: #687864">
               <button class="button mr-5">
                 <span style="color: #687864">ค้นหาหนังสือ</span>
                 <span class="icon is-size-5 ml-2"
@@ -169,13 +165,6 @@
                 ></span>
               </button>
             </router-link>
-
-            <button class="button mr-5" v-else @click="check()">
-              <span style="color: #687864">ค้นหาหนังสือ</span>
-              <span class="icon is-size-5 ml-2"
-                ><i class="fas fa-search" style="color: #687864"> </i
-              ></span>
-            </button>
           </p>
         </div>
       </div>

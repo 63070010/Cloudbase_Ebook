@@ -168,20 +168,5 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem('token')
-
-  if (to.meta.login && !isLoggedIn) {
-    alert('Please login first!')
-    next({ path: '/user/login' })
-  }
-
-  if (to.meta.guess && isLoggedIn) {
-    alert("You've already logged in")
-    next({ path: '/' })
-  }
-
-  next()
-})
 
 export default router

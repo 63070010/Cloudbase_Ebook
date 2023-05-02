@@ -205,6 +205,7 @@ export default {
       keepbook: [],
       bookinevent: [],
       totalpoint: 0,
+      getevent: [],
     };
   },
   computed: {
@@ -227,10 +228,11 @@ export default {
         );
         this.event = response2.data;
 
-        const getevent = this.event[0].book_id.NS;
+        this.getevent = this.event[0].book_id.NS;
         this.bookinevent = this.books.filter((item) => {
-          return getevent.includes(String(item.book_id));
+          return this.getevent.includes(String(item.book_id));
         });
+        this.keepbook = this.bookinevent;
         console.log(this.event);
       } catch (error) {
         console.log(error);
@@ -244,7 +246,7 @@ export default {
     },
     getProducts() {
       if (this.search == "") {
-        this.books = this.keepbook;
+        this.bookinevent = this.keepbook;
       } else if (this.type == "ชื่อหนังสือ") {
         try {
           axios
@@ -253,6 +255,10 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
+
+              this.bookinevent = this.books.filter((item) => {
+                return this.getevent.includes(String(item.book_id));
+              });
               this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
@@ -269,6 +275,10 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
+
+              this.bookinevent = this.books.filter((item) => {
+                return this.getevent.includes(String(item.book_id));
+              });
               this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
@@ -285,6 +295,10 @@ export default {
             )
             .then((response) => {
               this.books = response.data;
+
+              this.bookinevent = this.books.filter((item) => {
+                return this.getevent.includes(String(item.book_id));
+              });
               this.lastpage = response.data.length / 5;
             })
             .catch((error) => {
